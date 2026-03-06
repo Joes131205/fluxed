@@ -1,0 +1,21 @@
+{
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true
+    },
+    "paths": {
+        "@/*": ["./src/*"],
+
+        // Server Declaration
+        "@app/server": ["../server/src/index.ts"],
+        "@app/server/*": ["../server/src/*"],
+
+        // Database Declaration
+        "@app/db": ["../packages/db/src/index.ts"],
+        "@app/db/*": ["../packages/db/src/*"],
+
+        // Shared Declaration
+        "@app/shared": ["../packages/shared/src/index.ts"],
+        "@app/shared/*": ["../packages/shared/src/*"]
+    }
+}
