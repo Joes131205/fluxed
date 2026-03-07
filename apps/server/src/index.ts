@@ -3,6 +3,11 @@ import { cors } from "hono/cors";
 import usersRoute from "./routes/users";
 import authRoute from "./routes/auth";
 
+const api = new Hono()
+    .get("/", (c) => c.json({ ok: true }))
+    .route("/users", usersRoute)
+    .route("/auth", authRoute);
+
 const app = new Hono()
     .use(
         "/api/*",
@@ -17,13 +22,10 @@ const app = new Hono()
             credentials: true,
         }),
     )
-    .get("/", (c) => c.json({ ok: true }))
-    .route("/users", usersRoute)
-    .route("/auth", authRoute);
+    .route("/api", api);
 
-const routes = app.route("/api", app);
-
-export type AppType = typeof routes;
+export { app };
+export type AppType = typeof app;
 
 export default {
     port: 3000,

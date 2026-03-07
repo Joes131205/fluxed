@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = localStorage.getItem("token");
             if (token) {
                 try {
-                    const response = await fetch(
-                        `${process.env.API_URL || "http://localhost:3000"}/api/auth/me`,
+                    const response = await client.api.auth.me.$get(
+                        {},
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
@@ -54,15 +54,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             localStorage.getItem("refreshToken");
                         if (refreshToken) {
                             try {
-                                const refreshResponse = await fetch(
-                                    `${process.env.API_URL || "http://localhost:3000"}/api/auth/refresh`,
-                                    {
-                                        method: "POST",
-                                        headers: {
-                                            Authorization: `Bearer ${refreshToken}`,
+                                const refreshResponse =
+                                    await client.api.auth.refresh.$post(
+                                        {},
+                                        {
+                                            headers: {
+                                                Authorization: `Bearer ${refreshToken}`,
+                                            },
                                         },
-                                    },
-                                );
+                                    );
                                 if (refreshResponse.ok) {
                                     const refreshData =
                                         await refreshResponse.json();
@@ -70,14 +70,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                                         "token",
                                         refreshData.token,
                                     );
-                                    const retryResponse = await fetch(
-                                        `${process.env.API_URL || "http://localhost:3000"}/api/auth/me`,
-                                        {
-                                            headers: {
-                                                Authorization: `Bearer ${refreshData.token}`,
+                                    const retryResponse =
+                                        await client.api.auth.me.$get(
+                                            {},
+                                            {
+                                                headers: {
+                                                    Authorization: `Bearer ${refreshData.token}`,
+                                                },
                                             },
-                                        },
-                                    );
+                                        );
                                     if (retryResponse.ok) {
                                         const userData =
                                             await retryResponse.json();
@@ -146,10 +147,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const logout = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
         if (refreshToken) {
-            await fetch(
-                `${process.env.API_URL || "http://localhost:3000"}/api/auth/revoke`,
+            await client.api.auth.revoke.$post(
+                {},
                 {
-                    method: "POST",
                     headers: { Authorization: `Bearer ${refreshToken}` },
                 },
             );

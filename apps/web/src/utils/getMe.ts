@@ -1,16 +1,19 @@
-import { env } from "@/env";
-import axios from "axios";
+import { client } from "@/lib/client";
 
 export const getMe = async (accessToken?: string) => {
     const token = accessToken || localStorage.getItem("token");
     if (!token) return null;
 
     try {
-        const { data } = await axios.get(`${env.VITE_API_URL}/api/auth/me`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
+        const response = await client.api.auth.me.$get(
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             },
-        });
+        );
+        const data = await response.json();
         return data.ok ? data : null;
     } catch (error) {
         return null;

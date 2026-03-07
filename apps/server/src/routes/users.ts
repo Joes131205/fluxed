@@ -5,9 +5,7 @@ import { validateJWT } from "../utils/jwt";
 import { hashPassword } from "../utils/auth";
 import { updateUser } from "../../../packages/db/src/queries/users";
 
-const app = new Hono();
-
-app.put(
+const app = new Hono().put(
     "/",
     zValidator(
         "json",

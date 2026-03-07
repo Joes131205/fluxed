@@ -1,6 +1,5 @@
 import { client } from "@/lib/client";
 import { createContext, useEffect, useState } from "react";
-import { env } from "@/env";
 type AuthContextType = {
     user: User | null;
     isAuthenticated: boolean;
@@ -34,8 +33,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = localStorage.getItem("token");
             if (token) {
                 try {
-                    const response = await fetch(
-                        `${env.VITE_API_URL}/api/auth/me`,
+                    const response = await client.api.auth.me.$get(
+                        {},
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
@@ -54,15 +53,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             localStorage.getItem("refreshToken");
                         if (refreshToken) {
                             try {
-                                const refreshResponse = await fetch(
-                                    `${env.VITE_API_URL}/api/auth/refresh`,
-                                    {
-                                        method: "POST",
-                                        headers: {
-                                            Authorization: `Bearer ${refreshToken}`,
+                                const refreshResponse =
+                                    await client.api.auth.refresh.$post(
+                                        {},
+                                        {
+                                            headers: {
+                                                Authorization: `Bearer ${refreshToken}`,
+                                            },
                                         },
-                                    },
-                                );
+                                    );
                                 if (refreshResponse.ok) {
                                     const refreshData =
                                         await refreshResponse.json();
@@ -70,14 +69,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                                         "token",
                                         refreshData.token,
                                     );
-                                    const retryResponse = await fetch(
-                                        `${env.VITE_API_URL}/api/auth/me`,
-                                        {
-                                            headers: {
-                                                Authorization: `Bearer ${refreshData.token}`,
+                                    const retryResponse =
+                                        await client.api.auth.me.$get(
+                                            {},
+                                            {
+                                                headers: {
+                                                    Authorization: `Bearer ${refreshData.token}`,
+                                                },
                                             },
-                                        },
-                                    );
+                                        );
                                     if (retryResponse.ok) {
                                         const userData =
                                             await retryResponse.json();
@@ -146,10 +146,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const logout = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
         if (refreshToken) {
-            await fetch(`${env.VITE_API_URL}/api/auth/revoke`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${refreshToken}` },
-            });
+            await client.api.auth.revoke.$post(
+                {},
+                {
+                    headers: { Authorization: `Bearer ${refreshToken}` },
+                },
+            );
         }
         localStorage.clear();
         setUser(null);
