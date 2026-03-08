@@ -14,7 +14,7 @@ export const events = pgTable("events", {
         .defaultNow()
         .notNull()
         .$onUpdate(() => new Date()),
-    subareaId: integer("subarea_id").references(() => subareas.id),
+    subareaId: uuid("subarea_id").references(() => subareas.id),
     startTime: timestamp("start_time"),
     endTime: timestamp("end_time"),
     isHardLocked: boolean("is_hard_locked").default(false),

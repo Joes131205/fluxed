@@ -2,11 +2,17 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import usersRoute from "./routes/users";
 import authRoute from "./routes/auth";
+import eventsRoute from "./routes/events";
+import areasRoute from "./routes/areas";
+import subareasRoute from "./routes/subareas";
 
 const api = new Hono()
     .get("/", (c) => c.json({ ok: true }))
     .route("/users", usersRoute)
-    .route("/auth", authRoute);
+    .route("/auth", authRoute)
+    .route("/areas", areasRoute)
+    .route("/subareas", subareasRoute)
+    .route("/events", eventsRoute);
 
 const app = new Hono()
     .use(
@@ -25,6 +31,7 @@ const app = new Hono()
     .route("/api", api);
 
 export { app };
+
 export type AppType = typeof app;
 
 export default {

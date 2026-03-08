@@ -1,0 +1,31 @@
+import { eq } from "drizzle-orm";
+import { db, events } from "..";
+import type { NewEvents } from "../schema";
+
+export const createEvent = async (event: NewEvents) => {
+    const [result] = await db.insert(events).values(event).returning();
+    return result;
+};
+
+export const getEvents = async (subareaId: string) => {
+    const [result] = await db
+        .select()
+        .from(events)
+        .where(eq(events.subareaId, subareaId));
+
+    return result;
+};
+
+export const updateEvent = async (eventId: string, event: NewEvents) => {
+    const [result] = await db
+        .update(events)
+        .set(event)
+        .where(eq(events.id, eventId))
+        .returning();
+
+    return result;
+};
+
+export const deleteEvent = async (eventId: string) => {
+    await db.delete(events).where(eq(events.id, eventId));
+};
