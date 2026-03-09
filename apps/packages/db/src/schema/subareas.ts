@@ -16,11 +16,6 @@ export const subareas = pgTable("subareas", {
         .defaultNow()
         .notNull()
         .$onUpdate(() => new Date()),
-    user_id: uuid("user_id")
-        .references(() => users.id, {
-            onDelete: "cascade",
-        })
-        .notNull(),
     area_id: uuid("area_id")
         .references(() => areas.id, {
             onDelete: "cascade",

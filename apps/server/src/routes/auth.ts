@@ -19,7 +19,14 @@ import {
     makeRefreshToken,
 } from "../utils/auth";
 import { makeJWT, validateJWT } from "../utils/jwt";
-const app = new Hono()
+import { jwtSecret } from "../env";
+import { authCheck } from "../middlewares/authMiddleware";
+
+type AppType = {
+    userId: string;
+};
+
+const app = new Hono<{ Variables: AppType }>()
     .post("/register", zValidator("json", signUpSchema), async (c) => {
         const input = c.req.valid("json");
         const hashedPassword = await hashPassword(input.password);
@@ -27,11 +34,7 @@ const app = new Hono()
         if (!user) {
             return c.json({ ok: false, error: "Email already exists" }, 409);
         }
-        const token = makeJWT(
-            user.id,
-            60 * 60,
-            process.env.JWT_SECRET || "random_secret",
-        );
+        const token = makeJWT(user.id, 60 * 60, jwtSecret);
         const refreshToken = await makeRefreshToken();
         const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
         await storeRefreshToken({
@@ -66,11 +69,7 @@ const app = new Hono()
             return c.json({ ok: false, error: "Invalid credentials" }, 401);
         }
 
-        const token = makeJWT(
-            user.id,
-            60 * 60,
-            process.env.JWT_SECRET || "random_secret",
-        );
+        const token = makeJWT(user.id, 60 * 60, jwtSecret);
         const refreshToken = await makeRefreshToken();
         const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
         await storeRefreshToken({
@@ -117,11 +116,7 @@ const app = new Hono()
             return c.json({ ok: false, error: "Unauthorized" }, 401);
         }
 
-        const jwtToken = makeJWT(
-            user.id,
-            60 * 60,
-            process.env.JWT_SECRET || "random_secret",
-        );
+        const jwtToken = makeJWT(user.id, 60 * 60, jwtSecret);
 
         return c.json({ ok: true, token: jwtToken }, 200);
     })
@@ -147,27 +142,8 @@ const app = new Hono()
 
         return c.body(null, 204);
     })
-    .get("/me", async (c) => {
-        const authorization = c.req.header("Authorization");
-        const token = authorization?.split(" ")[1];
-
-        if (!token) {
-            return c.json({ ok: false, error: "Unauthorized" }, 401);
-        }
-
-        let userId;
-        try {
-            userId = validateJWT(
-                token,
-                process.env.JWT_SECRET || "random_secret",
-            );
-        } catch (error) {
-            return c.json({ ok: false, error: "Unauthorized" }, 401);
-        }
-        if (!userId) {
-            return c.json({ ok: false, error: "Unauthorized" }, 401);
-        }
-
+    .get("/me", authCheck, async (c) => {
+        const userId = c.get("userId");
         const user = await getUserById(userId);
 
         if (!user) {
