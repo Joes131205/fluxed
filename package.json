@@ -10,7 +10,7 @@
     "type": "module",
     "workspaces": [
         "apps/*",
-        "packages/*"
+        "apps/packages/*"
     ],
     "scripts": {
         "dev": "turbo dev",

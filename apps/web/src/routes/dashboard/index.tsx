@@ -1,10 +1,15 @@
 import { useAuth } from "@/hooks/useAuth";
+import { areasClient } from "@/lib/client";
 import { requireAuth } from "@/utils/requireAuth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/")({
     beforeLoad: requireAuth,
     component: RouteComponent,
+    loader: async () => {
+        const data = await areasClient.$get();
+        console.log(data);
+    },
 });
 
 function RouteComponent() {
