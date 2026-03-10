@@ -14,6 +14,10 @@ import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardRescheduleIndexRouteImport } from './routes/dashboard/reschedule/index'
+import { Route as DashboardSubareasCreateRouteImport } from './routes/dashboard/subareas/create'
+import { Route as DashboardEventsCreateRouteImport } from './routes/dashboard/events/create'
+import { Route as DashboardAreasCreateRouteImport } from './routes/dashboard/areas/create'
 
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
@@ -40,6 +44,27 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRescheduleIndexRoute =
+  DashboardRescheduleIndexRouteImport.update({
+    id: '/dashboard/reschedule/',
+    path: '/dashboard/reschedule/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardSubareasCreateRoute = DashboardSubareasCreateRouteImport.update({
+  id: '/dashboard/subareas/create',
+  path: '/dashboard/subareas/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardEventsCreateRoute = DashboardEventsCreateRouteImport.update({
+  id: '/dashboard/events/create',
+  path: '/dashboard/events/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardAreasCreateRoute = DashboardAreasCreateRouteImport.update({
+  id: '/dashboard/areas/create',
+  path: '/dashboard/areas/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +72,10 @@ export interface FileRoutesByFullPath {
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/areas/create': typeof DashboardAreasCreateRoute
+  '/dashboard/events/create': typeof DashboardEventsCreateRoute
+  '/dashboard/subareas/create': typeof DashboardSubareasCreateRoute
+  '/dashboard/reschedule/': typeof DashboardRescheduleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +83,10 @@ export interface FileRoutesByTo {
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/areas/create': typeof DashboardAreasCreateRoute
+  '/dashboard/events/create': typeof DashboardEventsCreateRoute
+  '/dashboard/subareas/create': typeof DashboardSubareasCreateRoute
+  '/dashboard/reschedule': typeof DashboardRescheduleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +95,45 @@ export interface FileRoutesById {
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/areas/create': typeof DashboardAreasCreateRoute
+  '/dashboard/events/create': typeof DashboardEventsCreateRoute
+  '/dashboard/subareas/create': typeof DashboardSubareasCreateRoute
+  '/dashboard/reschedule/': typeof DashboardRescheduleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sign-in' | '/sign-up' | '/status' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/status'
+    | '/dashboard/'
+    | '/dashboard/areas/create'
+    | '/dashboard/events/create'
+    | '/dashboard/subareas/create'
+    | '/dashboard/reschedule/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/sign-up' | '/status' | '/dashboard'
-  id: '__root__' | '/' | '/sign-in' | '/sign-up' | '/status' | '/dashboard/'
+  to:
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/status'
+    | '/dashboard'
+    | '/dashboard/areas/create'
+    | '/dashboard/events/create'
+    | '/dashboard/subareas/create'
+    | '/dashboard/reschedule'
+  id:
+    | '__root__'
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/status'
+    | '/dashboard/'
+    | '/dashboard/areas/create'
+    | '/dashboard/events/create'
+    | '/dashboard/subareas/create'
+    | '/dashboard/reschedule/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +142,10 @@ export interface RootRouteChildren {
   SignUpRoute: typeof SignUpRoute
   StatusRoute: typeof StatusRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardAreasCreateRoute: typeof DashboardAreasCreateRoute
+  DashboardEventsCreateRoute: typeof DashboardEventsCreateRoute
+  DashboardSubareasCreateRoute: typeof DashboardSubareasCreateRoute
+  DashboardRescheduleIndexRoute: typeof DashboardRescheduleIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +185,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/reschedule/': {
+      id: '/dashboard/reschedule/'
+      path: '/dashboard/reschedule'
+      fullPath: '/dashboard/reschedule/'
+      preLoaderRoute: typeof DashboardRescheduleIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/subareas/create': {
+      id: '/dashboard/subareas/create'
+      path: '/dashboard/subareas/create'
+      fullPath: '/dashboard/subareas/create'
+      preLoaderRoute: typeof DashboardSubareasCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/events/create': {
+      id: '/dashboard/events/create'
+      path: '/dashboard/events/create'
+      fullPath: '/dashboard/events/create'
+      preLoaderRoute: typeof DashboardEventsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/areas/create': {
+      id: '/dashboard/areas/create'
+      path: '/dashboard/areas/create'
+      fullPath: '/dashboard/areas/create'
+      preLoaderRoute: typeof DashboardAreasCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +222,10 @@ const rootRouteChildren: RootRouteChildren = {
   SignUpRoute: SignUpRoute,
   StatusRoute: StatusRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardAreasCreateRoute: DashboardAreasCreateRoute,
+  DashboardEventsCreateRoute: DashboardEventsCreateRoute,
+  DashboardSubareasCreateRoute: DashboardSubareasCreateRoute,
+  DashboardRescheduleIndexRoute: DashboardRescheduleIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

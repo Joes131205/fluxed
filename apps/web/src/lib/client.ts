@@ -4,5 +4,8 @@ import { env } from "@/env";
 
 export const client = hc<AppType>(env.VITE_API_URL);
 
-export const auth = client.api.auth;
-export const users = client.api.users;
+export const authClient = client.api.auth;
+export const usersClient = client.api.users;
+export const areasClient = client.api.areas;
+export const subareasClient = client.api.subareas;
+export const eventsClient = client.api.events;

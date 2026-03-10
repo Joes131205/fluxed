@@ -7,11 +7,11 @@ export const createEvent = async (event: NewEvents) => {
     return result;
 };
 
-export const getEvents = async (subareaId: string) => {
+export const getEventsBySubarea = async (subareaId: string) => {
     const [result] = await db
         .select()
         .from(events)
-        .where(eq(events.subareaId, subareaId));
+        .where(eq(events.subarea_id, subareaId));
 
     return result;
 };

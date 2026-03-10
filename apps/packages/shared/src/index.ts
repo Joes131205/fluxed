@@ -22,7 +22,17 @@ export const subareaSchema = z.object({
     weight: z.number().default(0),
 });
 
+export const eventSchema = z.object({
+    subarea_id: z.string().nonempty(),
+    name: z.string(),
+    description: z.string(),
+    startTime: z.date(),
+    endTime: z.date(),
+    isHardLocked: z.boolean().default(false),
+});
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LogInInput = z.infer<typeof logInSchema>;
 export type AreaInput = z.infer<typeof areaSchema>;
 export type SubareaInput = z.infer<typeof subareaSchema>;
+export type eventInput = z.infer<typeof eventSchema>;
