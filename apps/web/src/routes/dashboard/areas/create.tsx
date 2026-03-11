@@ -1,13 +1,17 @@
-import { areasClient } from "@/lib/client";
+import { useCreateArea } from "@/hooks/useAreas";
+import { requireAuth } from "@/utils/requireAuth";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import z from "zod";
 
 export const Route = createFileRoute("/dashboard/areas/create")({
+    beforeLoad: requireAuth,
     component: RouteComponent,
 });
 
 function RouteComponent() {
+    const { mutate } = useCreateArea();
     const form = useForm({
         defaultValues: {
             name: "",
@@ -20,7 +24,11 @@ function RouteComponent() {
             }),
         },
         onSubmit: async ({ value }) => {
-            await areasClient.$post({ json: value });
+            try {
+                mutate(value);
+            } catch (error) {
+                console.log(error);
+            }
         },
     });
     return (
@@ -87,6 +95,21 @@ function RouteComponent() {
                         </div>
                     )}
                 </form.Field>
+                <form.Subscribe
+                    selector={(state) => [state.canSubmit, state.isSubmitting]}
+                >
+                    {([canSubmit, isSubmitting]) => {
+                        return (
+                            <button
+                                type="submit"
+                                disabled={!canSubmit || isSubmitting}
+                                className="w-full cursor-pointer bg-blue-600 py-3.5 font-bold text-white rounded-full transition-all hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-90"
+                            >
+                                {isSubmitting ? "Loading..." : "Create Area"}
+                            </button>
+                        );
+                    }}
+                </form.Subscribe>
             </form>
         </div>
     );

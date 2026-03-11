@@ -17,6 +17,7 @@ const app = new Hono<{ Variables: AppType }>()
     .get("/", authCheck, async (c) => {
         const userId = c.get("userId");
         const data = await getAreas(userId);
+        console.log(data);
         return c.json({ ok: true, data }, 200);
     })
     .post("/", zValidator("json", areaSchema), authCheck, async (c) => {

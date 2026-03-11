@@ -8,12 +8,11 @@ export const createArea = async (area: NewAreas) => {
 };
 
 export const getAreas = async (userId: string) => {
-    const [result] = await db
+    const results = await db
         .select()
         .from(areas)
         .where(eq(areas.user_id, userId));
-
-    return result;
+    return results;
 };
 
 export const updateArea = async (areaId: string, area: NewAreas) => {

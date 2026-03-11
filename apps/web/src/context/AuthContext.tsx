@@ -1,4 +1,4 @@
-import { client } from "@/lib/client";
+import { authClient } from "@/lib/client";
 import { createContext, useEffect, useState } from "react";
 type AuthContextType = {
     user: User | null;
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = localStorage.getItem("token");
             if (token) {
                 try {
-                    const response = await client.api.auth.me.$get(
+                    const authResponse = await authClient.me.$get(
                         {},
                         {
                             headers: {
@@ -41,20 +41,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             },
                         },
                     );
-                    if (response.ok) {
-                        const data = await response.json();
+                    if (authResponse.ok) {
+                        const data = await authResponse.json();
+
                         setUser({
                             id: data.id,
                             email: data.email,
                             username: data.username,
                         });
-                    } else if (response.status === 401) {
+                    } else if (authResponse.status === 401) {
                         const refreshToken =
                             localStorage.getItem("refreshToken");
                         if (refreshToken) {
                             try {
                                 const refreshResponse =
-                                    await client.api.auth.refresh.$post(
+                                    await authClient.refresh.$post(
                                         {},
                                         {
                                             headers: {
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                                         refreshData.token,
                                     );
                                     const retryResponse =
-                                        await client.api.auth.me.$get(
+                                        await authClient.me.$get(
                                             {},
                                             {
                                                 headers: {
@@ -107,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const login = async (email: string, password: string) => {
-        const response = await client.api.auth.login.$post({
+        const response = await authClient.login.$post({
             json: { email, password },
         });
 
@@ -130,7 +131,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: string,
         password: string,
     ) => {
-        const response = await client.api.auth.register.$post({
+        const response = await authClient.register.$post({
             json: { username, email, password },
         });
         if (response.ok) {
@@ -146,7 +147,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const logout = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
         if (refreshToken) {
-            await client.api.auth.revoke.$post(
+            await authClient.revoke.$post(
                 {},
                 {
                     headers: { Authorization: `Bearer ${refreshToken}` },
