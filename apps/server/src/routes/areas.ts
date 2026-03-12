@@ -1,6 +1,6 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { areaSchema } from "../../../packages/shared/src";
+import { areaSchema } from "../../../packages/shared/src/inputs";
 import { authCheck } from "../middlewares/authMiddleware";
 import {
     createArea,

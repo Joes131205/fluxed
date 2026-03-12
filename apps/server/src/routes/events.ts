@@ -7,16 +7,16 @@ import {
 } from "../../../packages/db/src/queries/events";
 import { authCheck } from "../middlewares/authMiddleware";
 import { zValidator } from "@hono/zod-validator";
-import { eventSchema } from "../../../packages/shared/src";
+import { eventSchema } from "../../../packages/shared/src/inputs";
 
 type AppType = {
     userId: string;
 };
 
 const app = new Hono<{ Variables: AppType }>()
-    .get("/", authCheck, async (c) => {
-        const userId = c.get("userId");
-        const data = await getEventsBySubarea(userId);
+    .get("/:id", authCheck, async (c) => {
+        const id = c.req.param("id");
+        const data = await getEventsBySubarea(id);
         return c.json({ ok: true, data }, 200);
     })
     .post("/", zValidator("json", eventSchema), authCheck, async (c) => {

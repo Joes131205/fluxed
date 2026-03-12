@@ -11,8 +11,8 @@ export const Route = createFileRoute("/dashboard/subareas/create")({
 });
 
 function RouteComponent() {
-    const { mutate } = useCreateSubarea();
     const { data: areasData } = useAreas();
+    const { mutate } = useCreateSubarea();
 
     const form = useForm({
         defaultValues: {

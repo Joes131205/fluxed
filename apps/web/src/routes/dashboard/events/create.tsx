@@ -1,4 +1,6 @@
+import { useAreas } from "@/hooks/useAreas";
 import { useCreateEvent } from "@/hooks/useEvents";
+import { useSubareas } from "@/hooks/useSubareas";
 import { requireAuth } from "@/utils/requireAuth";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
@@ -10,6 +12,8 @@ export const Route = createFileRoute("/dashboard/events/create")({
 });
 
 function RouteComponent() {
+    const { data: subareasData } = useSubareas();
+
     const { mutate } = useCreateEvent();
 
     const form = useForm({
@@ -71,16 +75,24 @@ function RouteComponent() {
                                 >
                                     Subarea
                                 </label>
-                                <input
+                                <select
                                     id="subarea_id"
-                                    type="text"
-                                    placeholder="Enter subarea ID"
                                     value={field.state.value}
                                     onChange={(e) =>
                                         field.handleChange(e.target.value)
                                     }
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
+                                >
+                                    <option value="">Select an subarea</option>
+                                    {subareasData?.data?.map((subarea: any) => (
+                                        <option
+                                            key={subarea.id}
+                                            value={subarea.id}
+                                        >
+                                            {subarea.name}
+                                        </option>
+                                    ))}
+                                </select>
                                 {!field.state.meta.isValid && (
                                     <p className="font-bold text-red-500 text-xs mt-1">
                                         * {field.state.meta.errors[0]?.message}
@@ -152,7 +164,7 @@ function RouteComponent() {
                                 </label>
                                 <input
                                     id="startTime"
-                                    type="datetime-local"
+                                    type="time"
                                     value={field.state.value}
                                     onChange={(e) =>
                                         field.handleChange(e.target.value)
@@ -174,7 +186,7 @@ function RouteComponent() {
                                 </label>
                                 <input
                                     id="endTime"
-                                    type="datetime-local"
+                                    type="time"
                                     value={field.state.value}
                                     onChange={(e) =>
                                         field.handleChange(e.target.value)
@@ -202,7 +214,9 @@ function RouteComponent() {
                                     </span>
                                 </label>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Prevent changes to this event
+                                    If you lock this event, this event will not
+                                    be changed when rescheduled! (Hard locked
+                                    yk)
                                 </p>
                             </div>
                         )}

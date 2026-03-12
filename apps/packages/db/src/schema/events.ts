@@ -7,6 +7,7 @@ import {
     varchar,
 } from "drizzle-orm/pg-core";
 import { areas } from "./areas";
+import { subareas } from "./subareas";
 
 export const events = pgTable("events", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -15,7 +16,7 @@ export const events = pgTable("events", {
         .defaultNow()
         .notNull()
         .$onUpdate(() => new Date()),
-    subarea_id: uuid("subarea_id").references(() => areas.id),
+    subarea_id: uuid("subarea_id").references(() => subareas.id),
     name: varchar("name", { length: 255 }).default("Event"),
     description: varchar("description", { length: 255 }),
     startTime: timestamp("start_time"),

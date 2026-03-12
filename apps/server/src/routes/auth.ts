@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { signUpSchema, logInSchema } from "../../../packages/shared";
+import { signUpSchema, logInSchema } from "../../../packages/shared/src/inputs";
 import {
     createUser,
     getUserByEmail,

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db, subareas } from "..";
-import type { SubareaInput } from "../../../shared/src";
+import type { SubareaInput } from "../../../shared/src/inputs";
 
 export const createSubarea = async (subarea: SubareaInput) => {
     const [result] = await db.insert(subareas).values(subarea).returning();
@@ -8,11 +8,16 @@ export const createSubarea = async (subarea: SubareaInput) => {
 };
 
 export const getSubareaByArea = async (areaId: string) => {
-    const [result] = await db
+    const results = await db
         .select()
         .from(subareas)
         .where(eq(subareas.area_id, areaId));
-    return result;
+    return results;
+};
+
+export const getSubareas = async () => {
+    const results = await db.select().from(subareas);
+    return results;
 };
 
 export const updateSubarea = async (

@@ -4,10 +4,11 @@ import {
     createSubarea,
     deleteSubarea,
     getSubareaByArea,
+    getSubareas,
     updateSubarea,
 } from "../../../packages/db/src/queries/subareas";
 import { zValidator } from "@hono/zod-validator";
-import { subareaSchema } from "../../../packages/shared/src";
+import { subareaSchema } from "../../../packages/shared/src/inputs";
 
 type AppType = {
     userId: string;
@@ -17,6 +18,11 @@ const app = new Hono<{ Variables: AppType }>()
     .get("/:id", authCheck, async (c) => {
         const id = c.req.param("id");
         const data = await getSubareaByArea(id);
+        return c.json({ ok: true, data }, 200);
+    })
+    .get("/", authCheck, async (c) => {
+        const id = c.req.param("id");
+        const data = await getSubareas();
         return c.json({ ok: true, data }, 200);
     })
     .post("/", zValidator("json", subareaSchema), authCheck, async (c) => {
@@ -32,7 +38,7 @@ const app = new Hono<{ Variables: AppType }>()
     })
     .delete("/:id", authCheck, async (c) => {
         const id = c.req.param("id");
-        const data = await deleteSubarea(id);
+        await deleteSubarea(id);
         return c.json({ ok: true }, 200);
     });
 
