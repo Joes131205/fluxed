@@ -2,6 +2,7 @@ import {
     boolean,
     integer,
     pgTable,
+    time,
     timestamp,
     uuid,
     varchar,
@@ -19,8 +20,8 @@ export const events = pgTable("events", {
     subarea_id: uuid("subarea_id").references(() => subareas.id),
     name: varchar("name", { length: 255 }).default("Event"),
     description: varchar("description", { length: 255 }),
-    startTime: timestamp("start_time"),
-    endTime: timestamp("end_time"),
+    startTime: time("start_time"),
+    endTime: time("end_time"),
     isHardLocked: boolean("is_hard_locked").default(false),
 });
 

@@ -66,8 +66,8 @@ export interface Event {
     subarea_id: string | null;
     name: string | null;
     description: string | null;
-    startTime: Date | null;
-    endTime: Date | null;
+    startTime: string | null;
+    endTime: string | null;
     isHardLocked: boolean | null;
 }
 

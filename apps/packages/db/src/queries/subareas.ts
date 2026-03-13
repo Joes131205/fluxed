@@ -15,11 +15,6 @@ export const getSubareaByArea = async (areaId: string) => {
     return results;
 };
 
-export const getSubareas = async () => {
-    const results = await db.select().from(subareas);
-    return results;
-};
-
 export const updateSubarea = async (
     subareaId: string,
     subarea: SubareaInput,

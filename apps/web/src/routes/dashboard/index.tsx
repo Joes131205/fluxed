@@ -1,3 +1,4 @@
+import AreaList from "@/components/area/AreaList";
 import { useAreas } from "@/hooks/useAreas";
 import { useAuth } from "@/hooks/useAuth";
 import { requireAuth } from "@/utils/requireAuth";
@@ -12,6 +13,15 @@ function RouteComponent() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const { data: areasData, isLoading, error } = useAreas();
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+    if (error) {
+        console.log(error);
+        return <p>Error!</p>;
+    }
+
+    console.log(areasData);
     return (
         <div className="min-h-screen">
             <div className="max-w-4xl mx-auto px-4 py-12">
@@ -80,29 +90,7 @@ function RouteComponent() {
                         <p className="text-red-600">Error: {error.message}</p>
                     )}
 
-                    {areasData?.data && areasData.data.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {areasData.data.map((area: any) => (
-                                <div
-                                    key={area.id}
-                                    className="bg-white rounded-lg shadow-md p-6"
-                                >
-                                    <h3 className="text-lg font-bold text-gray-900">
-                                        {area.name}
-                                    </h3>
-                                    <p className="text-sm text-gray-600 mt-2">
-                                        Weight: {area.weight}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        !isLoading && (
-                            <p className="text-gray-600">
-                                No areas yet. Create one to get started!
-                            </p>
-                        )
-                    )}
+                    <AreaList areas={areasData?.data} />
                 </div>
             </div>
         </div>

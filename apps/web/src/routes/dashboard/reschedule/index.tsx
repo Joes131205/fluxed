@@ -98,19 +98,74 @@ const mockData = [
 function RouteComponent() {
     const [minutes, setMinutes] = useState<number>(0);
     return (
-        <div>
-            <p>Is your structure derailed?</p>
-            <p>Don't fret! We gotchu fam!</p>
-            <p>Using a mock data for now...</p>
-            <div>
-                <label htmlFor="minutes">How many minutes you have left?</label>
-                <input
-                    type="number"
-                    onChange={(e) => setMinutes(Number(e.target.value))}
-                    value={minutes}
-                />
+        <div className="min-h-screen bg-gray-50 px-4 py-10">
+            <div className="mx-auto max-w-4xl space-y-8">
+                <div className="space-y-2">
+                    <p className="text-3xl font-bold text-gray-900">
+                        Is your structure derailed?
+                    </p>
+                    <p className="text-gray-600">Don't fret! We gotchu fam!</p>
+                    <p className="text-sm text-gray-500">
+                        Using mock data for now.
+                    </p>
+                </div>
+
+                <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                    <label
+                        htmlFor="minutes"
+                        className="mb-2 block text-sm font-medium text-gray-700"
+                    >
+                        How many minutes do you have left?
+                    </label>
+                    <input
+                        id="minutes"
+                        type="number"
+                        onChange={(e) => setMinutes(Number(e.target.value))}
+                        value={minutes}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none transition focus:border-blue-500"
+                    />
+                </div>
+
+                <div className="space-y-4">
+                    {mockData.map((area) => (
+                        <div
+                            key={area.areaName}
+                            className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+                        >
+                            <div className="mb-4 flex items-center justify-between gap-3 border-b border-gray-100 pb-3">
+                                <h2 className="text-xl font-semibold text-gray-900">
+                                    {area.areaName}
+                                </h2>
+                                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+                                    Weight: {area.weight}
+                                </span>
+                            </div>
+
+                            <div className="space-y-3">
+                                {area.subareas.map((subarea) => (
+                                    <div
+                                        key={`${area.areaName}-${subarea.subareaName}`}
+                                        className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3"
+                                    >
+                                        <div className="flex items-center justify-between gap-3">
+                                            <p className="font-medium text-gray-800">
+                                                {subarea.subareaName}
+                                            </p>
+                                            <span className="rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">
+                                                Weight: {subarea.weight}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <button className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700">
+                    Reschedule
+                </button>
             </div>
-            <button>Reschedule</button>
         </div>
     );
 }

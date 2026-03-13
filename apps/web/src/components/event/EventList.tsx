@@ -8,11 +8,21 @@ type EventListProp = {
 };
 
 const EventList: React.FC<EventListProp> = ({ subareaId }) => {
-    const { data: events }: { data: Event[] } = useEvents(subareaId);
+    const { data, isLoading, error } = useEvents(subareaId);
+    console.log(data);
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
+    if (error || !data || !("ok" in data) || !data.ok) {
+        return <div>Error loading subareas.</div>;
+    }
+    if (data.data.length === 0) {
+        return <p className="text-xs text-gray-400 italic">No events yet.</p>;
+    }
     return (
-        <div className="flex flex-col gap-3">
-            {events.map((event) => (
+        <div className="flex flex-col gap-1.5">
+            {data.data.map((event) => (
                 <EventCard key={event.id} event={event} />
             ))}
         </div>

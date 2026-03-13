@@ -26,8 +26,8 @@ export const eventSchema = z.object({
     subarea_id: z.string().nonempty(),
     name: z.string(),
     description: z.string(),
-    startTime: z.date(),
-    endTime: z.date(),
+    startTime: z.string(),
+    endTime: z.string(),
     isHardLocked: z.boolean().default(false),
 });
 

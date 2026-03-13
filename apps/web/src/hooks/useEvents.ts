@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useEvents = (subareaId: string) => {
     return useQuery({
-        queryKey: ["areas"],
+        queryKey: ["events", subareaId],
         queryFn: async () => {
             const response = await eventsClient[":id"].$get(
                 {

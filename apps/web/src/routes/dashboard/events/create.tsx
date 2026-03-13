@@ -4,6 +4,7 @@ import { useSubareas } from "@/hooks/useSubareas";
 import { requireAuth } from "@/utils/requireAuth";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import z from "zod";
 
 export const Route = createFileRoute("/dashboard/events/create")({
@@ -12,8 +13,9 @@ export const Route = createFileRoute("/dashboard/events/create")({
 });
 
 function RouteComponent() {
-    const { data: subareasData } = useSubareas();
-
+    const [selectedAreaId, setSelectedAreaId] = useState("");
+    const { data: areasData } = useAreas();
+    const { data: subareasData } = useSubareas(selectedAreaId);
     const { mutate } = useCreateEvent();
 
     const form = useForm({
@@ -36,16 +38,7 @@ function RouteComponent() {
             }),
         },
         onSubmit: ({ value }) => {
-            const payload = {
-                ...value,
-                startTime: value.startTime
-                    ? new Date(value.startTime).toISOString()
-                    : undefined,
-                endTime: value.endTime
-                    ? new Date(value.endTime).toISOString()
-                    : undefined,
-            };
-            mutate(payload);
+            mutate(value);
         },
     });
 
@@ -70,20 +63,48 @@ function RouteComponent() {
                         {(field) => (
                             <div>
                                 <label
-                                    htmlFor="subarea_id"
+                                    htmlFor="area_id"
                                     className="block text-sm font-medium text-gray-700 mb-1"
+                                >
+                                    Area
+                                </label>
+                                <select
+                                    id="area_id"
+                                    value={selectedAreaId}
+                                    onChange={(e) => {
+                                        setSelectedAreaId(e.target.value);
+                                        field.handleChange("");
+                                    }}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">Select an area</option>
+                                    {areasData?.data?.map((area: any) => (
+                                        <option key={area.id} value={area.id}>
+                                            {area.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <label
+                                    htmlFor="subarea_id"
+                                    className="block text-sm font-medium text-gray-700 mb-1 mt-4"
                                 >
                                     Subarea
                                 </label>
                                 <select
                                     id="subarea_id"
                                     value={field.state.value}
+                                    disabled={!selectedAreaId}
                                     onChange={(e) =>
                                         field.handleChange(e.target.value)
                                     }
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400"
                                 >
-                                    <option value="">Select an subarea</option>
+                                    <option value="">
+                                        {selectedAreaId
+                                            ? "Select a subarea"
+                                            : "Select an area first"}
+                                    </option>
                                     {subareasData?.data?.map((subarea: any) => (
                                         <option
                                             key={subarea.id}

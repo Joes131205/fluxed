@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useSubareas = (areaId: string) => {
     return useQuery({
-        queryKey: ["subareas"],
+        queryKey: ["subareas", areaId],
         queryFn: async () => {
             const response = await subareasClient[":id"].$get(
                 {
@@ -16,6 +16,7 @@ export const useSubareas = (areaId: string) => {
             );
             return response.json();
         },
+        enabled: !!areaId,
     });
 };
 

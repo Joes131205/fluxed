@@ -15,6 +15,13 @@
       "when": 1773127334686,
       "tag": "0001_broad_photon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773368523132,
+      "tag": "0002_gorgeous_impossible_man",
+      "breakpoints": true
     }
   ]
 }

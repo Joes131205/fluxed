@@ -8,12 +8,12 @@ export const createEvent = async (event: NewEvents) => {
 };
 
 export const getEventsBySubarea = async (subareaId: string) => {
-    const [result] = await db
+    const results = await db
         .select()
         .from(events)
         .where(eq(events.subarea_id, subareaId));
 
-    return result;
+    return results;
 };
 
 export const updateEvent = async (eventId: string, event: NewEvents) => {

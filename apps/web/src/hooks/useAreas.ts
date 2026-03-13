@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { areasClient, subareasClient, eventsClient } from "@/lib/client";
+import { areasClient } from "@/lib/client";
 import { getAuthHeaders } from "@/lib/authHeaders";
 
 export const useAreas = () => {
@@ -12,6 +12,7 @@ export const useAreas = () => {
                     headers: getAuthHeaders(),
                 },
             );
+
             return response.json();
         },
     });
