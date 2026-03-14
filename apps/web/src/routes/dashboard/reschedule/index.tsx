@@ -1,5 +1,12 @@
+import { useAreas } from "@/hooks/useAreas";
+import {
+    calcGlobalWeightedTime,
+    calcNestedWeightedTime,
+} from "@/utils/reschedule";
+import { subareasClient } from "@/lib/client";
+import { getAuthHeaders } from "@/lib/authHeaders";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/dashboard/reschedule/")({
     component: RouteComponent,
@@ -97,6 +104,45 @@ const mockData = [
 
 function RouteComponent() {
     const [minutes, setMinutes] = useState<number>(0);
+    const [schedule, setSchedule] = useState([]);
+    const [rescheduledData, setRescheduledData] = useState([]);
+    const { data: areasData } = useAreas();
+
+    useEffect(() => {
+        if (areasData && "ok" in areasData && areasData.ok && areasData.data) {
+            Promise.all(
+                areasData.data.map(async (area: any) => {
+                    const response = await subareasClient[":id"].$get(
+                        {
+                            param: { id: area.id },
+                        },
+                        {
+                            headers: getAuthHeaders,
+                        },
+                    );
+                    const subareaData: any = await response.json();
+
+                    return {
+                        areaName: area.name,
+                        subareas: (subareaData.data || []).map(
+                            (subarea: any) => ({
+                                subareaName: subarea.name,
+                                weight: subarea.weight || 1,
+                            }),
+                        ),
+                        weight: area.weight,
+                    };
+                }),
+            ).then((transformedData) => setSchedule(transformedData));
+        }
+    }, [areasData]);
+
+    const handleReschedule = () => {
+        const rescheduled1 = calcGlobalWeightedTime(schedule, minutes);
+        const rescheduled2 = calcNestedWeightedTime(schedule, minutes);
+
+        console.log(rescheduled1, rescheduled2);
+    };
     return (
         <div className="min-h-screen bg-gray-50 px-4 py-10">
             <div className="mx-auto max-w-4xl space-y-8">
@@ -127,7 +173,7 @@ function RouteComponent() {
                 </div>
 
                 <div className="space-y-4">
-                    {mockData.map((area) => (
+                    {schedule.map((area) => (
                         <div
                             key={area.areaName}
                             className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
@@ -162,7 +208,11 @@ function RouteComponent() {
                     ))}
                 </div>
 
-                <button className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700">
+                <button
+                    type="button"
+                    onClick={handleReschedule}
+                    className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
+                >
                     Reschedule
                 </button>
             </div>

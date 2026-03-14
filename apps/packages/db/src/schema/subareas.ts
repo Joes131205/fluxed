@@ -23,6 +23,7 @@ export const subareas = pgTable("subareas", {
         .notNull(),
     name: varchar("name", { length: 256 }).notNull(),
     weight: integer("weight").default(1),
+    allocatedMinutes: integer("allocated_minutes").default(0),
 });
 
 export type NewSubareas = typeof subareas.$inferInsert;
