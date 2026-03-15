@@ -18,12 +18,10 @@ const SubareaCard: React.FC<SubareaProp> = ({ subarea }) => {
                         Weight: {subarea.weight}
                     </span>
                 )}
-            </div>
-            <div className="px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
-                    Events
+                <p>
+                    Allocated minute for today: {subarea.allocatedMinutes}{" "}
+                    minutes
                 </p>
-                <EventList subareaId={subarea.id} />
             </div>
         </div>
     );

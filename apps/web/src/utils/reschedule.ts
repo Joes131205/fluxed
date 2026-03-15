@@ -3,14 +3,16 @@ export const calcGlobalWeightedTime = (data: any, totalMinutes: number) => {
     const subareas = data.flatMap((area) =>
         area.subareas.flatMap((subarea) => ({
             name: subarea.subareaName,
+            subareaId: subarea.subareaId,
             parentArea: area.areaName,
             weight: area.weight * subarea.weight,
         })),
     );
     const totalScore = subareas.reduce((acc, sub) => acc + sub.weight, 0);
-
+    console.log(subareas);
     const result = subareas.map((subarea) => ({
         subarea: subarea.name,
+        id: subarea.subareaId,
         area: subarea.parentArea,
         allocated: Math.round((subarea.weight / totalScore) * totalMinutes),
     }));
@@ -27,9 +29,9 @@ export const calcNestedWeightedTime = (data: any, totalMinutes: number) => {
             (a, b) => a + b.weight,
             0,
         );
-
         return area.subareas.map((subarea) => ({
             subarea: subarea.subareaName,
+            id: subarea.subareaId,
             area: area.areaName,
             allocated: Math.round(
                 (subarea.weight / subAreaSumWeight) * areaMinutes,

@@ -4,7 +4,6 @@ import {
     createSubarea,
     deleteSubarea,
     getSubareaByArea,
-    getSubareas,
     updateSubarea,
 } from "../../../packages/db/src/queries/subareas";
 import { zValidator } from "@hono/zod-validator";
@@ -27,8 +26,10 @@ const app = new Hono<{ Variables: AppType }>()
     })
     .put("/:id", zValidator("json", subareaSchema), authCheck, async (c) => {
         const input = c.req.valid("json");
+        console.log(input);
         const id = c.req.param("id");
         const data = await updateSubarea(id, input);
+        console.log(data);
         return c.json({ ok: true, data }, 200);
     })
     .delete("/:id", authCheck, async (c) => {

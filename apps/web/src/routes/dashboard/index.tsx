@@ -13,6 +13,7 @@ function RouteComponent() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const { data: areasData, isLoading, error } = useAreas();
+
     if (isLoading) {
         return <p>Loading...</p>;
     }
@@ -80,6 +81,12 @@ function RouteComponent() {
                             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
                         >
                             Create Area
+                        </Link>
+                        <Link
+                            to="/dashboard/reschedule"
+                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                        >
+                            Reschedule
                         </Link>
                     </div>
 

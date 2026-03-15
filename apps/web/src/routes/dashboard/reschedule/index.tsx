@@ -3,7 +3,7 @@ import {
     calcGlobalWeightedTime,
     calcNestedWeightedTime,
 } from "@/utils/reschedule";
-import { subareasClient } from "@/lib/client";
+import { client, subareasClient } from "@/lib/client";
 import { getAuthHeaders } from "@/lib/authHeaders";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -20,35 +20,10 @@ const mockData = [
             {
                 subareaName: "Development",
                 weight: 4,
-                events: [
-                    {
-                        name: "Code Review",
-                        description: "Review PR #1234",
-                        startTime: new Date("2024-03-11T09:00:00"),
-                        endTime: new Date("2024-03-11T09:30:00"),
-                        isHardLocked: false,
-                    },
-                    {
-                        name: "Team Meeting",
-                        description: "Sprint planning",
-                        startTime: new Date("2024-03-11T10:00:00"),
-                        endTime: new Date("2024-03-11T11:00:00"),
-                        isHardLocked: true,
-                    },
-                ],
             },
             {
                 subareaName: "Design",
                 weight: 2,
-                events: [
-                    {
-                        name: "Design System Update",
-                        description: null,
-                        startTime: new Date("2024-03-11T14:00:00"),
-                        endTime: new Date("2024-03-11T15:00:00"),
-                        isHardLocked: false,
-                    },
-                ],
             },
         ],
     },
@@ -59,20 +34,10 @@ const mockData = [
             {
                 subareaName: "Exercise",
                 weight: 3,
-                events: [
-                    {
-                        name: "Gym",
-                        description: "Chest & Back",
-                        startTime: new Date("2024-03-11T06:00:00"),
-                        endTime: new Date("2024-03-11T07:00:00"),
-                        isHardLocked: false,
-                    },
-                ],
             },
             {
                 subareaName: "Sleep",
                 weight: 5,
-                events: [],
             },
         ],
     },
@@ -83,20 +48,10 @@ const mockData = [
             {
                 subareaName: "Learning",
                 weight: 3,
-                events: [
-                    {
-                        name: "Read Book",
-                        description: "Atomic Habits",
-                        startTime: new Date("2024-03-11T19:00:00"),
-                        endTime: new Date("2024-03-11T20:00:00"),
-                        isHardLocked: false,
-                    },
-                ],
             },
             {
                 subareaName: "Social",
                 weight: 2,
-                events: [],
             },
         ],
     },
@@ -105,7 +60,10 @@ const mockData = [
 function RouteComponent() {
     const [minutes, setMinutes] = useState<number>(0);
     const [schedule, setSchedule] = useState([]);
-    const [rescheduledData, setRescheduledData] = useState([]);
+    const [rescheduledData1, setRescheduledData1] = useState([]);
+    const [rescheduledData2, setRescheduledData2] = useState([]);
+
+    const [loading, setLoading] = useState(false);
     const { data: areasData } = useAreas();
 
     useEffect(() => {
@@ -123,9 +81,11 @@ function RouteComponent() {
                     const subareaData: any = await response.json();
 
                     return {
+                        areaId: area.id,
                         areaName: area.name,
                         subareas: (subareaData.data || []).map(
                             (subarea: any) => ({
+                                subareaId: subarea.id,
                                 subareaName: subarea.name,
                                 weight: subarea.weight || 1,
                             }),
@@ -141,7 +101,31 @@ function RouteComponent() {
         const rescheduled1 = calcGlobalWeightedTime(schedule, minutes);
         const rescheduled2 = calcNestedWeightedTime(schedule, minutes);
 
-        console.log(rescheduled1, rescheduled2);
+        setRescheduledData1(rescheduled1);
+        setRescheduledData2(rescheduled2);
+    };
+
+    const handleSave = async () => {
+        console.log(rescheduledData1);
+        for (let i = 0; i < rescheduledData1.length; i++) {
+            const data = rescheduledData1[i];
+            await client.api.subareas[":id"].$put(
+                {
+                    json: {
+                        id: data.id,
+                        name: data.subarea,
+                        allocatedMinutes: data.allocated,
+                    },
+                    param: {
+                        id: data.id,
+                    },
+                },
+                {
+                    headers: getAuthHeaders,
+                },
+            );
+        }
+        console.log("saved");
     };
     return (
         <div className="min-h-screen bg-gray-50 px-4 py-10">
@@ -215,6 +199,90 @@ function RouteComponent() {
                 >
                     Reschedule
                 </button>
+
+                {rescheduledData1.length > 0 && (
+                    <div className="space-y-6">
+                        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                            <h3 className="mb-4 text-lg font-semibold text-gray-900">
+                                Algorithm 1: Global Weighted Allocation
+                            </h3>
+                            <div className="space-y-3">
+                                {rescheduledData1.map((item, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="rounded-lg border border-gray-100 bg-gradient-to-r from-blue-50 to-blue-50 px-4 py-3"
+                                    >
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex-1">
+                                                <p className="text-sm text-gray-600">
+                                                    <span className="font-medium text-gray-900">
+                                                        {item.subarea}
+                                                    </span>
+                                                    <span className="mx-2 text-gray-400">
+                                                        •
+                                                    </span>
+                                                    <span className="text-gray-700">
+                                                        {item.area}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+                                                {item.allocated} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleSave}
+                                className="w-full rounded-lg bg-green-600 px-4 py-3 font-medium text-white transition hover:bg-green-700"
+                            >
+                                I prefer this
+                            </button>
+                        </div>
+
+                        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                            <h3 className="mb-4 text-lg font-semibold text-gray-900">
+                                Algorithm 2: Nested Weighted Allocation
+                            </h3>
+                            <div className="space-y-3">
+                                {rescheduledData2.map((item, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="rounded-lg border border-gray-100 bg-gradient-to-r from-green-50 to-green-50 px-4 py-3"
+                                    >
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex-1">
+                                                <p className="text-sm text-gray-600">
+                                                    <span className="font-medium text-gray-900">
+                                                        {item.subarea}
+                                                    </span>
+                                                    <span className="mx-2 text-gray-400">
+                                                        •
+                                                    </span>
+                                                    <span className="text-gray-700">
+                                                        {item.area}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
+                                                {item.allocated} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleSave}
+                                className="w-full rounded-lg bg-green-600 px-4 py-3 font-medium text-white transition hover:bg-green-700"
+                            >
+                                I prefer this
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

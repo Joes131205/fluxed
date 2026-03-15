@@ -22,6 +22,13 @@
       "when": 1773368523132,
       "tag": "0002_gorgeous_impossible_man",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773542575917,
+      "tag": "0003_bumpy_kronos",
+      "breakpoints": true
     }
   ]
 }

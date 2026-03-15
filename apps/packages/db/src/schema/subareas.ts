@@ -6,7 +6,6 @@ import {
     uuid,
     varchar,
 } from "drizzle-orm/pg-core";
-import { users } from "./users";
 import { areas } from "./areas";
 
 export const subareas = pgTable("subareas", {

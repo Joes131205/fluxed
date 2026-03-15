@@ -12,14 +12,17 @@ export const logInSchema = z.object({
 });
 
 export const areaSchema = z.object({
+    id: z.string(),
     name: z.string().nonempty(),
     weight: z.number().default(0),
 });
 
 export const subareaSchema = z.object({
-    area_id: z.string().nonempty(),
-    name: z.string().nonempty(),
-    weight: z.number().default(0),
+    id: z.string().optional(),
+    area_id: z.string().optional(),
+    name: z.string().optional(),
+    weight: z.number().default(0).optional(),
+    allocatedMinutes: z.number().optional(),
 });
 
 export const eventSchema = z.object({
