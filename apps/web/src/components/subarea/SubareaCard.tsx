@@ -1,12 +1,12 @@
 import type { Subarea } from "@app/shared/types";
 import React from "react";
-import EventList from "../event/EventList";
 
 type SubareaProp = {
     subarea: Subarea;
 };
 
 const SubareaCard: React.FC<SubareaProp> = ({ subarea }) => {
+    console.log(subarea);
     return (
         <div className="rounded-lg border border-gray-100 bg-gray-50 overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">

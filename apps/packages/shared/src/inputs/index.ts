@@ -12,7 +12,7 @@ export const logInSchema = z.object({
 });
 
 export const areaSchema = z.object({
-    id: z.string(),
+    id: z.string().optional(),
     name: z.string().nonempty(),
     weight: z.number().default(0),
 });

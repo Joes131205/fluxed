@@ -22,7 +22,15 @@ const SubareaList: React.FC<SubareaListProp> = ({ areaId }) => {
     return (
         <div className="flex flex-col gap-2">
             {data.data.map((subarea) => (
-                <SubareaCard key={subarea.id} subarea={subarea} />
+                <SubareaCard
+                    key={subarea.id}
+                    subarea={{
+                        ...subarea,
+                        created_at: new Date(subarea.created_at),
+                        updated_at: new Date(subarea.updated_at),
+                        allocatedMinutes: subarea.allocatedMinutes ?? 0,
+                    }}
+                />
             ))}
         </div>
     );

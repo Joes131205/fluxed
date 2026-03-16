@@ -2,7 +2,6 @@ import { useCreateArea } from "@/hooks/useAreas";
 import { requireAuth } from "@/utils/requireAuth";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import z from "zod";
 
 export const Route = createFileRoute("/dashboard/areas/create")({

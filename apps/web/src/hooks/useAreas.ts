@@ -23,6 +23,7 @@ export const useCreateArea = () => {
 
     return useMutation({
         mutationFn: async (newArea: any) => {
+            console.log(newArea);
             const response = await areasClient.$post(
                 { json: newArea },
                 {

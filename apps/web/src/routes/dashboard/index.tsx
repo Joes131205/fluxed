@@ -14,6 +14,8 @@ function RouteComponent() {
     const { user, logout } = useAuth();
     const { data: areasData, isLoading, error } = useAreas();
 
+    console.log(areasData);
+
     if (isLoading) {
         return <p>Loading...</p>;
     }
@@ -83,6 +85,12 @@ function RouteComponent() {
                             Create Area
                         </Link>
                         <Link
+                            to="/dashboard/subareas/create"
+                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                        >
+                            Create subarea
+                        </Link>
+                        <Link
                             to="/dashboard/reschedule"
                             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
                         >
@@ -94,10 +102,27 @@ function RouteComponent() {
                         <p className="text-gray-600">Loading areas...</p>
                     )}
                     {error && (
-                        <p className="text-red-600">Error: {error.message}</p>
+                        <p className="text-red-600">
+                            Error:{" "}
+                            {typeof error === "object" &&
+                            error !== null &&
+                            "message" in error
+                                ? (error as { message: string }).message
+                                : String(error)}
+                        </p>
                     )}
 
-                    <AreaList areas={areasData?.data} />
+                    <AreaList
+                        areas={
+                            areasData && areasData.ok
+                                ? areasData.data.map((area) => ({
+                                      ...area,
+                                      created_at: new Date(area.created_at),
+                                      updated_at: new Date(area.updated_at),
+                                  }))
+                                : []
+                        }
+                    />
                 </div>
             </div>
         </div>
