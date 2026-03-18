@@ -46,15 +46,7 @@ function RouteComponent() {
                     </button>
                 </div>
                 <div>
-                    <a
-                        href={`https://accounts.google.com/o/oauth2/v2/auth?
-client_id=${env.VITE_GOOGLE_CLIENT_ID}&
-redirect_uri=http://localhost:3000/api/auth/google/callback&
-response_type=code&
-scope=https://www.googleapis.com/auth/calendar.events.readonly&
-access_type=offline&
-prompt=consent`}
-                    >
+                    <a href={env.VITE_API_URL + "/api/auth/google/start"}>
                         Connect Google Calendar
                     </a>{" "}
                 </div>

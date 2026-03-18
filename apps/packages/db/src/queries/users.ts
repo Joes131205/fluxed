@@ -24,17 +24,10 @@ export const getUserById = async (userId: string) => {
     return result;
 };
 
-export const updateUser = async (
-    userId: string,
-    email: string,
-    password: string,
-) => {
+export const updateUser = async (userId: string, user: NewUser) => {
     const [result] = await db
         .update(users)
-        .set({
-            email,
-            password,
-        })
+        .set(user)
         .where(eq(users.id, userId))
         .returning();
     return result;
