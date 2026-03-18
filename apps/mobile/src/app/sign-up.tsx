@@ -55,7 +55,6 @@ export default function SignUp() {
 
             if (typeof localStorage !== "undefined") {
                 localStorage.setItem("token", data.token);
-                localStorage.setItem("refreshToken", data.refreshToken);
             }
 
             Alert.alert("Success", "Account created! Redirecting...", [

@@ -25,9 +25,6 @@ export default function SignIn() {
         setLoading(true);
 
         try {
-            console.log(
-                `${process.env.API_URL || "http://localhost:3000"}/api/auth/login`,
-            );
             const response = await fetch(
                 `${process.env.API_URL || "http://localhost:3000"}/api/auth/login`,
                 {
@@ -47,7 +44,6 @@ export default function SignIn() {
 
             if (typeof localStorage !== "undefined") {
                 localStorage.setItem("token", data.token);
-                localStorage.setItem("refreshToken", data.refreshToken);
             }
 
             Alert.alert("Success", "Account created! Redirecting...", [

@@ -50,51 +50,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             username: data.username,
                         });
                     } else if (response.status === 401) {
-                        const refreshToken =
-                            localStorage.getItem("refreshToken");
-                        if (refreshToken) {
-                            try {
-                                const refreshResponse =
-                                    await client.api.auth.refresh.$post(
-                                        {},
-                                        {
-                                            headers: {
-                                                Authorization: `Bearer ${refreshToken}`,
-                                            },
-                                        },
-                                    );
-                                if (refreshResponse.ok) {
-                                    const refreshData =
-                                        await refreshResponse.json();
-                                    localStorage.setItem(
-                                        "token",
-                                        refreshData.token,
-                                    );
-                                    const retryResponse =
-                                        await client.api.auth.me.$get(
-                                            {},
-                                            {
-                                                headers: {
-                                                    Authorization: `Bearer ${refreshData.token}`,
-                                                },
-                                            },
-                                        );
-                                    if (retryResponse.ok) {
-                                        const userData =
-                                            await retryResponse.json();
-                                        setUser({
-                                            id: userData.id,
-                                            email: userData.email,
-                                            username: userData.username,
-                                        });
-                                        setIsAuthLoading(false);
-                                        return;
-                                    }
-                                }
-                            } catch (refreshError) {
-                                console.error(refreshError);
-                            }
-                        }
                         localStorage.clear();
                     }
                 } catch (error) {
@@ -115,7 +70,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.token);
-            localStorage.setItem("refreshToken", data.refreshToken);
             setUser({
                 id: data.id,
                 email: data.email,
@@ -137,7 +91,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.token);
-            localStorage.setItem("refreshToken", data.refreshToken);
             setUser({ id: data.id, email: data.email, username });
         } else {
             throw new Error("Signup failed");
@@ -145,15 +98,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const logout = async () => {
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (refreshToken) {
-            await client.api.auth.revoke.$post(
-                {},
-                {
-                    headers: { Authorization: `Bearer ${refreshToken}` },
-                },
-            );
-        }
         localStorage.clear();
         setUser(null);
     };

@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import usersRoute from "./routes/users";
 import authRoute from "./routes/auth";
-import eventsRoute from "./routes/events";
 import areasRoute from "./routes/areas";
 import subareasRoute from "./routes/subareas";
 
@@ -11,8 +10,7 @@ const api = new Hono()
     .route("/users", usersRoute)
     .route("/auth", authRoute)
     .route("/areas", areasRoute)
-    .route("/subareas", subareasRoute)
-    .route("/events", eventsRoute);
+    .route("/subareas", subareasRoute);
 
 const app = new Hono()
     .use(

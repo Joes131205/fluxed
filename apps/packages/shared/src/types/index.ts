@@ -12,18 +12,6 @@ export type NewUser = Omit<User, "id" | "createdAt" | "updatedAt">;
 export type UpdateUser = Partial<Omit<User, "id" | "createdAt" | "updatedAt">>;
 export type PublicUser = Omit<User, "password">;
 
-// Refresh Token types
-export interface RefreshToken {
-    token: string;
-    created_at: Date;
-    updated_at: Date;
-    user_id: string;
-    expires_at: Date;
-    revoked_at: Date | null;
-}
-
-export type NewRefreshToken = Omit<RefreshToken, "created_at" | "updated_at">;
-
 // Area types
 export interface Area {
     id: string;
