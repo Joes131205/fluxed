@@ -15,8 +15,6 @@ function RouteComponent() {
     const { user, logout } = useAuth();
     const { data: areasData, isLoading, error } = useAreas();
 
-    console.log(areasData);
-
     if (isLoading) {
         return <p>Loading...</p>;
     }
@@ -45,11 +43,6 @@ function RouteComponent() {
                         Logout
                     </button>
                 </div>
-                <div>
-                    <a href={env.VITE_API_URL + "/api/auth/google/start"}>
-                        Connect Google Calendar
-                    </a>{" "}
-                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <p className="text-sm text-gray-500 font-semibold uppercase tracking-wide">
@@ -77,6 +70,10 @@ function RouteComponent() {
                             {user?.id}
                         </p>
                     </div>
+                </div>
+                <div>
+                    <p>Google Log In?</p>
+                    {user?.googleId ? <p>True</p> : <p>False</p>}
                 </div>
                 <div className="mt-12">
                     <div className="flex justify-between items-center mb-6">

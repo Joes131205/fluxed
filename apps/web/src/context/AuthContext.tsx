@@ -17,6 +17,8 @@ type User = {
     id: string;
     email: string;
     username?: string;
+    googleId: string | null;
+    googleRefreshToken: string | null;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -48,6 +50,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             id: data.id,
                             email: data.email,
                             username: data.username,
+                            googleId: data.googleId,
+                            googleRefreshToken: data.googleRefreshToken,
                         });
                     } else if (authResponse.status === 401) {
                         localStorage.clear();
@@ -76,6 +80,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 id: data.id,
                 email: data.email,
                 username: data.username,
+                googleId: data.googleId,
+                googleRefreshToken: data.googleRefreshToken,
             });
         } else {
             throw new Error("Login failed");
@@ -93,7 +99,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.token);
-            setUser({ id: data.id, email: data.email, username });
+            setUser({
+                id: data.id,
+                email: data.email,
+                username,
+                googleId: data.googleId,
+                googleRefreshToken: data.googleRefreshToken,
+            });
         } else {
             throw new Error("Signup failed");
         }

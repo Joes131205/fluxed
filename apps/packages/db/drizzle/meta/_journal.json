@@ -29,6 +29,13 @@
       "when": 1773542575917,
       "tag": "0003_bumpy_kronos",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773926633616,
+      "tag": "0004_fixed_secret_warriors",
+      "breakpoints": true
     }
   ]
 }

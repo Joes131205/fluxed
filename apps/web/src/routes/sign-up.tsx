@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -181,6 +182,9 @@ function RouteComponent() {
                     </form.Subscribe>
                 </form>
             </div>
+            <a href={env.VITE_API_URL + "/api/auth/google/start"}>
+                Sign In with Google
+            </a>
         </div>
     );
 }

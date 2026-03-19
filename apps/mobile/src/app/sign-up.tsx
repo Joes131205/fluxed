@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import axios from "axios";
 import {
     Text,
     TextInput,
@@ -36,22 +37,14 @@ export default function SignUp() {
             console.log(
                 `${process.env.API_URL || "http://localhost:3000"}/api/auth/register`,
             );
-            const response = await fetch(
+            const response = await axios.post(
                 `${process.env.API_URL || "http://localhost:3000"}/api/auth/register`,
+                { username, email, password },
                 {
-                    method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, email, password }),
                 },
             );
-
-            if (!response.ok) {
-                const error = await response.json();
-                Alert.alert("Sign Up Failed", error.error || "Unknown error");
-                return;
-            }
-
-            const data = await response.json();
+            const data = response.data as { token: string };
 
             if (typeof localStorage !== "undefined") {
                 localStorage.setItem("token", data.token);
@@ -64,6 +57,13 @@ export default function SignUp() {
                 },
             ]);
         } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                const apiError = (error.response.data as { error?: string })
+                    ?.error;
+                Alert.alert("Sign Up Failed", apiError || "Unknown error");
+                return;
+            }
+
             Alert.alert(
                 "Error",
                 error instanceof Error ? error.message : "Network error",
