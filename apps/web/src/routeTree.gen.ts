@@ -15,6 +15,7 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AuthSuccessRouteImport } from './routes/auth-success'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardCalendarRouteImport } from './routes/dashboard/calendar'
 import { Route as DashboardRescheduleIndexRouteImport } from './routes/dashboard/reschedule/index'
 import { Route as DashboardSubareasCreateRouteImport } from './routes/dashboard/subareas/create'
 import { Route as DashboardEventsCreateRouteImport } from './routes/dashboard/events/create'
@@ -50,6 +51,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardCalendarRoute = DashboardCalendarRouteImport.update({
+  id: '/dashboard/calendar',
+  path: '/dashboard/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRescheduleIndexRoute =
   DashboardRescheduleIndexRouteImport.update({
     id: '/dashboard/reschedule/',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
+  '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/areas/create': typeof DashboardAreasCreateRoute
   '/dashboard/events/create': typeof DashboardEventsCreateRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
+  '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/areas/create': typeof DashboardAreasCreateRoute
   '/dashboard/events/create': typeof DashboardEventsCreateRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
+  '/dashboard/calendar': typeof DashboardCalendarRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/areas/create': typeof DashboardAreasCreateRoute
   '/dashboard/events/create': typeof DashboardEventsCreateRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/status'
+    | '/dashboard/calendar'
     | '/dashboard/'
     | '/dashboard/areas/create'
     | '/dashboard/events/create'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/status'
+    | '/dashboard/calendar'
     | '/dashboard'
     | '/dashboard/areas/create'
     | '/dashboard/events/create'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/status'
+    | '/dashboard/calendar'
     | '/dashboard/'
     | '/dashboard/areas/create'
     | '/dashboard/events/create'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   StatusRoute: typeof StatusRoute
+  DashboardCalendarRoute: typeof DashboardCalendarRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardAreasCreateRoute: typeof DashboardAreasCreateRoute
   DashboardEventsCreateRoute: typeof DashboardEventsCreateRoute
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/calendar': {
+      id: '/dashboard/calendar'
+      path: '/dashboard/calendar'
+      fullPath: '/dashboard/calendar'
+      preLoaderRoute: typeof DashboardCalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/reschedule/': {
       id: '/dashboard/reschedule/'
       path: '/dashboard/reschedule'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   StatusRoute: StatusRoute,
+  DashboardCalendarRoute: DashboardCalendarRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardAreasCreateRoute: DashboardAreasCreateRoute,
   DashboardEventsCreateRoute: DashboardEventsCreateRoute,

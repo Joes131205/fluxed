@@ -132,7 +132,11 @@ const app = new Hono<{ Variables: AppType }>()
             error_description?: string;
         };
 
-        if (tokenResponse.status >= 400 || tokens.error || !tokens.access_token) {
+        if (
+            tokenResponse.status >= 400 ||
+            tokens.error ||
+            !tokens.access_token
+        ) {
             return c.json(
                 {
                     ok: false,
@@ -155,7 +159,10 @@ const app = new Hono<{ Variables: AppType }>()
         );
 
         if (userProfileResponse.status >= 400) {
-            return c.json({ ok: false, error: "Unable to fetch Google profile" }, 400);
+            return c.json(
+                { ok: false, error: "Unable to fetch Google profile" },
+                400,
+            );
         }
 
         const userProfile = userProfileResponse.data as {
@@ -167,7 +174,10 @@ const app = new Hono<{ Variables: AppType }>()
         const { email, name, sub: googleId } = userProfile;
 
         if (!email || !name || !googleId) {
-            return c.json({ ok: false, error: "Incomplete Google profile data" }, 400);
+            return c.json(
+                { ok: false, error: "Incomplete Google profile data" },
+                400,
+            );
         }
 
         let user = await getUserByEmail(email);
@@ -191,7 +201,7 @@ const app = new Hono<{ Variables: AppType }>()
         }
 
         const token = makeJWT(user.id, 60 * 60 * 60 * 24 * 30, jwtSecret);
-
+        console.log(token);
         return c.redirect(`http://localhost:3001/auth-success?token=${token}`);
     });
 
