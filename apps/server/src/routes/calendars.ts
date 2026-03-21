@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { authCheck } from "../middlewares/authMiddleware";
 import { getUserById } from "../../../packages/db/src/queries/users";
 import { googleClientId, googleClientSecret, googleRedirectURI } from "../env";
+import { getTimeline } from "../utils/calendar";
 
 type AppType = {
     userId: string;
@@ -50,7 +51,7 @@ const app = new Hono<{ Variables: AppType }>().get(
 
             return isEditable && isSelected;
         });
-        console.log(calendarList);
+
         const calendarIds = calendarList.map((item: any) => ({ id: item.id }));
 
         const response = await axios.post(
@@ -80,7 +81,42 @@ const app = new Hono<{ Variables: AppType }>().get(
                 busy: details.busy,
             }),
         );
-        return c.json({ ok: true, calendarData }, 200);
+
+        // count the true free time
+        const timeline = getTimeline(calendarData);
+        console.log(timeline);
+        const freeTime = [];
+        let curr = now;
+
+        for (let i = 0; i < timeline.length; i++) {
+            const startTime = new Date(timeline[i].start);
+            const endTime = new Date(timeline[i].end);
+            if (startTime > curr) {
+                freeTime.push({
+                    start: curr.toISOString(),
+                    end: startTime.toISOString(),
+                    durationMinutes: Math.round(
+                        (startTime.getTime() - curr.getTime()) / 60000,
+                    ),
+                });
+            }
+
+            if (endTime > curr) {
+                curr = endTime;
+            }
+        }
+
+        if (curr < night) {
+            freeTime.push({
+                start: curr.toISOString(),
+                end: night.toISOString(),
+                durationMinutes: Math.round(
+                    (night.getTime() - curr.getTime()) / 60000,
+                ),
+            });
+        }
+        console.log(freeTime);
+        return c.json({ ok: true, calendarData, freeTime }, 200);
     },
 );
 

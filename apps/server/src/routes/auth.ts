@@ -32,7 +32,7 @@ const app = new Hono<{ Variables: AppType }>()
         if (!user) {
             return c.json({ ok: false, error: "Email already exists" }, 409);
         }
-        const token = makeJWT(user.id, 60 * 60 * 60 * 24 * 30, jwtSecret);
+        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
 
         return c.json(
             {
@@ -61,7 +61,7 @@ const app = new Hono<{ Variables: AppType }>()
             return c.json({ ok: false, error: "Invalid credentials" }, 401);
         }
 
-        const token = makeJWT(user.id, 60 * 60 * 60 * 24 * 30, jwtSecret);
+        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
         return c.json(
             {
                 ok: true,
@@ -200,7 +200,7 @@ const app = new Hono<{ Variables: AppType }>()
             }
         }
 
-        const token = makeJWT(user.id, 60 * 60 * 60 * 24 * 30, jwtSecret);
+        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
         console.log(token);
         return c.redirect(`http://localhost:3001/auth-success?token=${token}`);
     });

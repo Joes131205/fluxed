@@ -1,5 +1,4 @@
 import AreaList from "@/components/area/AreaList";
-import { env } from "@/env";
 import { useAreas } from "@/hooks/useAreas";
 import { useAuth } from "@/hooks/useAuth";
 import { requireAuth } from "@/utils/requireAuth";
@@ -93,10 +92,10 @@ function RouteComponent() {
                             Create subarea
                         </Link>
                         <Link
-                            to="/dashboard/reschedule"
+                            to="/dashboard/calendar"
                             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
                         >
-                            Reschedule
+                            Calendar + Reschedule
                         </Link>
                     </div>
 

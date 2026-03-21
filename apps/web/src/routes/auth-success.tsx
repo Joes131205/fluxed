@@ -16,11 +16,13 @@ function RouteComponent() {
     const { token } = Route.useSearch();
 
     useEffect(() => {
-        if (localStorage.getItem("token")) {
-            localStorage.setItem("token", token);
-        }
+        localStorage.setItem("token", token);
         navigate({ to: "/dashboard" });
     }, [token]);
 
-    return <div>Hello "/auth-success"!</div>;
+    return (
+        <div>
+            <p>Signing in...</p>
+        </div>
+    );
 }
