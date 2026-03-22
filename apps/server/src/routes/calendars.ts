@@ -2,7 +2,7 @@ import axios from "axios";
 import { Hono } from "hono";
 import { authCheck } from "../middlewares/authMiddleware";
 import { getUserById } from "../../../packages/db/src/queries/users";
-import { googleClientId, googleClientSecret, googleRedirectURI } from "../env";
+import { googleClientId, googleClientSecret } from "../env";
 import { getTimeline } from "../utils/calendar";
 
 type AppType = {

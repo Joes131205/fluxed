@@ -5,6 +5,7 @@ import authRoute from "./routes/auth";
 import areasRoute from "./routes/areas";
 import subareasRoute from "./routes/subareas";
 import calendarsRoute from "./routes/calendars";
+import plannedSessionsRoute from "./routes/plannedSessions";
 
 const api = new Hono()
     .get("/", (c) => c.json({ ok: true }))
@@ -12,7 +13,8 @@ const api = new Hono()
     .route("/auth", authRoute)
     .route("/areas", areasRoute)
     .route("/subareas", subareasRoute)
-    .route("/calendars", calendarsRoute);
+    .route("/calendars", calendarsRoute)
+    .route("/plan", plannedSessionsRoute);
 
 const app = new Hono()
     .use(

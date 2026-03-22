@@ -1,5 +1,6 @@
 import {
     boolean,
+    date,
     integer,
     pgTable,
     timestamp,
@@ -7,6 +8,7 @@ import {
     varchar,
 } from "drizzle-orm/pg-core";
 import { areas } from "./areas";
+import { users } from "./users";
 
 export const subareas = pgTable("subareas", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -20,9 +22,16 @@ export const subareas = pgTable("subareas", {
             onDelete: "cascade",
         })
         .notNull(),
+    userId: uuid("user_id")
+        .references(() => users.id, {
+            onDelete: "cascade",
+        })
+        .notNull(),
     name: varchar("name", { length: 256 }).notNull(),
     weight: integer("weight").default(1),
     allocatedMinutes: integer("allocated_minutes").default(0),
+    startTime: timestamp("start_time"),
+    endTime: timestamp("end_time"),
 });
 
 export type NewSubareas = typeof subareas.$inferInsert;

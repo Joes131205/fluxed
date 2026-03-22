@@ -25,17 +25,16 @@ export const subareaSchema = z.object({
     allocatedMinutes: z.number().optional(),
 });
 
-export const eventSchema = z.object({
-    subarea_id: z.string().nonempty(),
-    name: z.string(),
-    description: z.string(),
-    startTime: z.string(),
-    endTime: z.string(),
-    isHardLocked: z.boolean().default(false),
+export const plannedSessionSchema = z.object({
+    subarea_id: z.string(),
+    user_id: z.string(),
+    startTime: z.date(),
+    endTime: z.date(),
+    minutes: z.number(),
 });
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LogInInput = z.infer<typeof logInSchema>;
 export type AreaInput = z.infer<typeof areaSchema>;
 export type SubareaInput = z.infer<typeof subareaSchema>;
-export type eventInput = z.infer<typeof eventSchema>;
+export type PlannedSessionInput = z.infer<typeof plannedSessionSchema>;

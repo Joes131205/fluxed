@@ -45,6 +45,14 @@ function RouteComponent() {
         allocated: number;
     };
 
+    type FinalScheduleItem = {
+        subarea: string;
+        area: string;
+        start: string;
+        end: string;
+        minutes: number;
+    };
+
     const [calendar, setCalendar] = useState<CalendarItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -53,9 +61,13 @@ function RouteComponent() {
     const [rescheduledData, setRescheduledData] = useState<RescheduledItem[]>(
         [],
     );
+    const [finalSchedule, setFinalSchedule] = useState<FinalScheduleItem[]>([]);
     const [selectedAlgorithm, setSelectedAlgorithm] = useState<
         "global" | "nested"
     >("global");
+
+    const [freeGaps, setFreeGaps] = useState<any[]>([]);
+
     const { data: areasData } = useAreas();
 
     const todayDateString = new Date().toDateString();
@@ -89,10 +101,10 @@ function RouteComponent() {
             }
             console.log(data.calendarData);
 
-            const freeTime = data.freeTime;
-            console.log(freeTime);
+            const gaps = data.freeTime;
+            setFreeGaps(gaps);
             setMinutes(
-                freeTime.reduce((a: any, b: any) => a + b.durationMinutes, 0),
+                gaps.reduce((a: any, b: any) => a + b.durationMinutes, 0),
             );
 
             setCalendar(data.calendarData ?? []);
@@ -107,7 +119,79 @@ function RouteComponent() {
             setIsLoading(false);
         }
     };
+    const handleReschedule = () => {
+        const rescheduled =
+            selectedAlgorithm === "global"
+                ? calcGlobalWeightedTime(schedule, minutes)
+                : calcNestedWeightedTime(schedule, minutes);
+        setRescheduledData(rescheduled);
+        const final: any[] = [];
+        let gapIndex = 0;
 
+        let tempGaps = JSON.parse(JSON.stringify(freeGaps));
+
+        rescheduled.forEach((item) => {
+            let minutesLeft = item.allocated;
+
+            while (minutesLeft > 0 && gapIndex < tempGaps.length) {
+                let currentGap = tempGaps[gapIndex];
+
+                const amountToFit = Math.min(
+                    minutesLeft,
+                    currentGap.durationMinutes,
+                );
+
+                if (amountToFit > 0) {
+                    final.push({
+                        subarea: item.subarea,
+                        area: item.area,
+                        start: currentGap.start,
+                        end: new Date(
+                            new Date(currentGap.start).getTime() +
+                                amountToFit * 60000,
+                        ).toISOString(),
+                        minutes: amountToFit,
+                    });
+
+                    minutesLeft -= amountToFit;
+                    currentGap.durationMinutes -= amountToFit;
+
+                    currentGap.start = new Date(
+                        new Date(currentGap.start).getTime() +
+                            amountToFit * 60000,
+                    ).toISOString();
+                }
+
+                if (currentGap.durationMinutes <= 0) {
+                    gapIndex++;
+                }
+            }
+        });
+        console.log(final);
+        setFinalSchedule(final);
+    };
+
+    const handleSave = async () => {
+        for (let i = 0; i < rescheduledData.length; i++) {
+            const data = rescheduledData[i];
+            await client.api.subareas[":id"].$put(
+                {
+                    json: {
+                        id: data.id,
+                        name: data.subarea,
+                        weight: data.weight,
+                        allocatedMinutes: data.allocated,
+                    },
+                    param: {
+                        id: data.id,
+                    },
+                },
+                {
+                    headers: getAuthHeaders,
+                },
+            );
+        }
+    };
     useEffect(() => {
         handleGetData();
     }, []);
@@ -142,36 +226,6 @@ function RouteComponent() {
             ).then((transformedData) => setSchedule(transformedData));
         }
     }, [areasData]);
-
-    const handleReschedule = () => {
-        const rescheduled =
-            selectedAlgorithm === "global"
-                ? calcGlobalWeightedTime(schedule, minutes)
-                : calcNestedWeightedTime(schedule, minutes);
-        setRescheduledData(rescheduled);
-    };
-
-    const handleSave = async () => {
-        for (let i = 0; i < rescheduledData.length; i++) {
-            const data = rescheduledData[i];
-            await client.api.subareas[":id"].$put(
-                {
-                    json: {
-                        id: data.id,
-                        name: data.subarea,
-                        weight: data.weight,
-                        allocatedMinutes: data.allocated,
-                    },
-                    param: {
-                        id: data.id,
-                    },
-                },
-                {
-                    headers: getAuthHeaders,
-                },
-            );
-        }
-    };
 
     return (
         <div className="min-h-screen bg-linear-to-b from-slate-100 via-white to-emerald-50 px-4 py-8 sm:py-12">
@@ -467,6 +521,45 @@ function RouteComponent() {
                                 </button>
                             </div>
                         )}
+                    </div>
+                )}
+
+                {finalSchedule.length > 0 && (
+                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <h3 className="mb-4 text-lg font-semibold text-slate-900">
+                            Final Schedule
+                        </h3>
+                        <div className="space-y-3">
+                            {finalSchedule.map((slot, idx) => (
+                                <div
+                                    key={`${slot.subarea}-${slot.start}-${idx}`}
+                                    className="rounded-xl border border-slate-200 bg-linear-to-r from-violet-50 to-indigo-50 px-4 py-3"
+                                >
+                                    <div className="flex items-center justify-between gap-4">
+                                        <div className="flex-1">
+                                            <p className="text-sm text-slate-600">
+                                                <span className="font-semibold text-slate-900">
+                                                    {slot.subarea}
+                                                </span>
+                                                <span className="mx-2 text-slate-400">
+                                                    •
+                                                </span>
+                                                <span className="text-slate-700">
+                                                    {slot.area}
+                                                </span>
+                                            </p>
+                                            <p className="mt-1 text-sm font-medium text-slate-800">
+                                                {formatTime(slot.start)} -{" "}
+                                                {formatTime(slot.end)}
+                                            </p>
+                                        </div>
+                                        <span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-semibold text-indigo-800">
+                                            {slot.minutes} min
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
