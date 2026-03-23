@@ -109,88 +109,97 @@ const app = new Hono<{ Variables: AppType }>()
         if (!code) {
             return c.json({ ok: false, error: "Not Authorized" }, 403);
         }
-        const tokenResponse = await axios.post(
-            "https://oauth2.googleapis.com/token",
-            new URLSearchParams({
-                code,
-                client_id: googleClientId,
-                client_secret: googleClientSecret,
-                redirect_uri: googleRedirectURI,
-                grant_type: "authorization_code",
-            }).toString(),
-            {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                validateStatus: () => true,
-            },
-        );
-        const tokens = tokenResponse.data as {
-            access_token?: string;
-            refresh_token?: string;
-            error?: string;
-            error_description?: string;
-        };
 
-        if (
-            tokenResponse.status >= 400 ||
-            tokens.error ||
-            !tokens.access_token
-        ) {
-            return c.json(
+        try {
+            const tokenResponse = await axios.post(
+                "https://oauth2.googleapis.com/token",
+                new URLSearchParams({
+                    code,
+                    client_id: googleClientId,
+                    client_secret: googleClientSecret,
+                    redirect_uri: googleRedirectURI,
+                    grant_type: "authorization_code",
+                }).toString(),
                 {
-                    ok: false,
-                    error:
-                        tokens.error_description ||
-                        "Unable to complete Google OAuth token exchange",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    validateStatus: () => true,
                 },
-                400,
             );
-        }
+            const tokens = tokenResponse.data as {
+                access_token?: string;
+                refresh_token?: string;
+                error?: string;
+                error_description?: string;
+            };
 
-        const { access_token, refresh_token } = tokens;
+            if (
+                tokenResponse.status >= 400 ||
+                tokens.error ||
+                !tokens.access_token
+            ) {
+                return c.json(
+                    {
+                        ok: false,
+                        error:
+                            tokens.error_description ||
+                            "Unable to complete Google OAuth token exchange",
+                    },
+                    400,
+                );
+            }
 
-        const userProfileResponse = await axios.get(
-            "https://www.googleapis.com/oauth2/v3/userinfo",
-            {
-                headers: { Authorization: `Bearer ${access_token}` },
-                validateStatus: () => true,
-            },
-        );
+            const { access_token, refresh_token } = tokens;
 
-        if (userProfileResponse.status >= 400) {
-            return c.json(
-                { ok: false, error: "Unable to fetch Google profile" },
-                400,
+            const userProfileResponse = await axios.get(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                {
+                    headers: {
+                        Authorization: `Bearer ${access_token}`,
+                    },
+                    validateStatus: () => true,
+                },
             );
-        }
 
-        const userProfile = userProfileResponse.data as {
-            email?: string;
-            name?: string;
-            sub?: string;
-        };
+            if (userProfileResponse.status >= 400) {
+                return c.json(
+                    {
+                        ok: false,
+                        error: "Unable to fetch Google profile",
+                    },
+                    400,
+                );
+            }
 
-        const { email, name, sub: googleId } = userProfile;
+            const userProfile = userProfileResponse.data as {
+                email?: string;
+                name?: string;
+                sub?: string;
+            };
 
-        if (!email || !name || !googleId) {
-            return c.json(
-                { ok: false, error: "Incomplete Google profile data" },
-                400,
-            );
-        }
+            const { email, name, sub: googleId } = userProfile;
 
-        let user = await getUserByEmail(email);
+            if (!email || !name || !googleId) {
+                return c.json(
+                    {
+                        ok: false,
+                        error: "Incomplete Google profile data",
+                    },
+                    400,
+                );
+            }
 
-        if (!user) {
-            user = await createUser({
-                email,
-                username: name,
-                googleRefreshToken: refresh_token,
-                googleId,
-            });
-        } else {
-            if (!user.googleRefreshToken && !user.googleId) {
+            let user = await getUserByEmail(email);
+
+            if (!user) {
+                user = await createUser({
+                    email,
+                    username: name,
+                    googleRefreshToken: refresh_token,
+                    googleId,
+                });
+            } else {
                 user = await updateUser(user.id, {
                     googleRefreshToken: refresh_token,
                     googleId,
@@ -198,11 +207,29 @@ const app = new Hono<{ Variables: AppType }>()
                     username: user.username,
                 });
             }
-        }
 
-        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
-        console.log(token);
-        return c.redirect(`http://localhost:3001/auth-success?token=${token}`);
+            if (!user) {
+                return c.json(
+                    {
+                        ok: false,
+                        error: "Unable to create or update user",
+                    },
+                    500,
+                );
+            }
+
+            const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
+            return c.redirect(`http://localhost:3001/auth-success?token=${token}`);
+        } catch (error) {
+            console.error("Google callback failed", error);
+            return c.json(
+                {
+                    ok: false,
+                    error: "Google callback failed",
+                },
+                500,
+            );
+        }
     });
 
 export default app;

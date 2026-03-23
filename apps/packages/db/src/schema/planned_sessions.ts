@@ -19,8 +19,8 @@ export const plannedSessions = pgTable("planned_sessions", {
             onDelete: "cascade",
         })
         .notNull(),
-    startTime: timestamp("start_time").notNull(),
-    endTime: timestamp("end_time").notNull(),
+    start_time: timestamp("start_time").notNull(),
+    end_time: timestamp("end_time").notNull(),
     minutes: integer("minutes").notNull(),
 });
 

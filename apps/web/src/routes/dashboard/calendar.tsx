@@ -1,5 +1,10 @@
 import { getAuthHeaders } from "@/lib/authHeaders";
-import { calendarsClient, client, subareasClient } from "@/lib/client";
+import {
+    calendarsClient,
+    client,
+    plansClient,
+    subareasClient,
+} from "@/lib/client";
 import { useAreas } from "@/hooks/useAreas";
 import { requireAuth } from "@/utils/requireAuth";
 import {
@@ -8,6 +13,7 @@ import {
 } from "@/utils/reschedule";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/dashboard/calendar")({
     beforeLoad: requireAuth,
@@ -46,12 +52,15 @@ function RouteComponent() {
     };
 
     type FinalScheduleItem = {
+        subareaId: any;
         subarea: string;
         area: string;
-        start: string;
-        end: string;
+        start: Date;
+        end: Date;
         minutes: number;
     };
+
+    const { user } = useAuth();
 
     const [calendar, setCalendar] = useState<CalendarItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -143,9 +152,10 @@ function RouteComponent() {
 
                 if (amountToFit > 0) {
                     final.push({
+                        subareaId: item.id,
                         subarea: item.subarea,
                         area: item.area,
-                        start: currentGap.start,
+                        start: new Date(currentGap.start).toISOString(),
                         end: new Date(
                             new Date(currentGap.start).getTime() +
                                 amountToFit * 60000,
@@ -174,7 +184,7 @@ function RouteComponent() {
     const handleSave = async () => {
         for (let i = 0; i < rescheduledData.length; i++) {
             const data = rescheduledData[i];
-            await client.api.subareas[":id"].$put(
+            await subareasClient[":id"].$put(
                 {
                     json: {
                         id: data.id,
@@ -189,6 +199,25 @@ function RouteComponent() {
                 {
                     headers: getAuthHeaders,
                 },
+            );
+        }
+        // put plan
+        console.log(finalSchedule);
+
+        await plansClient.$delete({}, { headers: getAuthHeaders });
+
+        for (const item of finalSchedule) {
+            await plansClient.$post(
+                {
+                    json: {
+                        subarea_id: item.subareaId,
+                        user_id: user?.id!,
+                        start_time: new Date(item.start),
+                        end_time: new Date(item.end),
+                        minutes: item.minutes,
+                    },
+                },
+                { headers: getAuthHeaders },
             );
         }
     };
@@ -549,8 +578,13 @@ function RouteComponent() {
                                                 </span>
                                             </p>
                                             <p className="mt-1 text-sm font-medium text-slate-800">
-                                                {formatTime(slot.start)} -{" "}
-                                                {formatTime(slot.end)}
+                                                {new Date(
+                                                    slot.start,
+                                                ).toLocaleTimeString()}{" "}
+                                                -{" "}
+                                                {new Date(
+                                                    slot.end,
+                                                ).toLocaleTimeString()}
                                             </p>
                                         </div>
                                         <span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-semibold text-indigo-800">

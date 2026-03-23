@@ -36,6 +36,34 @@
       "when": 1773926633616,
       "tag": "0004_fixed_secret_warriors",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774245355908,
+      "tag": "0005_steep_earthquake",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1774245427655,
+      "tag": "0006_mute_morbius",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1774245616083,
+      "tag": "0007_quick_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1774247083034,
+      "tag": "0008_powerful_outlaw_kid",
+      "breakpoints": true
     }
   ]
 }

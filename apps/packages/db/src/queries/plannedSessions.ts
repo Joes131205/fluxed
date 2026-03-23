@@ -2,13 +2,12 @@ import { eq } from "drizzle-orm";
 import { db, plannedSessions } from "..";
 import type { NewPlannedSessions } from "../schema";
 
-export const updatePlan = async (
-    userId: string,
-    planned: NewPlannedSessions,
-) => {
+export const updatePlan = async (planned: NewPlannedSessions) => {
+    await db.insert(plannedSessions).values(planned);
+};
+
+export const deletePlan = async (userId: string) => {
     await db.delete(plannedSessions).where(eq(plannedSessions.user_id, userId));
-    const [result] = await db.insert(plannedSessions).values(planned);
-    return result;
 };
 
 export const getPlan = async (userId: string) => {

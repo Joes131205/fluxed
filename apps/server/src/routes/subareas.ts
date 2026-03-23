@@ -20,8 +20,9 @@ const app = new Hono<{ Variables: AppType }>()
         return c.json({ ok: true, data }, 200);
     })
     .post("/", zValidator("json", subareaSchema), authCheck, async (c) => {
+        const userId = c.get("userId");
         const input = c.req.valid("json");
-        const data = await createSubarea(input);
+        const data = await createSubarea({ user_id: userId, ...input });
         return c.json({ ok: true, data }, 201);
     })
     .put("/:id", zValidator("json", subareaSchema), authCheck, async (c) => {

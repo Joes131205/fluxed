@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { authCheck } from "../middlewares/authMiddleware";
 import {
+    deletePlan,
     getPlan,
     updatePlan,
 } from "../../../packages/db/src/queries/plannedSessions";
@@ -24,12 +25,18 @@ const app = new Hono<{ Variables: AppType }>()
         zValidator("json", plannedSessionSchema),
         authCheck,
         async (c) => {
-            const userId = c.get("userId");
             const valid = c.req.valid("json");
-            const data = await updatePlan(userId, valid);
+            const data = await updatePlan(valid);
 
             return c.json({ ok: true, data }, 201);
         },
-    );
+    )
+    .delete("/", authCheck, async (c) => {
+        const userId = c.get("userId");
+
+        await deletePlan(userId);
+
+        return c.json({ ok: true, message: "Deleted" }, 200);
+    });
 
 export default app;

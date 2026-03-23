@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { pgTable, time, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -12,6 +12,12 @@ export const users = pgTable("users", {
     password: varchar("password", { length: 256 }),
     googleRefreshToken: varchar("google_refresh_token", { length: 256 }),
     googleId: varchar("google_id", { length: 256 }),
+    startTime: time("start_time", { withTimezone: false })
+        .notNull()
+        .default("09:00:00"),
+    endTime: time("end_time", { withTimezone: false })
+        .notNull()
+        .default("24:00:00"),
 });
 
 export type NewUser = typeof users.$inferInsert;

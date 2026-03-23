@@ -22,7 +22,7 @@ export const subareas = pgTable("subareas", {
             onDelete: "cascade",
         })
         .notNull(),
-    userId: uuid("user_id")
+    user_id: uuid("user_id")
         .references(() => users.id, {
             onDelete: "cascade",
         })
