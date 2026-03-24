@@ -19,6 +19,8 @@ type User = {
     username?: string;
     googleId: string | null;
     googleRefreshToken: string | null;
+    startTime: string;
+    endTime: string;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -52,6 +54,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             username: data.username,
                             googleId: data.googleId,
                             googleRefreshToken: data.googleRefreshToken,
+                            startTime: data.startTime,
+                            endTime: data.endTime,
                         });
                     } else if (authResponse.status === 401) {
                         localStorage.clear();
@@ -82,6 +86,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 username: data.username,
                 googleId: data.googleId,
                 googleRefreshToken: data.googleRefreshToken,
+                startTime: data.startTime,
+                endTime: data.endTime,
             });
         } else {
             throw new Error("Login failed");
@@ -105,6 +111,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 username,
                 googleId: data.googleId,
                 googleRefreshToken: data.googleRefreshToken,
+                startTime: data.startTime,
+                endTime: data.endTime,
             });
         } else {
             throw new Error("Signup failed");

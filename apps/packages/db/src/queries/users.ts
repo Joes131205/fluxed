@@ -32,3 +32,7 @@ export const updateUser = async (userId: string, user: NewUser) => {
         .returning();
     return result;
 };
+
+export const updateTime = async (userId: string, time: any) => {
+    await db.update(users).set(time).where(eq(users.id, userId));
+};

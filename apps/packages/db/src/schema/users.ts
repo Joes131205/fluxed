@@ -14,10 +14,10 @@ export const users = pgTable("users", {
     googleId: varchar("google_id", { length: 256 }),
     startTime: time("start_time", { withTimezone: false })
         .notNull()
-        .default("09:00:00"),
+        .default("09:00"),
     endTime: time("end_time", { withTimezone: false })
         .notNull()
-        .default("24:00:00"),
+        .default("23:59"),
 });
 
 export type NewUser = typeof users.$inferInsert;

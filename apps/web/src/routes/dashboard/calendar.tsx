@@ -129,17 +129,49 @@ function RouteComponent() {
         }
     };
     const handleReschedule = () => {
+        const MIN_DURATION = 15;
+        const dayDone = new Date();
+        dayDone.setHours(23, 30, 0, 0);
+
+        const usableGaps = freeGaps.filter((g) => new Date(g.start) < dayDone);
+        const totalUsableMinutes = usableGaps.reduce((acc, g) => {
+            const end = new Date(g.end) > dayDone ? dayDone : new Date(g.end);
+            const start = new Date(g.start);
+            return acc + (end.getTime() - start.getTime()) / 60000;
+        }, 0);
+
         const rescheduled =
             selectedAlgorithm === "global"
-                ? calcGlobalWeightedTime(schedule, minutes)
-                : calcNestedWeightedTime(schedule, minutes);
+                ? calcGlobalWeightedTime(schedule, totalUsableMinutes)
+                : calcNestedWeightedTime(schedule, totalUsableMinutes);
         setRescheduledData(rescheduled);
         const final: any[] = [];
         let gapIndex = 0;
 
-        let tempGaps = JSON.parse(JSON.stringify(freeGaps));
+        let tempGaps = JSON.parse(JSON.stringify(freeGaps))
+            .map((gap: any) => {
+                const gapStart = new Date(gap.start);
+                const gapEnd = new Date(gap.end);
+
+                if (gapStart >= dayDone) return null;
+
+                if (gapEnd > dayDone) {
+                    return {
+                        ...gap,
+                        end: dayDone.toISOString(),
+                        durationMinutes:
+                            (dayDone.getTime() - gapStart.getTime()) / 60000,
+                    };
+                }
+                return gap;
+            })
+            .filter(Boolean);
 
         rescheduled.forEach((item) => {
+            if (item.allocated < MIN_DURATION) {
+                console.log(`Skipping ${item.subarea} - too short!`);
+                return;
+            }
             let minutesLeft = item.allocated;
 
             while (minutesLeft > 0 && gapIndex < tempGaps.length) {

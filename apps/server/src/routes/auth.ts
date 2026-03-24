@@ -43,6 +43,8 @@ const app = new Hono<{ Variables: AppType }>()
                 email: user.email,
                 googleId: user.googleId,
                 googleRefreshToken: user.googleRefreshToken,
+                startTime: user.startTime,
+                endTime: user.endTime,
                 token,
             },
             201,
@@ -72,6 +74,8 @@ const app = new Hono<{ Variables: AppType }>()
                 username: user.username,
                 googleId: user.googleId,
                 googleRefreshToken: user.googleRefreshToken,
+                startTime: user.startTime,
+                endTime: user.endTime,
                 token,
             },
             200,
@@ -95,16 +99,42 @@ const app = new Hono<{ Variables: AppType }>()
                 googleRefreshToken: user.googleRefreshToken,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
+                startTime: user.startTime,
+                endTime: user.endTime,
             },
             200,
         );
     })
     .get("/google/start", async (c) => {
-        return c.redirect(
-            `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectURI}&response_type=code&scope=${googleOAuthScopes}&access_type=offline&prompt=consent`,
-        );
+        const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+        authUrl.searchParams.set("client_id", googleClientId);
+        authUrl.searchParams.set("redirect_uri", googleRedirectURI);
+        authUrl.searchParams.set("response_type", "code");
+        authUrl.searchParams.set("scope", googleOAuthScopes);
+        authUrl.searchParams.set("access_type", "offline");
+        authUrl.searchParams.set("prompt", "consent");
+
+        return c.redirect(authUrl.toString());
     })
     .get("/google/callback", async (c) => {
+        console.log(
+            "🚀 CALLBACK TRIGGERED AT:",
+            new Date().toISOString(),
+            "CODE:",
+            c.req.query("code")?.slice(-5),
+        );
+        const oauthError = c.req.query("error");
+        const oauthErrorDescription = c.req.query("error_description");
+        if (oauthError) {
+            return c.json(
+                {
+                    ok: false,
+                    error: oauthErrorDescription ?? oauthError,
+                },
+                400,
+            );
+        }
+
         const code = c.req.query("code");
         if (!code) {
             return c.json({ ok: false, error: "Not Authorized" }, 403);
@@ -139,12 +169,19 @@ const app = new Hono<{ Variables: AppType }>()
                 tokens.error ||
                 !tokens.access_token
             ) {
+                console.error("Google token exchange failed", {
+                    status: tokenResponse.status,
+                    error: tokens.error,
+                    error_description: tokens.error_description,
+                });
+
                 return c.json(
                     {
                         ok: false,
                         error:
                             tokens.error_description ||
                             "Unable to complete Google OAuth token exchange",
+                        details: tokens.error,
                     },
                     400,
                 );
@@ -163,6 +200,11 @@ const app = new Hono<{ Variables: AppType }>()
             );
 
             if (userProfileResponse.status >= 400) {
+                console.error("Google profile fetch failed", {
+                    status: userProfileResponse.status,
+                    body: userProfileResponse.data,
+                });
+
                 return c.json(
                     {
                         ok: false,
@@ -208,6 +250,8 @@ const app = new Hono<{ Variables: AppType }>()
                 });
             }
 
+            console.log(user);
+
             if (!user) {
                 return c.json(
                     {
@@ -219,7 +263,9 @@ const app = new Hono<{ Variables: AppType }>()
             }
 
             const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
-            return c.redirect(`http://localhost:3001/auth-success?token=${token}`);
+            return c.redirect(
+                `http://localhost:3001/auth-success?token=${token}`,
+            );
         } catch (error) {
             console.error("Google callback failed", error);
             return c.json(

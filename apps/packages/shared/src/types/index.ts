@@ -6,6 +6,8 @@ export interface User {
     email: string;
     username: string;
     password: string;
+    startTime: string;
+    endTime: string;
 }
 
 export type NewUser = Omit<User, "id" | "createdAt" | "updatedAt">;

@@ -21,6 +21,12 @@ const hhmmSchema = z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
     message: "Time must be in HH:mm format",
 });
 
+const hhmmOrHhmmssSchema = z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/, {
+        message: "Time must be in HH:mm or HH:mm:ss format",
+    });
+
 const toMinutes = (value: string) => {
     const [hours = 0, minutes = 0] = value.split(":").map(Number);
     return hours * 60 + minutes;
@@ -28,8 +34,8 @@ const toMinutes = (value: string) => {
 
 export const timeSchema = z
     .object({
-        startTime: hhmmSchema.default("09:00"),
-        endTime: hhmmSchema.default("17:00"),
+        startTime: hhmmOrHhmmssSchema.default("09:00:00"),
+        endTime: hhmmOrHhmmssSchema.default("24:00:00"),
     })
     .refine((value) => toMinutes(value.endTime) > toMinutes(value.startTime), {
         message: "endTime must be after startTime",
@@ -53,9 +59,28 @@ export const plannedSessionSchema = z.object({
     minutes: z.number(),
 });
 
+export const userSchema = z.object({
+    id: z.string().uuid(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    email: z.email(),
+    username: z.string().nonempty(),
+    password: z.string().min(8).nullable().optional(),
+    googleRefreshToken: z.string().nullable().optional(),
+    googleId: z.string().nullable().optional(),
+    startTime: hhmmOrHhmmssSchema,
+    endTime: hhmmOrHhmmssSchema,
+});
+
+export const publicUserSchema = userSchema.omit({
+    password: true,
+});
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LogInInput = z.infer<typeof logInSchema>;
 export type AreaInput = z.infer<typeof areaSchema>;
 export type TimeInput = z.infer<typeof timeSchema>;
 export type SubareaInput = z.infer<typeof subareaSchema>;
 export type PlannedSessionInput = z.infer<typeof plannedSessionSchema>;
+export type UserInput = z.infer<typeof userSchema>;
+export type PublicUserInput = z.infer<typeof publicUserSchema>;
