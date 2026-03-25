@@ -15,13 +15,14 @@ function RouteComponent() {
 
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
-
+    const [minDuration, setMinDuration] = useState(0);
     const handleSave = async () => {
         await usersClient.time.$put(
             {
                 json: {
                     startTime,
                     endTime,
+                    minDuration,
                 },
             },
             {
@@ -35,6 +36,7 @@ function RouteComponent() {
         console.log(user?.startTime, user?.endTime);
         setStartTime(user?.startTime!);
         setEndTime(user?.endTime!);
+        setMinDuration(user?.minDuration!);
     }, [user]);
 
     return (
@@ -87,6 +89,27 @@ function RouteComponent() {
                                 />
                                 <p className="mt-2 text-sm text-gray-500">
                                     Current: {endTime || "Not set"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="endTime"
+                                    className="block text-sm font-semibold text-gray-900 mb-3"
+                                >
+                                    What's the task duration minimum?
+                                </label>
+                                <input
+                                    id="minDuration"
+                                    type="number"
+                                    onChange={(e) =>
+                                        setMinDuration(Number(e.target.value))
+                                    }
+                                    value={minDuration}
+                                    className="w-full px-4 py-3 text-lg border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:ring-1 outline-none transition-colors"
+                                />
+                                <p className="mt-2 text-sm text-gray-500">
+                                    Current: {minDuration || "Not set"}
                                 </p>
                             </div>
                         </div>

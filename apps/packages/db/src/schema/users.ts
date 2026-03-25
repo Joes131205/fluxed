@@ -1,4 +1,11 @@
-import { pgTable, time, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+    integer,
+    pgTable,
+    time,
+    timestamp,
+    uuid,
+    varchar,
+} from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -18,6 +25,7 @@ export const users = pgTable("users", {
     endTime: time("end_time", { withTimezone: false })
         .notNull()
         .default("23:59"),
+    minDuration: integer("min_duration").default(15),
 });
 
 export type NewUser = typeof users.$inferInsert;

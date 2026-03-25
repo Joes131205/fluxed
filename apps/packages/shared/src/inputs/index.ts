@@ -36,6 +36,7 @@ export const timeSchema = z
     .object({
         startTime: hhmmOrHhmmssSchema.default("09:00:00"),
         endTime: hhmmOrHhmmssSchema.default("24:00:00"),
+        minDuration: z.number(),
     })
     .refine((value) => toMinutes(value.endTime) > toMinutes(value.startTime), {
         message: "endTime must be after startTime",

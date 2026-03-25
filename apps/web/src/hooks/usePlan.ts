@@ -2,7 +2,7 @@ import { getAuthHeaders } from "@/lib/authHeaders";
 import { plansClient } from "@/lib/client";
 import { useQuery } from "@tanstack/react-query";
 
-export const useSubareas = () => {
+export const usePlans = () => {
     return useQuery({
         queryKey: ["plan"],
         queryFn: async () => {

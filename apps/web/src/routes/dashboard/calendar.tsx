@@ -1,10 +1,5 @@
 import { getAuthHeaders } from "@/lib/authHeaders";
-import {
-    calendarsClient,
-    client,
-    plansClient,
-    subareasClient,
-} from "@/lib/client";
+import { calendarsClient, plansClient, subareasClient } from "@/lib/client";
 import { useAreas } from "@/hooks/useAreas";
 import { requireAuth } from "@/utils/requireAuth";
 import {
@@ -14,6 +9,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/dashboard/calendar")({
     beforeLoad: requireAuth,
@@ -61,6 +57,7 @@ function RouteComponent() {
     };
 
     const { user } = useAuth();
+    const queryClient = useQueryClient();
 
     const [calendar, setCalendar] = useState<CalendarItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -129,9 +126,11 @@ function RouteComponent() {
         }
     };
     const handleReschedule = () => {
-        const MIN_DURATION = 15;
+        const [hour = "23", minute = "59"] = (user?.endTime ?? "23:59").split(
+            ":",
+        );
         const dayDone = new Date();
-        dayDone.setHours(23, 30, 0, 0);
+        dayDone.setHours(Number(hour), Number(minute), 0, 0);
 
         const usableGaps = freeGaps.filter((g) => new Date(g.start) < dayDone);
         const totalUsableMinutes = usableGaps.reduce((acc, g) => {
@@ -168,7 +167,7 @@ function RouteComponent() {
             .filter(Boolean);
 
         rescheduled.forEach((item) => {
-            if (item.allocated < MIN_DURATION) {
+            if (item.allocated < user?.minDuration!) {
                 console.log(`Skipping ${item.subarea} - too short!`);
                 return;
             }
@@ -252,6 +251,10 @@ function RouteComponent() {
                 { headers: getAuthHeaders },
             );
         }
+
+        queryClient.resetQueries({
+            queryKey: ["plan"],
+        });
     };
     useEffect(() => {
         handleGetData();
@@ -452,6 +455,7 @@ function RouteComponent() {
                                         e.target.value as "global" | "nested",
                                     );
                                     setRescheduledData([]);
+                                    setFinalSchedule([]);
                                 }}
                                 className="h-4 w-4 cursor-pointer"
                             />
@@ -475,6 +479,7 @@ function RouteComponent() {
                                         e.target.value as "global" | "nested",
                                     );
                                     setRescheduledData([]);
+                                    setFinalSchedule([]);
                                 }}
                                 className="h-4 w-4 cursor-pointer"
                             />

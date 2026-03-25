@@ -16,7 +16,7 @@ const app = new Hono<{ Variables: AppType }>()
     .get("/", authCheck, async (c) => {
         const userId = c.get("userId");
 
-        const data = getPlan(userId);
+        const data = await getPlan(userId);
 
         return c.json({ ok: true, data }, 200);
     })

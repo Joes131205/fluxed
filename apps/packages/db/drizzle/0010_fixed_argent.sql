@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "min_duration" integer DEFAULT 15;

@@ -45,6 +45,7 @@ const app = new Hono<{ Variables: AppType }>()
                 googleRefreshToken: user.googleRefreshToken,
                 startTime: user.startTime,
                 endTime: user.endTime,
+                minDuration: user.minDuration,
                 token,
             },
             201,
@@ -76,6 +77,7 @@ const app = new Hono<{ Variables: AppType }>()
                 googleRefreshToken: user.googleRefreshToken,
                 startTime: user.startTime,
                 endTime: user.endTime,
+                minDuration: user.minDuration,
                 token,
             },
             200,
@@ -101,6 +103,7 @@ const app = new Hono<{ Variables: AppType }>()
                 updatedAt: user.updatedAt,
                 startTime: user.startTime,
                 endTime: user.endTime,
+                minDuration: user.minDuration,
             },
             200,
         );
@@ -117,12 +120,6 @@ const app = new Hono<{ Variables: AppType }>()
         return c.redirect(authUrl.toString());
     })
     .get("/google/callback", async (c) => {
-        console.log(
-            "🚀 CALLBACK TRIGGERED AT:",
-            new Date().toISOString(),
-            "CODE:",
-            c.req.query("code")?.slice(-5),
-        );
         const oauthError = c.req.query("error");
         const oauthErrorDescription = c.req.query("error_description");
         if (oauthError) {
