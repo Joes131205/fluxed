@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePlans } from "@/hooks/usePlan";
 import { requireAuth } from "@/utils/requireAuth";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/dashboard/")({
     beforeLoad: requireAuth,
@@ -50,7 +51,28 @@ function RouteComponent() {
         });
     };
 
-    console.log(plansData);
+    useEffect(() => {
+        const unsubscribe = async () => {
+            if (window.Notification) {
+                if (
+                    window.Notification.permission !== "granted" &&
+                    window.Notification.permission !== "denied"
+                ) {
+                    const req = await window.Notification.requestPermission();
+                    if (req === "granted") {
+                        new Notification("Beep!", {
+                            body: "Boop!",
+                        });
+                    }
+                } else if (window.Notification.permission === "granted") {
+                    new Notification("Beep!", {
+                        body: "Boop!",
+                    });
+                }
+            }
+        };
+        unsubscribe();
+    }, []);
     if (isLoading) {
         return <p>Loading...</p>;
     }
@@ -59,7 +81,6 @@ function RouteComponent() {
         return <p>Error!</p>;
     }
 
-    console.log(areasData);
     return (
         <div className="min-h-screen">
             <div className="max-w-4xl mx-auto px-4 py-12">
@@ -110,6 +131,9 @@ function RouteComponent() {
                 <div>
                     <p>Google Log In?</p>
                     {user?.googleId ? <p>True</p> : <p>False</p>}
+                </div>
+                <div>
+                    <Link to="/dashboard/settings">Settings</Link>
                 </div>
                 <div className="mt-12">
                     <div className="flex justify-between items-center mb-6">

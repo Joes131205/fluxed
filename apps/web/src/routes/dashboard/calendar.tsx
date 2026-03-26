@@ -57,6 +57,8 @@ function RouteComponent() {
     };
 
     const { user } = useAuth();
+    const { data: areasData } = useAreas();
+
     const queryClient = useQueryClient();
 
     const [calendar, setCalendar] = useState<CalendarItem[]>([]);
@@ -71,10 +73,9 @@ function RouteComponent() {
     const [selectedAlgorithm, setSelectedAlgorithm] = useState<
         "global" | "nested"
     >("global");
-
     const [freeGaps, setFreeGaps] = useState<any[]>([]);
-
-    const { data: areasData } = useAreas();
+    const [start, setStart] = useState<string>("");
+    const [end, setEnd] = useState<string>("");
 
     const todayDateString = new Date().toDateString();
 
@@ -89,7 +90,31 @@ function RouteComponent() {
         });
     };
 
+    const toTodayIso = (time: string) => {
+        const [h, m] = time.split(":");
+        const hours = Number(h);
+        const minutes = Number(m);
+
+        if (
+            Number.isNaN(hours) ||
+            Number.isNaN(minutes) ||
+            hours < 0 ||
+            hours > 23 ||
+            minutes < 0 ||
+            minutes > 59
+        ) {
+            return null;
+        }
+
+        const date = new Date();
+        date.setHours(hours, minutes, 0, 0);
+        return date.toISOString();
+    };
+
     const handleGetData = async () => {
+        if (!user?.googleId) {
+            return;
+        }
         setIsLoading(true);
         setError(null);
 
@@ -256,9 +281,128 @@ function RouteComponent() {
             queryKey: ["plan"],
         });
     };
+
+    const handleAddEvent = () => {
+        const startIso = toTodayIso(start);
+        const endIso = toTodayIso(end);
+
+        if (!startIso || !endIso) {
+            setError("Please provide valid start and end times.");
+            return;
+        }
+
+        const currentBusySlots = calendar[0]?.busy ?? [];
+        const newBusySlots = [
+            ...currentBusySlots,
+            { start: startIso, end: endIso },
+        ].sort(
+            (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+        );
+
+        setCalendar([{ id: "offline", name: "Manual", busy: newBusySlots }]);
+
+        const freeTime = [];
+        let curr = new Date();
+        let night = new Date();
+        night.setHours(23, 59, 59, 999);
+
+        for (const slot of newBusySlots) {
+            const startTime = new Date(slot.start);
+            const endTime = new Date(slot.end);
+
+            if (startTime > curr) {
+                freeTime.push({
+                    start: curr.toISOString(),
+                    end: startTime.toISOString(),
+                    durationMinutes: Math.round(
+                        (startTime.getTime() - curr.getTime()) / 60000,
+                    ),
+                });
+            }
+            if (endTime > curr) curr = endTime;
+        }
+
+        if (curr < night) {
+            freeTime.push({
+                start: curr.toISOString(),
+                end: night.toISOString(),
+                durationMinutes: Math.round(
+                    (night.getTime() - curr.getTime()) / 60000,
+                ),
+            });
+        }
+
+        setFreeGaps(freeTime);
+        setMinutes(freeTime.reduce((a, b) => a + b.durationMinutes, 0));
+
+        setStart("");
+        setEnd("");
+    };
+
+    const handleRemoveEvent = (i: number) => {
+        const currentBusy = calendar[0]?.busy ?? [];
+        const newBusy = [
+            ...currentBusy.slice(0, i),
+            ...currentBusy.slice(i + 1),
+        ];
+        setCalendar([{ id: "offline", name: "Manual", busy: newBusy }]);
+
+        const freeTime = [];
+        let curr = new Date();
+        let night = new Date();
+        night.setHours(23, 59, 59, 999);
+
+        for (const slot of newBusy) {
+            const startTime = new Date(slot.start);
+            const endTime = new Date(slot.end);
+
+            if (startTime > curr) {
+                freeTime.push({
+                    start: curr.toISOString(),
+                    end: startTime.toISOString(),
+                    durationMinutes: Math.round(
+                        (startTime.getTime() - curr.getTime()) / 60000,
+                    ),
+                });
+            }
+            if (endTime > curr) curr = endTime;
+        }
+
+        if (curr < night) {
+            freeTime.push({
+                start: curr.toISOString(),
+                end: night.toISOString(),
+                durationMinutes: Math.round(
+                    (night.getTime() - curr.getTime()) / 60000,
+                ),
+            });
+        }
+
+        setFreeGaps(freeTime);
+        setMinutes(freeTime.reduce((a, b) => a + b.durationMinutes, 0));
+    };
+
     useEffect(() => {
-        handleGetData();
-    }, []);
+        if (user?.googleId) {
+            handleGetData();
+        } else {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(23, 59, 59, 999);
+
+            const initialGap = {
+                start: now.toISOString(),
+                end: midnight.toISOString(),
+                durationMinutes: Math.round(
+                    (midnight.getTime() - now.getTime()) / 60000,
+                ),
+            };
+
+            setFreeGaps([initialGap]);
+            setMinutes(initialGap.durationMinutes);
+            setCalendar([]);
+        }
+    }, [user?.googleId]);
 
     useEffect(() => {
         if (areasData && "ok" in areasData && areasData.ok && areasData.data) {
@@ -317,19 +461,12 @@ function RouteComponent() {
                             {isLoading ? "Syncing..." : "Sync Calendar"}
                         </button>
                     </div>
+                    {error ? (
+                        <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                            {error}
+                        </p>
+                    ) : null}
                 </div>
-
-                {error && (
-                    <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-                        {error}
-                    </p>
-                )}
-
-                {!isLoading && !error && calendar.length === 0 && (
-                    <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-                        No calendars available.
-                    </p>
-                )}
 
                 <div className="grid gap-3 sm:grid-cols-3">
                     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -358,47 +495,149 @@ function RouteComponent() {
                     </div>
                 </div>
 
-                <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-slate-900">
-                            Today&apos;s Busy Times
-                        </h2>
+                {user?.googleId && calendar.length ? (
+                    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-semibold text-slate-900">
+                                Today&apos;s Busy Times
+                            </h2>
+                        </div>
+                        {calendar.map((item) => {
+                            const todayBusy = item.busy.filter(
+                                (slot) =>
+                                    isToday(slot.start) || isToday(slot.end),
+                            );
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                                >
+                                    <h3 className="mb-3 text-base font-semibold text-slate-900 sm:text-lg">
+                                        {item.name}
+                                    </h3>
+
+                                    {todayBusy.length === 0 ? (
+                                        <p className="text-sm text-slate-600">
+                                            Free for the rest of today.
+                                        </p>
+                                    ) : (
+                                        <ul className="grid gap-2 sm:grid-cols-2">
+                                            {todayBusy.map((slot) => (
+                                                <li
+                                                    key={`${item.id}-${slot.start}-${slot.end}`}
+                                                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700"
+                                                >
+                                                    {formatTime(slot.start)} -{" "}
+                                                    {formatTime(slot.end)}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
-                    {calendar.map((item) => {
-                        const todayBusy = item.busy.filter(
-                            (slot) => isToday(slot.start) || isToday(slot.end),
-                        );
-
-                        return (
-                            <div
-                                key={item.id}
-                                className="rounded-xl border border-slate-200 bg-slate-50 p-4"
-                            >
-                                <h3 className="mb-3 text-base font-semibold text-slate-900 sm:text-lg">
-                                    {item.name}
-                                </h3>
-
-                                {todayBusy.length === 0 ? (
-                                    <p className="text-sm text-slate-600">
-                                        Free for the rest of today.
-                                    </p>
-                                ) : (
-                                    <ul className="grid gap-2 sm:grid-cols-2">
-                                        {todayBusy.map((slot) => (
-                                            <li
-                                                key={`${item.id}-${slot.start}-${slot.end}`}
-                                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700"
-                                            >
-                                                {formatTime(slot.start)} -{" "}
-                                                {formatTime(slot.end)}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
+                ) : (
+                    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <h2 className="text-xl font-semibold text-slate-900">
+                                    Manual Busy Blocks
+                                </h2>
+                                <p className="mt-1 text-sm text-slate-600">
+                                    No Google Calendar linked. Add your busy
+                                    time manually for today.
+                                </p>
                             </div>
-                        );
-                    })}
-                </div>
+                            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-700">
+                                Manual Mode
+                            </span>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-3">
+                            <label className="space-y-1">
+                                <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+                                    Start Time
+                                </span>
+                                <input
+                                    type="time"
+                                    value={start}
+                                    onChange={(e) => setStart(e.target.value)}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 shadow-xs outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                                />
+                            </label>
+
+                            <label className="space-y-1">
+                                <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+                                    End Time
+                                </span>
+                                <input
+                                    type="time"
+                                    value={end}
+                                    onChange={(e) => setEnd(e.target.value)}
+                                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 shadow-xs outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                                />
+                            </label>
+
+                            <button
+                                onClick={handleAddEvent}
+                                className="h-fit self-end rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+                            >
+                                Add Event
+                            </button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {calendar.map((item) => {
+                                const todayBusy = item.busy.filter(
+                                    (slot) =>
+                                        isToday(slot.start) ||
+                                        isToday(slot.end),
+                                );
+
+                                return (
+                                    <div
+                                        key={item.id}
+                                        className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                                    >
+                                        <h3 className="mb-3 text-base font-semibold text-slate-900 sm:text-lg">
+                                            {item.name || "Manual Calendar"}
+                                        </h3>
+
+                                        {todayBusy.length === 0 ? (
+                                            <p className="text-sm text-slate-600">
+                                                Free for the rest of today.
+                                            </p>
+                                        ) : (
+                                            <ul className="grid gap-2 sm:grid-cols-2">
+                                                {todayBusy.map((slot, i) => (
+                                                    <li
+                                                        key={`${item.id}-${slot.start}-${slot.end}`}
+                                                        onClick={() =>
+                                                            handleRemoveEvent(i)
+                                                        }
+                                                        className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700"
+                                                    >
+                                                        {formatTime(slot.start)}{" "}
+                                                        - {formatTime(slot.end)}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                );
+                            })}
+
+                            {calendar.length === 0 ? (
+                                <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                                    Add a start and end time to create your
+                                    first busy block.
+                                </p>
+                            ) : null}
+                        </div>
+                    </div>
+                )}
 
                 <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                     <h2 className="text-xl font-semibold text-slate-900">
