@@ -220,11 +220,12 @@ function RouteComponent() {
                     });
 
                     minutesLeft -= amountToFit;
-                    currentGap.durationMinutes -= amountToFit;
+                    currentGap.durationMinutes -=
+                        amountToFit + user?.timeBuffer!;
 
                     currentGap.start = new Date(
                         new Date(currentGap.start).getTime() +
-                            amountToFit * 60000,
+                            (amountToFit + user?.timeBuffer!) * 60000,
                     ).toISOString();
                 }
 

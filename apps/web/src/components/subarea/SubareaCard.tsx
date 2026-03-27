@@ -18,10 +18,6 @@ const SubareaCard: React.FC<SubareaProp> = ({ subarea }) => {
                         Weight: {subarea.weight}
                     </span>
                 )}
-                <p>
-                    Allocated minute for today: {subarea.allocatedMinutes}{" "}
-                    minutes
-                </p>
             </div>
         </div>
     );

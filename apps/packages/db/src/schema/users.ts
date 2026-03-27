@@ -26,6 +26,7 @@ export const users = pgTable("users", {
         .notNull()
         .default("23:59"),
     minDuration: integer("min_duration").default(15),
+    timeBuffer: integer("time_buffer").default(5),
 });
 
 export type NewUser = typeof users.$inferInsert;

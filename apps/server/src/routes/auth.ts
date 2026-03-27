@@ -10,7 +10,7 @@ import {
 } from "../../../packages/db/src/queries/users";
 
 import { checkPasswordHash, hashPassword } from "../utils/auth";
-import { makeJWT, validateJWT } from "../utils/jwt";
+import { makeJWT } from "../utils/jwt";
 import {
     googleClientId,
     googleClientSecret,
@@ -46,6 +46,8 @@ const app = new Hono<{ Variables: AppType }>()
                 startTime: user.startTime,
                 endTime: user.endTime,
                 minDuration: user.minDuration,
+                timeBuffer: user.timeBuffer,
+
                 token,
             },
             201,
@@ -78,6 +80,8 @@ const app = new Hono<{ Variables: AppType }>()
                 startTime: user.startTime,
                 endTime: user.endTime,
                 minDuration: user.minDuration,
+                timeBuffer: user.timeBuffer,
+
                 token,
             },
             200,
@@ -104,6 +108,7 @@ const app = new Hono<{ Variables: AppType }>()
                 startTime: user.startTime,
                 endTime: user.endTime,
                 minDuration: user.minDuration,
+                timeBuffer: user.timeBuffer,
             },
             200,
         );

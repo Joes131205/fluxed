@@ -22,6 +22,7 @@ type User = {
     startTime: string;
     endTime: string;
     minDuration: number;
+    timeBuffer: number;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -58,6 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             startTime: data.startTime,
                             endTime: data.endTime,
                             minDuration: data.minDuration!,
+                            timeBuffer: data.timeBuffer!,
                         });
                     } else if (authResponse.status === 401) {
                         localStorage.clear();
@@ -91,6 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 startTime: data.startTime,
                 endTime: data.endTime,
                 minDuration: data.minDuration!,
+                timeBuffer: data.timeBuffer!,
             });
         } else {
             throw new Error("Login failed");
@@ -117,6 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 startTime: data.startTime,
                 endTime: data.endTime,
                 minDuration: data.minDuration!,
+                timeBuffer: data.timeBuffer!,
             });
         } else {
             throw new Error("Signup failed");

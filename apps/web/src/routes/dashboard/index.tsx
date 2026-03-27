@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePlans } from "@/hooks/usePlan";
 import { requireAuth } from "@/utils/requireAuth";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/dashboard/")({
     beforeLoad: requireAuth,
@@ -42,6 +42,8 @@ function RouteComponent() {
             ? ((plansData as { data: PlanItem[] }).data ?? [])
             : [];
 
+    const [now, setNow] = useState(new Date());
+
     const formatPlanDateTime = (value: string) => {
         return new Date(value).toLocaleString([], {
             hour: "2-digit",
@@ -50,6 +52,11 @@ function RouteComponent() {
             day: "numeric",
         });
     };
+
+    useEffect(() => {
+        const timer = setInterval(() => setNow(new Date()), 60000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         const unsubscribe = async () => {
@@ -61,13 +68,22 @@ function RouteComponent() {
                     const req = await window.Notification.requestPermission();
                     if (req === "granted") {
                         new Notification("Beep!", {
-                            body: "Boop!",
+                            body: "Boop! This will be used on this page!",
                         });
                     }
                 } else if (window.Notification.permission === "granted") {
-                    new Notification("Beep!", {
-                        body: "Boop!",
-                    });
+                    if (planItems.length) {
+                        for (let i = 0; i < planItems.length; i++) {
+                            if (
+                                now >= new Date(planItems[i].startTime) &&
+                                now <= new Date(planItems[i].endTime)
+                            ) {
+                                await new Notification("You have a task!", {
+                                    body: `${planItems[i].subareaName} at ${new Date(planItems[i].startTime).toLocaleTimeString()} - ${new Date(planItems[i].endTime).toLocaleTimeString()}`,
+                                });
+                            }
+                        }
+                    }
                 }
             }
         };
@@ -219,7 +235,7 @@ function RouteComponent() {
                                     {planItems.map((item) => (
                                         <li
                                             key={item.sessionId}
-                                            className="rounded-md border border-gray-200 bg-gray-50 p-4"
+                                            className={`rounded-md border border-gray-200 bg-gray-50 p-4 ${now >= new Date(item.startTime) && now <= new Date(item.endTime) ? "border-green-500 border-4" : ""}`}
                                         >
                                             <div className="flex flex-wrap items-center justify-between gap-2">
                                                 <p className="font-semibold text-gray-900">

@@ -1,9 +1,14 @@
+import { env } from "@/env";
 import { useAuth } from "@/hooks/useAuth";
 import { getAuthHeaders } from "@/lib/authHeaders";
 import { usersClient } from "@/lib/client";
 import { requireAuth } from "@/utils/requireAuth";
 import { createFileRoute } from "@tanstack/react-router";
+
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/dashboard/settings")({
     beforeLoad: requireAuth,
@@ -16,6 +21,8 @@ function RouteComponent() {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [minDuration, setMinDuration] = useState(0);
+    const [timeBuffer, setTimeBuffer] = useState(0);
+
     const handleSave = async () => {
         await usersClient.time.$put(
             {
@@ -23,6 +30,7 @@ function RouteComponent() {
                     startTime,
                     endTime,
                     minDuration,
+                    timeBuffer,
                 },
             },
             {
@@ -37,6 +45,7 @@ function RouteComponent() {
         setStartTime(user?.startTime!);
         setEndTime(user?.endTime!);
         setMinDuration(user?.minDuration!);
+        setTimeBuffer(user?.timeBuffer!);
     }, [user]);
 
     return (
@@ -48,81 +57,120 @@ function RouteComponent() {
                     </h1>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div className="p-6 sm:p-8">
-                        <div className="space-y-8">
-                            <div>
-                                <label
-                                    htmlFor="startTime"
-                                    className="block text-sm font-semibold text-gray-900 mb-3"
-                                >
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                    <form
+                        className="p-8 space-y-8"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSave();
+                        }}
+                    >
+                        <div className="space-y-6">
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="startTime">
                                     When do you start the day / start the
                                     routine?
-                                </label>
-                                <input
+                                </Label>
+                                <Input
                                     id="startTime"
                                     type="time"
+                                    value={startTime}
                                     onChange={(e) =>
                                         setStartTime(e.target.value)
                                     }
-                                    value={startTime}
-                                    className="w-full px-4 py-3 text-lg border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:ring-1 outline-none transition-colors"
                                 />
-                                <p className="mt-2 text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                     Current: {startTime || "Not set"}
-                                </p>
+                                </span>
                             </div>
-
-                            <div>
-                                <label
-                                    htmlFor="endTime"
-                                    className="block text-sm font-semibold text-gray-900 mb-3"
-                                >
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="endTime">
                                     When do you finish the day?
-                                </label>
-                                <input
+                                </Label>
+                                <Input
                                     id="endTime"
                                     type="time"
-                                    onChange={(e) => setEndTime(e.target.value)}
                                     value={endTime}
-                                    className="w-full px-4 py-3 text-lg border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:ring-1 outline-none transition-colors"
+                                    onChange={(e) => setEndTime(e.target.value)}
                                 />
-                                <p className="mt-2 text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                     Current: {endTime || "Not set"}
-                                </p>
+                                </span>
                             </div>
-
-                            <div>
-                                <label
-                                    htmlFor="endTime"
-                                    className="block text-sm font-semibold text-gray-900 mb-3"
-                                >
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="minDuration">
                                     What's the task duration minimum?
-                                </label>
-                                <input
+                                </Label>
+                                <Input
                                     id="minDuration"
                                     type="number"
+                                    value={minDuration}
                                     onChange={(e) =>
                                         setMinDuration(Number(e.target.value))
                                     }
-                                    value={minDuration}
-                                    className="w-full px-4 py-3 text-lg border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:ring-1 outline-none transition-colors"
+                                    min={0}
                                 />
-                                <p className="mt-2 text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                     Current: {minDuration || "Not set"}
-                                </p>
+                                </span>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <Label htmlFor="minDuration">
+                                    What's the time buffer between events?
+                                </Label>
+                                <Input
+                                    id="timeBuffer"
+                                    type="number"
+                                    value={timeBuffer}
+                                    onChange={(e) =>
+                                        setTimeBuffer(Number(e.target.value))
+                                    }
+                                    min={0}
+                                />
+                                <span className="text-xs text-gray-500">
+                                    Current: {timeBuffer || "Not set"}
+                                </span>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Action Footer */}
-                    <div className="bg-gray-50 px-6 sm:px-8 py-4 flex justify-end gap-3 border-t border-gray-200">
-                        <button
-                            onClick={handleSave}
-                            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors shadow-sm"
-                        >
-                            Save Time
-                        </button>
+                        <div className="flex justify-end pt-4 border-t border-gray-100">
+                            <Button type="submit" className="px-8">
+                                Save
+                            </Button>
+                        </div>
+                    </form>
+                    <div className="px-8 pb-8">
+                        <div className="mt-8">
+                            <div className="flex items-center gap-3">
+                                <span className="font-medium text-gray-700">
+                                    Google Account:
+                                </span>
+                                {user?.googleId ? (
+                                    <span className="text-green-600 font-semibold">
+                                        Linked
+                                    </span>
+                                ) : (
+                                    <span className="text-red-500 font-semibold">
+                                        Not Linked
+                                    </span>
+                                )}
+                            </div>
+                            {user?.googleId ? (
+                                <div className="text-xs text-gray-500 mt-1">
+                                    {user.googleId}
+                                </div>
+                            ) : (
+                                <a
+                                    href={
+                                        env.VITE_API_URL +
+                                        "/api/auth/google/start"
+                                    }
+                                    className="inline-block mt-2 text-blue-600 hover:underline text-sm font-medium"
+                                >
+                                    Link Google
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
