@@ -1,6 +1,8 @@
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
 import { db } from "..";
 import { type NewUser, users } from "..";
+
+const { password, ...columnsWithoutPassword } = getTableColumns(users);
 
 export const createUser = async (user: NewUser) => {
     const [result] = await db
@@ -20,7 +22,10 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const getUserById = async (userId: string) => {
-    const [result] = await db.select().from(users).where(eq(users.id, userId));
+    const [result] = await db
+        .select(columnsWithoutPassword)
+        .from(users)
+        .where(eq(users.id, userId));
     return result;
 };
 

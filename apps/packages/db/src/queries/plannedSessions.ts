@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db, plannedSessions, subareas } from "..";
 import type { NewPlannedSessions } from "../schema";
 
-export const updatePlan = async (planned: NewPlannedSessions) => {
+export const updatePlan = async (planned: NewPlannedSessions[]) => {
     await db.insert(plannedSessions).values(planned);
 };
 

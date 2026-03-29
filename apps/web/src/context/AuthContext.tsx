@@ -10,19 +10,22 @@ type AuthContextType = {
         password: string,
     ) => Promise<void>;
     logout: () => Promise<void>;
+    refreshUser: () => Promise<void>;
     isAuthLoading: boolean;
 };
 
 type User = {
     id: string;
+    createdAt: string;
+    updatedAt: string;
     email: string;
-    username?: string;
-    googleId: string | null;
+    username: string;
     googleRefreshToken: string | null;
+    googleId: string | null;
     startTime: string;
     endTime: string;
-    minDuration: number;
-    timeBuffer: number;
+    minDuration: number | null;
+    timeBuffer: number | null;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -50,17 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     if (authResponse.ok) {
                         const data = await authResponse.json();
 
-                        setUser({
-                            id: data.id,
-                            email: data.email,
-                            username: data.username,
-                            googleId: data.googleId,
-                            googleRefreshToken: data.googleRefreshToken,
-                            startTime: data.startTime,
-                            endTime: data.endTime,
-                            minDuration: data.minDuration!,
-                            timeBuffer: data.timeBuffer!,
-                        });
+                        setUser(data.user);
                     } else if (authResponse.status === 401) {
                         localStorage.clear();
                     }
@@ -74,6 +67,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         checkAuth();
     }, []);
 
+    const refreshUser = async () => {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/auth/me", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setUser(data.user);
+    };
+
     const login = async (email: string, password: string) => {
         const response = await authClient.login.$post({
             json: { email, password },
@@ -84,17 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.token);
-            setUser({
-                id: data.id,
-                email: data.email,
-                username: data.username,
-                googleId: data.googleId,
-                googleRefreshToken: data.googleRefreshToken,
-                startTime: data.startTime,
-                endTime: data.endTime,
-                minDuration: data.minDuration!,
-                timeBuffer: data.timeBuffer!,
-            });
+            await refreshUser();
         } else {
             throw new Error("Login failed");
         }
@@ -111,17 +103,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.token);
-            setUser({
-                id: data.id,
-                email: data.email,
-                username,
-                googleId: data.googleId,
-                googleRefreshToken: data.googleRefreshToken,
-                startTime: data.startTime,
-                endTime: data.endTime,
-                minDuration: data.minDuration!,
-                timeBuffer: data.timeBuffer!,
-            });
+            await refreshUser();
         } else {
             throw new Error("Signup failed");
         }
@@ -141,6 +123,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 signup,
                 logout,
                 isAuthLoading,
+                refreshUser,
             }}
         >
             {children}

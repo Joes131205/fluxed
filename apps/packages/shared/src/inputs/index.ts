@@ -53,13 +53,15 @@ export const subareaSchema = z.object({
     allocatedMinutes: z.number().optional(),
 });
 
-export const plannedSessionSchema = z.object({
-    subarea_id: z.string(),
-    user_id: z.string(),
-    start_time: z.coerce.date(),
-    end_time: z.coerce.date(),
-    minutes: z.number(),
-});
+export const plannedSessionSchema = z.array(
+    z.object({
+        subarea_id: z.string(),
+        user_id: z.string(),
+        start_time: z.coerce.date(),
+        end_time: z.coerce.date(),
+        minutes: z.number(),
+    }),
+);
 
 export const userSchema = z.object({
     id: z.string().uuid(),

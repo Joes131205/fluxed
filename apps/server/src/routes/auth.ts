@@ -37,17 +37,7 @@ const app = new Hono<{ Variables: AppType }>()
         return c.json(
             {
                 ok: true,
-                id: user.id,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt,
-                email: user.email,
-                googleId: user.googleId,
-                googleRefreshToken: user.googleRefreshToken,
-                startTime: user.startTime,
-                endTime: user.endTime,
-                minDuration: user.minDuration,
-                timeBuffer: user.timeBuffer,
-
+                user,
                 token,
             },
             201,
@@ -55,7 +45,6 @@ const app = new Hono<{ Variables: AppType }>()
     })
     .post("/login", zValidator("json", logInSchema), async (c) => {
         const input = c.req.valid("json");
-        console.log(input);
 
         const user = await getUserByEmail(input.email);
 
@@ -67,21 +56,10 @@ const app = new Hono<{ Variables: AppType }>()
         }
 
         const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
+
         return c.json(
             {
                 ok: true,
-                id: user.id,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt,
-                email: user.email,
-                username: user.username,
-                googleId: user.googleId,
-                googleRefreshToken: user.googleRefreshToken,
-                startTime: user.startTime,
-                endTime: user.endTime,
-                minDuration: user.minDuration,
-                timeBuffer: user.timeBuffer,
-
                 token,
             },
             200,
@@ -98,17 +76,7 @@ const app = new Hono<{ Variables: AppType }>()
         return c.json(
             {
                 ok: true,
-                id: user.id,
-                email: user.email,
-                username: user.username,
-                googleId: user.googleId,
-                googleRefreshToken: user.googleRefreshToken,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt,
-                startTime: user.startTime,
-                endTime: user.endTime,
-                minDuration: user.minDuration,
-                timeBuffer: user.timeBuffer,
+                user,
             },
             200,
         );
