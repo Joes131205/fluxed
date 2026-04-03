@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export const SideBar = () => {
     const [isOpened, setIsOpened] = useState(false);
+    const [current, setCurrent] = useState("");
 
     const navItems = [
         {
@@ -21,7 +22,11 @@ export const SideBar = () => {
             to: "/dashboard/settings",
             icon: Settings,
         },
-    ] as const;
+    ];
+
+    const handleChange = (state: string) => {
+        setCurrent(state);
+    };
 
     return (
         <>
@@ -42,14 +47,6 @@ export const SideBar = () => {
                     isOpened ? "translate-x-0" : "-translate-x-full"
                 }`}
             >
-                {isOpened && (
-                    <button
-                        type="button"
-                        className="fixed inset-0 z-30 bg-black/30 md:hidden"
-                        onClick={() => setIsOpened(false)}
-                        aria-label="Close sidebar backdrop"
-                    />
-                )}
                 <div className="flex h-full flex-col">
                     <div className="mb-5 flex items-center justify-between md:hidden">
                         <span className="text-sm font-bold tracking-wide text-foreground/80">
@@ -73,12 +70,8 @@ export const SideBar = () => {
                                 <Link
                                     key={item.to}
                                     to={item.to}
-                                    onClick={() => setIsOpened(false)}
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-foreground/80 transition hover:bg-neutral-100 hover:text-foreground"
-                                    activeProps={{
-                                        className:
-                                            "flex items-center gap-3 rounded-xl bg-primary/15 px-3 py-2.5 text-sm font-semibold text-foreground",
-                                    }}
+                                    onClick={() => handleChange(item.label)}
+                                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-foreground/80 transition ${current === item.label ? "bg-primary" : "hover:bg-neutral-100 hover:text-foreground"}`}
                                 >
                                     <Icon className="h-4 w-4" />
                                     <span>{item.label}</span>

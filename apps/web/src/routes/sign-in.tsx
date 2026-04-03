@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { Button } from "@/components/misc/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -129,15 +130,11 @@ function RouteComponent() {
                         >
                             {([canSubmit, isSubmitting]) => {
                                 return (
-                                    <button
-                                        type="submit"
+                                    <Button
                                         disabled={!canSubmit || isSubmitting}
-                                        className="w-full cursor-pointer rounded-xl bg-primary py-3.5 font-bold text-foreground transition hover:brightness-95 disabled:cursor-not-allowed disabled:bg-primary/60 disabled:opacity-90"
-                                    >
-                                        {isSubmitting
-                                            ? "Loading..."
-                                            : "Sign In"}
-                                    </button>
+                                        isSubmitting={isSubmitting}
+                                        label="Sign In"
+                                    />
                                 );
                             }}
                         </form.Subscribe>
