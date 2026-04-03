@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthSuccessRouteImport } from './routes/auth-success'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
@@ -37,9 +39,19 @@ const SignInRoute = SignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthSuccessRoute = AuthSuccessRouteImport.update({
   id: '/auth-success',
   path: '/auth-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -48,45 +60,47 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
-  id: '/dashboard/settings',
-  path: '/dashboard/settings',
-  getParentRoute: () => rootRouteImport,
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardCalendarRoute = DashboardCalendarRouteImport.update({
-  id: '/dashboard/calendar',
-  path: '/dashboard/calendar',
-  getParentRoute: () => rootRouteImport,
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardRescheduleIndexRoute =
   DashboardRescheduleIndexRouteImport.update({
-    id: '/dashboard/reschedule/',
-    path: '/dashboard/reschedule/',
-    getParentRoute: () => rootRouteImport,
+    id: '/reschedule/',
+    path: '/reschedule/',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardSubareasCreateRoute = DashboardSubareasCreateRouteImport.update({
-  id: '/dashboard/subareas/create',
-  path: '/dashboard/subareas/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/subareas/create',
+  path: '/subareas/create',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardEventsCreateRoute = DashboardEventsCreateRouteImport.update({
-  id: '/dashboard/events/create',
-  path: '/dashboard/events/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/events/create',
+  path: '/events/create',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardAreasCreateRoute = DashboardAreasCreateRouteImport.update({
-  id: '/dashboard/areas/create',
-  path: '/dashboard/areas/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/areas/create',
+  path: '/areas/create',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/auth-success': typeof AuthSuccessRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
@@ -101,6 +115,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth-success': typeof AuthSuccessRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
@@ -115,7 +130,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/auth-success': typeof AuthSuccessRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
@@ -131,7 +148,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/auth-success'
+    | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
     | '/status'
@@ -146,6 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth-success'
+    | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
     | '/status'
@@ -159,7 +179,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/auth-success'
+    | '/forgot-password'
     | '/sign-in'
     | '/sign-up'
     | '/status'
@@ -174,17 +196,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   AuthSuccessRoute: typeof AuthSuccessRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   StatusRoute: typeof StatusRoute
-  DashboardCalendarRoute: typeof DashboardCalendarRoute
-  DashboardSettingsRoute: typeof DashboardSettingsRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardAreasCreateRoute: typeof DashboardAreasCreateRoute
-  DashboardEventsCreateRoute: typeof DashboardEventsCreateRoute
-  DashboardSubareasCreateRoute: typeof DashboardSubareasCreateRoute
-  DashboardRescheduleIndexRoute: typeof DashboardRescheduleIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -210,11 +227,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth-success': {
       id: '/auth-success'
       path: '/auth-success'
       fullPath: '/auth-success'
       preLoaderRoute: typeof AuthSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -226,62 +257,67 @@ declare module '@tanstack/react-router' {
     }
     '/dashboard/': {
       id: '/dashboard/'
-      path: '/dashboard'
+      path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/settings': {
       id: '/dashboard/settings'
-      path: '/dashboard/settings'
+      path: '/settings'
       fullPath: '/dashboard/settings'
       preLoaderRoute: typeof DashboardSettingsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/calendar': {
       id: '/dashboard/calendar'
-      path: '/dashboard/calendar'
+      path: '/calendar'
       fullPath: '/dashboard/calendar'
       preLoaderRoute: typeof DashboardCalendarRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/reschedule/': {
       id: '/dashboard/reschedule/'
-      path: '/dashboard/reschedule'
+      path: '/reschedule'
       fullPath: '/dashboard/reschedule/'
       preLoaderRoute: typeof DashboardRescheduleIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/subareas/create': {
       id: '/dashboard/subareas/create'
-      path: '/dashboard/subareas/create'
+      path: '/subareas/create'
       fullPath: '/dashboard/subareas/create'
       preLoaderRoute: typeof DashboardSubareasCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/events/create': {
       id: '/dashboard/events/create'
-      path: '/dashboard/events/create'
+      path: '/events/create'
       fullPath: '/dashboard/events/create'
       preLoaderRoute: typeof DashboardEventsCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/areas/create': {
       id: '/dashboard/areas/create'
-      path: '/dashboard/areas/create'
+      path: '/areas/create'
       fullPath: '/dashboard/areas/create'
       preLoaderRoute: typeof DashboardAreasCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthSuccessRoute: AuthSuccessRoute,
-  SignInRoute: SignInRoute,
-  SignUpRoute: SignUpRoute,
-  StatusRoute: StatusRoute,
+interface DashboardRouteRouteChildren {
+  DashboardCalendarRoute: typeof DashboardCalendarRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardAreasCreateRoute: typeof DashboardAreasCreateRoute
+  DashboardEventsCreateRoute: typeof DashboardEventsCreateRoute
+  DashboardSubareasCreateRoute: typeof DashboardSubareasCreateRoute
+  DashboardRescheduleIndexRoute: typeof DashboardRescheduleIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCalendarRoute: DashboardCalendarRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
@@ -289,6 +325,20 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardEventsCreateRoute: DashboardEventsCreateRoute,
   DashboardSubareasCreateRoute: DashboardSubareasCreateRoute,
   DashboardRescheduleIndexRoute: DashboardRescheduleIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  AuthSuccessRoute: AuthSuccessRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
+  StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
