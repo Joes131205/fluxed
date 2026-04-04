@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import z from "zod";
 
 const tokenSchema = z.object({
-    token: z.string(),
+    token: z.string().min(1),
 });
 
 export const Route = createFileRoute("/auth-success")({
@@ -17,8 +17,8 @@ function RouteComponent() {
 
     useEffect(() => {
         localStorage.setItem("token", token);
-        navigate({ to: "/dashboard" });
-    }, [token]);
+        navigate({ to: "/dashboard", replace: true });
+    }, [token, navigate]);
 
     return (
         <div>

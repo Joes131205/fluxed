@@ -1,4 +1,4 @@
-import { SideBar } from "@/components/dashboard/SideBar";
+import { Navbar } from "@/components/dashboard/Navbar";
 import { requireAuth } from "@/utils/requireAuth";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/dashboard")({
 function RouteComponent() {
     return (
         <div className="min-h-screen md:flex">
-            <SideBar />
+            <Navbar />
             <main className="flex-1 px-4 py-4 md:px-6 md:py-6">
                 <Outlet />
             </main>

@@ -18,11 +18,8 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardCategoriesRouteImport } from './routes/dashboard/categories'
 import { Route as DashboardCalendarRouteImport } from './routes/dashboard/calendar'
-import { Route as DashboardRescheduleIndexRouteImport } from './routes/dashboard/reschedule/index'
-import { Route as DashboardSubareasCreateRouteImport } from './routes/dashboard/subareas/create'
-import { Route as DashboardEventsCreateRouteImport } from './routes/dashboard/events/create'
-import { Route as DashboardAreasCreateRouteImport } from './routes/dashboard/areas/create'
 
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
@@ -69,30 +66,14 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardCategoriesRoute = DashboardCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardCalendarRoute = DashboardCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardRescheduleIndexRoute =
-  DashboardRescheduleIndexRouteImport.update({
-    id: '/reschedule/',
-    path: '/reschedule/',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardSubareasCreateRoute = DashboardSubareasCreateRouteImport.update({
-  id: '/subareas/create',
-  path: '/subareas/create',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardEventsCreateRoute = DashboardEventsCreateRouteImport.update({
-  id: '/events/create',
-  path: '/events/create',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardAreasCreateRoute = DashboardAreasCreateRouteImport.update({
-  id: '/areas/create',
-  path: '/areas/create',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
@@ -105,12 +86,9 @@ export interface FileRoutesByFullPath {
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
+  '/dashboard/categories': typeof DashboardCategoriesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/areas/create': typeof DashboardAreasCreateRoute
-  '/dashboard/events/create': typeof DashboardEventsCreateRoute
-  '/dashboard/subareas/create': typeof DashboardSubareasCreateRoute
-  '/dashboard/reschedule/': typeof DashboardRescheduleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -120,12 +98,9 @@ export interface FileRoutesByTo {
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
+  '/dashboard/categories': typeof DashboardCategoriesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/dashboard/areas/create': typeof DashboardAreasCreateRoute
-  '/dashboard/events/create': typeof DashboardEventsCreateRoute
-  '/dashboard/subareas/create': typeof DashboardSubareasCreateRoute
-  '/dashboard/reschedule': typeof DashboardRescheduleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -137,12 +112,9 @@ export interface FileRoutesById {
   '/sign-up': typeof SignUpRoute
   '/status': typeof StatusRoute
   '/dashboard/calendar': typeof DashboardCalendarRoute
+  '/dashboard/categories': typeof DashboardCategoriesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/areas/create': typeof DashboardAreasCreateRoute
-  '/dashboard/events/create': typeof DashboardEventsCreateRoute
-  '/dashboard/subareas/create': typeof DashboardSubareasCreateRoute
-  '/dashboard/reschedule/': typeof DashboardRescheduleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -155,12 +127,9 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/status'
     | '/dashboard/calendar'
+    | '/dashboard/categories'
     | '/dashboard/settings'
     | '/dashboard/'
-    | '/dashboard/areas/create'
-    | '/dashboard/events/create'
-    | '/dashboard/subareas/create'
-    | '/dashboard/reschedule/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -170,12 +139,9 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/status'
     | '/dashboard/calendar'
+    | '/dashboard/categories'
     | '/dashboard/settings'
     | '/dashboard'
-    | '/dashboard/areas/create'
-    | '/dashboard/events/create'
-    | '/dashboard/subareas/create'
-    | '/dashboard/reschedule'
   id:
     | '__root__'
     | '/'
@@ -186,12 +152,9 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/status'
     | '/dashboard/calendar'
+    | '/dashboard/categories'
     | '/dashboard/settings'
     | '/dashboard/'
-    | '/dashboard/areas/create'
-    | '/dashboard/events/create'
-    | '/dashboard/subareas/create'
-    | '/dashboard/reschedule/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -269,6 +232,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/categories': {
+      id: '/dashboard/categories'
+      path: '/categories'
+      fullPath: '/dashboard/categories'
+      preLoaderRoute: typeof DashboardCategoriesRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/calendar': {
       id: '/dashboard/calendar'
       path: '/calendar'
@@ -276,55 +246,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCalendarRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
-    '/dashboard/reschedule/': {
-      id: '/dashboard/reschedule/'
-      path: '/reschedule'
-      fullPath: '/dashboard/reschedule/'
-      preLoaderRoute: typeof DashboardRescheduleIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/subareas/create': {
-      id: '/dashboard/subareas/create'
-      path: '/subareas/create'
-      fullPath: '/dashboard/subareas/create'
-      preLoaderRoute: typeof DashboardSubareasCreateRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/events/create': {
-      id: '/dashboard/events/create'
-      path: '/events/create'
-      fullPath: '/dashboard/events/create'
-      preLoaderRoute: typeof DashboardEventsCreateRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/areas/create': {
-      id: '/dashboard/areas/create'
-      path: '/areas/create'
-      fullPath: '/dashboard/areas/create'
-      preLoaderRoute: typeof DashboardAreasCreateRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
   }
 }
 
 interface DashboardRouteRouteChildren {
   DashboardCalendarRoute: typeof DashboardCalendarRoute
+  DashboardCategoriesRoute: typeof DashboardCategoriesRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardAreasCreateRoute: typeof DashboardAreasCreateRoute
-  DashboardEventsCreateRoute: typeof DashboardEventsCreateRoute
-  DashboardSubareasCreateRoute: typeof DashboardSubareasCreateRoute
-  DashboardRescheduleIndexRoute: typeof DashboardRescheduleIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCalendarRoute: DashboardCalendarRoute,
+  DashboardCategoriesRoute: DashboardCategoriesRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  DashboardAreasCreateRoute: DashboardAreasCreateRoute,
-  DashboardEventsCreateRoute: DashboardEventsCreateRoute,
-  DashboardSubareasCreateRoute: DashboardSubareasCreateRoute,
-  DashboardRescheduleIndexRoute: DashboardRescheduleIndexRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(

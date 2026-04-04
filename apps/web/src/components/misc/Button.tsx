@@ -24,7 +24,7 @@ export const Button = ({
             type={type}
             disabled={disabled}
             onClick={onClick}
-            className={`w-full cursor-pointer rounded-xl bg-primary py-3.5 font-bold text-foreground transition hover:brightness-95 disabled:cursor-not-allowed disabled:bg-primary/60 disabled:opacity-90 ${className ?? ""}`}
+            className={`cursor-pointer rounded-xl bg-primary px-5 py-2 font-bold text-foreground transition hover:brightness-95 disabled:cursor-not-allowed disabled:bg-primary/60 disabled:opacity-90 ${className ?? ""}`}
         >
             {isSubmitting ? loadingLabel : label}
         </button>

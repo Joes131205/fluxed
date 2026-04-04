@@ -4,11 +4,12 @@ import { getAuthHeaders } from "@/lib/authHeaders";
 import { usersClient } from "@/lib/client";
 import { requireAuth } from "@/utils/requireAuth";
 import { createFileRoute } from "@tanstack/react-router";
+import { CalendarClock, Clock3, Link2, TimerReset } from "lucide-react";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/misc/Button";
 
 export const Route = createFileRoute("/dashboard/settings")({
     beforeLoad: requireAuth,
@@ -34,41 +35,55 @@ function RouteComponent() {
                 },
             },
             {
-                headers: getAuthHeaders,
+                headers: getAuthHeaders(),
             },
         );
     };
 
     useEffect(() => {
-        setStartTime(user?.startTime!);
-        setEndTime(user?.endTime!);
-        setMinDuration(user?.minDuration!);
-        setTimeBuffer(user?.timeBuffer!);
+        setStartTime(user?.startTime ?? "");
+        setEndTime(user?.endTime ?? "");
+        setMinDuration(user?.minDuration ?? 0);
+        setTimeBuffer(user?.timeBuffer ?? 0);
     }, [user]);
 
+    const fieldClassName =
+        "h-11 rounded-xl border-border bg-white text-foreground shadow-sm transition focus-visible:ring-2 focus-visible:ring-primary/30";
+
     return (
-        <div className="min-h-screen ">
-            <div className="max-w-2xl mx-auto px-4 py-12">
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="p-4 md:p-6">
+            <div className="mx-auto max-w-3xl space-y-6">
+                <div className="space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                        Preferences
+                    </p>
+                    <h1 className="text-4xl font-black tracking-tight text-foreground">
                         Settings
                     </h1>
+                    <p className="text-sm text-muted-foreground">
+                        Tune your schedule defaults so planning feels automatic.
+                    </p>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <div className="overflow-hidden rounded-3xl border border-border/60 bg-linear-to-br from-white to-slate-50 shadow-[0_26px_70px_-36px_rgba(15,23,42,0.28)]">
                     <form
-                        className="p-8 space-y-8"
+                        className="space-y-8 p-6 md:p-8"
                         onSubmit={(e) => {
                             e.preventDefault();
                             handleSave();
                         }}
                     >
-                        <div className="space-y-6">
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="startTime">
-                                    When do you start the day / start the
-                                    routine?
-                                </Label>
+                        <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2 rounded-2xl border border-border/50 bg-white p-4">
+                                <div className="mb-1 flex items-center gap-2 text-foreground/80">
+                                    <Clock3 className="h-4 w-4" />
+                                    <Label
+                                        htmlFor="startTime"
+                                        className="font-semibold"
+                                    >
+                                        Start time
+                                    </Label>
+                                </div>
                                 <Input
                                     id="startTime"
                                     type="time"
@@ -76,29 +91,45 @@ function RouteComponent() {
                                     onChange={(e) =>
                                         setStartTime(e.target.value)
                                     }
+                                    className={fieldClassName}
                                 />
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-muted-foreground">
                                     Current: {startTime || "Not set"}
                                 </span>
                             </div>
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="endTime">
-                                    When do you finish the day?
-                                </Label>
+
+                            <div className="space-y-2 rounded-2xl border border-border/50 bg-white p-4">
+                                <div className="mb-1 flex items-center gap-2 text-foreground/80">
+                                    <CalendarClock className="h-4 w-4" />
+                                    <Label
+                                        htmlFor="endTime"
+                                        className="font-semibold"
+                                    >
+                                        End time
+                                    </Label>
+                                </div>
                                 <Input
                                     id="endTime"
                                     type="time"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
+                                    className={fieldClassName}
                                 />
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-muted-foreground">
                                     Current: {endTime || "Not set"}
                                 </span>
                             </div>
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="minDuration">
-                                    What's the task duration minimum?
-                                </Label>
+
+                            <div className="space-y-2 rounded-2xl border border-border/50 bg-white p-4">
+                                <div className="mb-1 flex items-center gap-2 text-foreground/80">
+                                    <TimerReset className="h-4 w-4" />
+                                    <Label
+                                        htmlFor="minDuration"
+                                        className="font-semibold"
+                                    >
+                                        Minimum task duration (minutes)
+                                    </Label>
+                                </div>
                                 <Input
                                     id="minDuration"
                                     type="number"
@@ -107,16 +138,23 @@ function RouteComponent() {
                                         setMinDuration(Number(e.target.value))
                                     }
                                     min={0}
+                                    className={fieldClassName}
                                 />
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-muted-foreground">
                                     Current: {minDuration || "Not set"}
                                 </span>
                             </div>
 
-                            <div className="flex flex-col gap-1.5">
-                                <Label htmlFor="minDuration">
-                                    What's the time buffer between events?
-                                </Label>
+                            <div className="space-y-2 rounded-2xl border border-border/50 bg-white p-4">
+                                <div className="mb-1 flex items-center gap-2 text-foreground/80">
+                                    <TimerReset className="h-4 w-4" />
+                                    <Label
+                                        htmlFor="timeBuffer"
+                                        className="font-semibold"
+                                    >
+                                        Buffer between events (minutes)
+                                    </Label>
+                                </div>
                                 <Input
                                     id="timeBuffer"
                                     type="number"
@@ -125,36 +163,32 @@ function RouteComponent() {
                                         setTimeBuffer(Number(e.target.value))
                                     }
                                     min={0}
+                                    className={fieldClassName}
                                 />
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-muted-foreground">
                                     Current: {timeBuffer || "Not set"}
                                 </span>
                             </div>
                         </div>
-                        <div className="flex justify-end pt-4 border-t border-gray-100">
-                            <Button type="submit" className="px-8">
-                                Save
-                            </Button>
-                        </div>
-                    </form>
-                    <div className="px-8 pb-8">
-                        <div className="mt-8">
+
+                        <div className="rounded-2xl border border-border/50 bg-white p-5">
                             <div className="flex items-center gap-3">
-                                <span className="font-medium text-gray-700">
-                                    Google Account:
+                                <Link2 className="h-4 w-4 text-foreground/70" />
+                                <span className="text-sm font-semibold text-foreground/90">
+                                    Google Account
                                 </span>
                                 {user?.googleId ? (
-                                    <span className="text-green-600 font-semibold">
+                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
                                         Linked
                                     </span>
                                 ) : (
-                                    <span className="text-red-500 font-semibold">
+                                    <span className="rounded-full border border-red-200 bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-600">
                                         Not Linked
                                     </span>
                                 )}
                             </div>
                             {user?.googleId ? (
-                                <div className="text-xs text-gray-500 mt-1">
+                                <div className="mt-2 text-xs text-muted-foreground">
                                     {user.googleId}
                                 </div>
                             ) : (
@@ -163,13 +197,22 @@ function RouteComponent() {
                                         env.VITE_API_URL +
                                         "/api/auth/google/start"
                                     }
-                                    className="inline-block mt-2 text-blue-600 hover:underline text-sm font-medium"
+                                    className="mt-3 inline-flex items-center rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-primary/5"
                                 >
                                     Link Google
                                 </a>
                             )}
                         </div>
-                    </div>
+
+                        <div className="flex justify-end border-t border-border/60 pt-2">
+                            <Button
+                                type="submit"
+                                disabled={false}
+                                isSubmitting={false}
+                                label={"Save"}
+                            />
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
