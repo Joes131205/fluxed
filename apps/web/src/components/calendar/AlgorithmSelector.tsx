@@ -10,72 +10,63 @@ export const AlgorithmSelector = ({
     onReschedule,
 }: AlgoProps) => {
     return (
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <p className="text-sm font-semibold uppercase tracking-wide text-slate-600">
-                Reschedule Logic
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-                <label
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
-                        selected === "global"
-                            ? "border-emerald-500 bg-emerald-50/50"
-                            : "border-slate-200 bg-slate-50 hover:border-slate-300"
-                    }`}
-                >
-                    <input
-                        type="radio"
-                        name="algorithm"
-                        value="global"
-                        checked={selected === "global"}
-                        onChange={(e) =>
-                            setSelected(e.target.value as "global")
-                        }
-                        className="h-4 w-4 accent-emerald-600"
-                    />
-                    <div>
-                        <p className="font-semibold text-slate-900">
-                            Global Weighted
-                        </p>
-                        <p className="text-xs text-slate-600">
-                            Pure balance across all subareas
-                        </p>
-                    </div>
-                </label>
+        <div className="space-y-6 rounded-[2rem] border-2 border-border bg-white p-6 shadow-sm">
+            <header>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text/40">
+                    Choose Your Style
+                </p>
+            </header>
 
-                <label
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
-                        selected === "nested"
-                            ? "border-emerald-500 bg-emerald-50/50"
-                            : "border-slate-200 bg-slate-50 hover:border-slate-300"
+            <div className="grid gap-4 sm:grid-cols-2">
+                {/* Option 1: Global */}
+                <button
+                    type="button"
+                    onClick={() => setSelected("global")}
+                    className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all active:scale-95 ${
+                        selected === "global"
+                            ? "border-primary bg-secondary/50 shadow-[0_8px_0_0_#33beff30]"
+                            : "border-border bg-transparent hover:border-primary/20"
                     }`}
                 >
-                    <input
-                        type="radio"
-                        name="algorithm"
-                        value="nested"
-                        checked={selected === "nested"}
-                        onChange={(e) =>
-                            setSelected(e.target.value as "nested")
-                        }
-                        className="h-4 w-4 accent-emerald-600"
-                    />
-                    <div>
-                        <p className="font-semibold text-slate-900">
-                            Nested Weighted
-                        </p>
-                        <p className="text-xs text-slate-600">
-                            Prioritize Area first, then Subarea
+                    <div className="flex items-center gap-2">
+                        <span className="text-xl">🌪️</span>
+                        <p className="font-black tracking-tight text-text">
+                            The Blender
                         </p>
                     </div>
-                </label>
+                    <p className="text-xs font-bold text-text/50">
+                        A smooth mix of all your tasks. Good for variety.
+                    </p>
+                </button>
+
+                {/* Option 2: Nested */}
+                <button
+                    type="button"
+                    onClick={() => setSelected("nested")}
+                    className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all active:scale-95 ${
+                        selected === "nested"
+                            ? "border-accent bg-accent/5 shadow-[0_8px_0_0_#16bc1030]"
+                            : "border-border bg-transparent hover:border-accent/20"
+                    }`}
+                >
+                    <div className="flex items-center gap-2">
+                        <span className="text-xl">🎯</span>
+                        <p className="font-black tracking-tight text-text">
+                            The Specialist
+                        </p>
+                    </div>
+                    <p className="text-xs font-bold text-text/50">
+                        Groups tasks by category. Best for deep focus sessions.
+                    </p>
+                </button>
             </div>
 
             <button
                 type="button"
                 onClick={onReschedule}
-                className="w-full rounded-xl bg-emerald-600 px-4 py-4 font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-[0.98]"
+                className="group relative w-full overflow-hidden rounded-2xl bg-primary py-5 font-black uppercase tracking-widest text-white shadow-[0_6px_0_0_#289cd1] transition-all hover:brightness-105 active:translate-y-1 active:shadow-none"
             >
-                Calculate Daily Plan
+                🚀 Generate My Day
             </button>
         </div>
     );

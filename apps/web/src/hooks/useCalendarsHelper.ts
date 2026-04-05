@@ -153,8 +153,12 @@ export function useCalendarEngine() {
             algo === "global"
                 ? calcGlobalWeightedTime(schedule, totalUsableMinutes)
                 : calcNestedWeightedTime(schedule, totalUsableMinutes);
-
+        console.log(rescheduled);
         setRescheduledData(rescheduled);
+
+        const ROUNDING_INTERVAL = 15;
+        const roundMinutes = (m: number) =>
+            Math.round(m / ROUNDING_INTERVAL) * ROUNDING_INTERVAL;
 
         // Timeline fitting logic
         const final: any[] = [];
@@ -181,37 +185,54 @@ export function useCalendarEngine() {
 
             while (minutesLeft > 0 && gapIndex < tempGaps.length) {
                 let currentGap = tempGaps[gapIndex];
-                const amountToFit = Math.min(
+                const gapStart = new Date(currentGap.start);
+                const roundedStartMinutes =
+                    Math.ceil(gapStart.getMinutes() / ROUNDING_INTERVAL) *
+                    ROUNDING_INTERVAL;
+                gapStart.setMinutes(roundedStartMinutes, 0, 0);
+                const actualStart = gapStart.toISOString();
+
+                let amountToFit = Math.min(
                     minutesLeft,
                     currentGap.durationMinutes,
                 );
 
-                if (amountToFit > 0) {
+                amountToFit = roundMinutes(amountToFit);
+
+                if (amountToFit >= (user?.minDuration || 10)) {
+                    const endTime = new Date(
+                        new Date(actualStart).getTime() + amountToFit * 60000,
+                    ).toISOString();
+
                     final.push({
                         subareaId: item.id,
                         subarea: item.subarea,
                         area: item.area,
-                        start: currentGap.start,
-                        end: new Date(
-                            new Date(currentGap.start).getTime() +
-                                amountToFit * 60000,
-                        ).toISOString(),
+                        start: actualStart,
+                        end: endTime,
                         minutes: amountToFit,
                     });
 
                     minutesLeft -= amountToFit;
-                    const timeWithBuffer =
+
+                    const totalBlockTime =
                         amountToFit + (user?.timeBuffer || 0);
-                    currentGap.durationMinutes -= timeWithBuffer;
+                    currentGap.durationMinutes -= totalBlockTime;
+
                     currentGap.start = new Date(
-                        new Date(currentGap.start).getTime() +
-                            timeWithBuffer * 60000,
+                        new Date(actualStart).getTime() +
+                            totalBlockTime * 60000,
                     ).toISOString();
+                } else {
+                    minutesLeft = 0;
                 }
-                if (currentGap.durationMinutes <= 0) gapIndex++;
+
+                if (currentGap.durationMinutes <= ROUNDING_INTERVAL / 2)
+                    gapIndex++;
             }
         });
         setFinalSchedule(final);
+        console.log(rescheduled);
     };
 
     const saveToDatabase = async () => {
