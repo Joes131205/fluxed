@@ -51,7 +51,7 @@ export const PlanSection = () => {
     }, []);
 
     return (
-        <div className="mt-8 rounded-[2rem] border-2 border-border bg-white p-8 shadow-sm relative overflow-hidden">
+        <div className="mt-8 p-5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-8">
                 <h3 className="text-2xl font-bold">Your plan</h3>
             </div>
@@ -87,7 +87,7 @@ export const PlanSection = () => {
                         return (
                             <div
                                 key={item.sessionId}
-                                className="relative group"
+                                className="relative group bg-white"
                             >
                                 <div
                                     className={`
@@ -137,15 +137,15 @@ export const PlanSection = () => {
                                             </p>
                                         </div>
                                         {isNow ? (
-                                            <div className="ml-auto flex items-center gap-2 text-sm font-black text-accent uppercase px-3 py-1 bg-accent/10 rounded-full">
+                                            <div className="hidden md:flex ml-auto items-center gap-2 text-sm font-black text-accent uppercase px-3 py-1 bg-accent/10 rounded-full">
                                                 In Progress
                                             </div>
                                         ) : isPassed ? (
-                                            <div className="ml-auto flex items-center gap-2 text-sm font-black text-black uppercase px-3 py-1 bg-gray-500/10 rounded-full">
+                                            <div className="hidden md:flex ml-auto items-center gap-2 text-sm font-black text-black uppercase px-3 py-1 bg-gray-500/10 rounded-full">
                                                 Passed
                                             </div>
                                         ) : (
-                                            <div className="ml-auto flex items-center gap-2 text-sm font-black text-primary uppercase px-3 py-1 bg-primary/10 rounded-full">
+                                            <div className="hidden md:flex ml-auto items-center gap-2 text-sm font-black text-primary uppercase px-3 py-1 bg-primary/10 rounded-full">
                                                 Upcoming
                                             </div>
                                         )}

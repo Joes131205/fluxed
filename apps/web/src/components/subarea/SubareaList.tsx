@@ -6,34 +6,21 @@ type SubareaListProp = {
 };
 
 const SubareaList: React.FC<SubareaListProp> = ({ areaId }) => {
-    const { data, isLoading, error } = useSubareas(areaId);
+    const { data, isLoading } = useSubareas(areaId);
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
+    if (isLoading)
+        return (
+            <div className="animate-pulse text-[10px] font-black uppercase tracking-widest text-text/20">
+                Loading...
+            </div>
+        );
 
-    if (error || !data || !("ok" in data) || !data.ok) {
-        return <div>Error loading subareas.</div>;
-    }
-    console.log(data);
-    if (data.data.length === 0) {
-        return <p className="text-xs text-gray-400 italic">No subareas yet.</p>;
-    }
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row flex-wrap gap-4">
             {data.data.map((subarea) => (
-                <SubareaCard
-                    key={subarea.id}
-                    subarea={{
-                        ...subarea,
-                        created_at: new Date(subarea.created_at),
-                        updated_at: new Date(subarea.updated_at),
-                        allocatedMinutes: subarea.allocatedMinutes ?? 0,
-                    }}
-                />
+                <SubareaCard key={subarea.id} subarea={subarea} />
             ))}
         </div>
     );
 };
-
 export default SubareaList;

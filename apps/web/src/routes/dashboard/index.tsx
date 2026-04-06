@@ -1,4 +1,5 @@
 import AreaList from "@/components/area/AreaList";
+import { AreaSection } from "@/components/dashboard/AreaSection";
 import { PlanSection } from "@/components/dashboard/PlanSection";
 import { Button } from "@/components/misc/Button";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +22,7 @@ function RouteComponent() {
             </header>
 
             <PlanSection />
+            <AreaSection />
         </main>
     );
 }

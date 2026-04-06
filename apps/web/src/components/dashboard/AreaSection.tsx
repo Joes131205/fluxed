@@ -4,7 +4,7 @@ import AreaList from "../area/AreaList";
 export const AreaSection = () => {
     const { data: areasData } = useAreas();
     return (
-        <div className="mt-12">
+        <div className="flex flex-col gap-5 p-5">
             <h2 className="text-2xl font-bold text-gray-900">Your Areas</h2>
 
             <AreaList
