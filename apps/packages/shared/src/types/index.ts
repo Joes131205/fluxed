@@ -1,14 +1,17 @@
 // User types
-export interface User {
+export type User = {
     id: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     email: string;
     username: string;
-    password: string;
+    googleRefreshToken: string | null;
+    googleId: string | null;
     startTime: string;
     endTime: string;
-}
+    minDuration: number | null;
+    timeBuffer: number | null;
+};
 
 export type NewUser = Omit<User, "id" | "createdAt" | "updatedAt">;
 export type UpdateUser = Partial<Omit<User, "id" | "createdAt" | "updatedAt">>;

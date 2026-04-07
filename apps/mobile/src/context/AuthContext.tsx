@@ -1,5 +1,8 @@
-import { client } from "../lib/client";
+import { User } from "../../../packages/shared/src/types";
+import { getAuthHeaders } from "../lib/authHeaders";
+import { authClient } from "../lib/client";
 import { createContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type AuthContextType = {
     user: User | null;
@@ -14,12 +17,6 @@ type AuthContextType = {
     isAuthLoading: boolean;
 };
 
-type User = {
-    id: string;
-    email: string;
-    username?: string;
-};
-
 export const AuthContext = createContext<AuthContextType | undefined>(
     undefined,
 );
@@ -31,30 +28,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const checkAuth = async () => {
             setIsAuthLoading(true);
-            const token = localStorage.getItem("token");
+            const token = await AsyncStorage.getItem("token");
             if (token) {
                 try {
-                    const response = await client.api.auth.me.$get(
+                    const response = await authClient.me.$get(
                         {},
                         {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
+                            headers: getAuthHeaders,
                         },
                     );
                     if (response.ok) {
                         const data = await response.json();
-                        setUser({
-                            id: data.id,
-                            email: data.email,
-                            username: data.username,
-                        });
+                        setUser(data.user);
                     } else if (response.status === 401) {
-                        localStorage.clear();
+                        AsyncStorage.clear();
                     }
                 } catch (error) {
                     console.error(error);
-                    localStorage.clear();
+                    AsyncStorage.clear();
                 }
             }
             setIsAuthLoading(false);
@@ -63,18 +54,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const login = async (email: string, password: string) => {
-        const response = await client.api.auth.login.$post({
+        const response = await authClient.login.$post({
             json: { email, password },
         });
 
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem("token", data.token);
-            setUser({
-                id: data.id,
-                email: data.email,
-                username: data.username,
-            });
+            AsyncStorage.setItem("token", data.token);
+            setUser(data.user);
         } else {
             throw new Error("Login failed");
         }
@@ -85,20 +72,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: string,
         password: string,
     ) => {
-        const response = await client.api.auth.register.$post({
+        const response = await authClient.register.$post({
             json: { username, email, password },
         });
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem("token", data.token);
-            setUser({ id: data.id, email: data.email, username });
+            AsyncStorage.setItem("token", data.token);
+            setUser(data.user);
         } else {
             throw new Error("Signup failed");
         }
     };
 
     const logout = async () => {
-        localStorage.clear();
+        AsyncStorage.clear();
         setUser(null);
     };
 
