@@ -67,16 +67,15 @@ export const PlanSection = () => {
                 <View className="text-center py-16 border-2 border-dashed border-border rounded-3xl bg-secondary/20">
                     <Text className="text-sm font-bold text-text/50">
                         Your plan is empty
-                        <br />
-                        <span className="text-primary">
-                            Get started by rescheduling!
-                        </span>
+                    </Text>
+                    <Text className="text-primary">
+                        Get started by rescheduling!
                     </Text>
                 </View>
             )}
 
             {!isPlansLoading && planItems.length > 0 && (
-                <View className="relative border-l-4 border-secondary/50 space-y-8">
+                <View className="flex flex-col gap-5">
                     {planItems.map((item) => {
                         const startTime = new Date(item.startTime);
                         const endTime = new Date(item.endTime);
@@ -85,16 +84,12 @@ export const PlanSection = () => {
                         return (
                             <View
                                 key={item.sessionId}
-                                className="relative group bg-white"
+                                className={`bg-white border-l-4 *:relative group ${isNow ? "border-accent" : isPassed ? "border-gray-500" : "border-primary"}`}
                             >
                                 <View
-                                    className={`
-                            relative rounded-2xl p-6 transition-all duration-200
-                            border-5
-                            ${isNow ? "border-accent" : isPassed ? "border-gray-500" : "border-primary"}
-                        `}
+                                    className={`relative rounded-2xl p-6 transition-all duration-200 `}
                                 >
-                                    <View className="flex items-center gap-5">
+                                    <View className="flex flex-row items-center gap-5">
                                         <View className="flex flex-col gap-1">
                                             <Text className="text-xs font-black uppercase tracking-widest text-text/30">
                                                 Area
@@ -113,7 +108,7 @@ export const PlanSection = () => {
                                             </Text>
                                         </View>
                                     </View>
-                                    <View className="flex items-center gap-8">
+                                    <View className="flex flex-row items-center gap-8">
                                         <View className="space-y-1">
                                             <Text className="text-[9px] font-black uppercase tracking-widest text-text/30">
                                                 Start

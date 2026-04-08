@@ -53,7 +53,7 @@ export default function SignUp() {
             Alert.alert("Success", "Account created! Redirecting...", [
                 {
                     text: "OK",
-                    onPress: () => router.push("/"),
+                    onPress: () => router.push("/dashboard"),
                 },
             ]);
         } catch (error) {

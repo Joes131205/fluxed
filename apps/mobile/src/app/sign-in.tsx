@@ -9,6 +9,9 @@ import {
     TextInput,
     View,
 } from "react-native";
+import { API_URL } from "../lib/env";
+import { authClient } from "../lib/client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignIn() {
     const router = useRouter();
@@ -26,23 +29,19 @@ export default function SignIn() {
         setLoading(true);
 
         try {
-            const response = await axios.post(
-                `${process.env.API_URL || "http://localhost:3000"}/api/auth/login`,
-                { email, password },
-                {
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
-            const data = response.data as { token: string };
-
-            if (typeof localStorage !== "undefined") {
-                localStorage.setItem("token", data.token);
-            }
+            console.log(API_URL);
+            const response = await authClient.login.$post({
+                json: { email, password },
+            });
+            console.log(response);
+            const data = await response.json();
+            console.log(data.token);
+            AsyncStorage.setItem("token", data.token);
 
             Alert.alert("Success", "Account created! Redirecting...", [
                 {
                     text: "OK",
-                    onPress: () => router.push("/"),
+                    onPress: () => router.push("/dashboard"),
                 },
             ]);
         } catch (error) {
@@ -52,7 +51,7 @@ export default function SignIn() {
                 Alert.alert("Sign Up Failed", apiError || "Unknown error");
                 return;
             }
-
+            console.log(error);
             Alert.alert(
                 "Error",
                 error instanceof Error ? error.message : "Network error",

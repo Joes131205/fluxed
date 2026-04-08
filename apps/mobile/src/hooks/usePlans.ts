@@ -6,10 +6,11 @@ export const usePlans = () => {
     return useQuery({
         queryKey: ["plan"],
         queryFn: async () => {
+            const headers = await getAuthHeaders();
             const response = await plansClient.$get(
                 {},
                 {
-                    headers: getAuthHeaders(),
+                    headers,
                 },
             );
             return response.json();

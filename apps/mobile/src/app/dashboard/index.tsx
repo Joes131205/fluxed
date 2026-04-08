@@ -8,7 +8,7 @@ export default function Dashboard() {
     const router = useRouter();
 
     return (
-        <ScrollView className="flex-1 flex flex-col gap-5">
+        <ScrollView className="flex-1 flex flex-col gap-2">
             <Text>Hello! {user?.username}!</Text>
             <PlanSection />
         </ScrollView>

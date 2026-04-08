@@ -23,6 +23,14 @@ export default function App() {
             >
                 <Text className="text-white font-semibold">Sign In</Text>
             </Pressable>
+            <Pressable
+                onPress={() => {
+                    router.navigate("/dashboard");
+                }}
+                className="bg-blue-500 px-6 py-3 rounded-lg"
+            >
+                <Text className="text-white font-semibold">Dashboard</Text>
+            </Pressable>
         </View>
     );
 }

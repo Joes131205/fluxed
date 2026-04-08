@@ -21,11 +21,7 @@ const app = new Hono()
         "/api/*",
         cors({
             allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE"],
-            origin: [
-                "http://localhost:3001",
-                "http://localhost:3000",
-                "http://localhost:8081",
-            ],
+            origin: (origin) => origin || "*",
             allowHeaders: ["Content-Type", "Authorization"],
             credentials: true,
         }),
