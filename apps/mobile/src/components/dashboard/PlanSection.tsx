@@ -49,14 +49,13 @@ export const PlanSection = () => {
     }, []);
 
     return (
-        <View className="mt-8 p-5 relative overflow-hidden">
+        <View className="mt-8 relative overflow-hidden">
             <View className="flex items-center justify-between mb-8">
                 <Text className="text-2xl font-bold">Your plan</Text>
             </View>
 
             {isPlansLoading && (
                 <View className="flex flex-col items-center py-12 gap-3">
-                    <View className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                     <Text className="text-xs font-bold text-text/40 uppercase tracking-widest">
                         Loading...
                     </Text>
@@ -84,7 +83,7 @@ export const PlanSection = () => {
                         return (
                             <View
                                 key={item.sessionId}
-                                className={`bg-white border-l-4 *:relative group ${isNow ? "border-accent" : isPassed ? "border-gray-500" : "border-primary"}`}
+                                className={`bg-white rounded-md border-l-4 *:relative group ${isNow ? "border-accent" : isPassed ? "border-gray-500" : "border-primary"}`}
                             >
                                 <View
                                     className={`relative rounded-2xl p-6 transition-all duration-200 `}

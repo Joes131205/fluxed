@@ -9,6 +9,7 @@ import {
     Alert,
     ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignUp() {
     const router = useRouter();
@@ -46,9 +47,7 @@ export default function SignUp() {
             );
             const data = response.data as { token: string };
 
-            if (typeof localStorage !== "undefined") {
-                localStorage.setItem("token", data.token);
-            }
+            await AsyncStorage.setItem("token", data.token);
 
             Alert.alert("Success", "Account created! Redirecting...", [
                 {
