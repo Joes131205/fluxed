@@ -13,6 +13,12 @@ import { API_URL } from "../lib/env";
 import { authClient } from "../lib/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+type AuthResponse = {
+    ok?: boolean;
+    token?: string;
+    error?: string;
+};
+
 export default function SignIn() {
     const router = useRouter();
 
@@ -33,12 +39,38 @@ export default function SignIn() {
             const response = await authClient.login.$post({
                 json: { email, password },
             });
-            console.log(response);
-            const data = await response.json();
-            console.log(data.token);
-            AsyncStorage.setItem("token", data.token);
 
-            Alert.alert("Success", "Account created! Redirecting...", [
+            const contentType = response.headers.get("content-type") ?? "";
+            const isJson = contentType.includes("application/json");
+
+            let data: AuthResponse | null = null;
+            let rawBody = "";
+
+            if (isJson) {
+                data = (await response.json()) as AuthResponse;
+            } else {
+                rawBody = await response.text();
+            }
+
+            if (!response.ok) {
+                const errorMessage =
+                    data?.error ||
+                    (rawBody ? rawBody.slice(0, 120) : "Invalid credentials");
+                Alert.alert("Sign In Failed", errorMessage);
+                return;
+            }
+
+            if (!data?.token) {
+                Alert.alert(
+                    "Sign In Failed",
+                    "Server response did not include an auth token.",
+                );
+                return;
+            }
+
+            await AsyncStorage.setItem("token", data.token);
+
+            Alert.alert("Success", "Signed in! Redirecting...", [
                 {
                     text: "OK",
                     onPress: () => router.push("/dashboard"),
@@ -48,7 +80,7 @@ export default function SignIn() {
             if (axios.isAxiosError(error) && error.response) {
                 const apiError = (error.response.data as { error?: string })
                     ?.error;
-                Alert.alert("Sign Up Failed", apiError || "Unknown error");
+                Alert.alert("Sign In Failed", apiError || "Unknown error");
                 return;
             }
             console.log(error);

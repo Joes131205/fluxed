@@ -11,6 +11,7 @@ export default function Reschedule() {
         calendar,
         minutes,
         rescheduledData,
+        isGeneratedOnce,
         finalSchedule,
         isLoading,
         error,
@@ -60,12 +61,8 @@ export default function Reschedule() {
                 {error ? <Text className="text-red-500">{error}</Text> : null}
             </View>
 
-            <View className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4">
-                <Text className="text-xl font-bold">
-                    {isGoogleConnected
-                        ? "Google Calendar Busy Times"
-                        : "Manual Busy Blocks"}
-                </Text>
+            <View className="flex flex-col gap-3">
+                <Text className="text-xl font-bold">Busy Blocks</Text>
 
                 {isGoogleConnected ? (
                     <Pressable
@@ -128,10 +125,9 @@ export default function Reschedule() {
                 ))}
             </View>
 
-            <View className="flex flex-col gap-2">
-                <Text className="text-2xl font-bold text-center">
-                    Choose your rescheduling style
-                </Text>
+            <View className="flex flex-col gap-3">
+                <Text className="text-xl font-bold">Rescheduling style</Text>
+
                 <View className="flex flex-row items-center gap-5 max-w-full">
                     <Pressable
                         onPress={() => setAlgorithm("global")}
@@ -168,37 +164,68 @@ export default function Reschedule() {
 
             <AreaDisplay areasDataOverride={schedule} />
 
-            {finalSchedule.length > 0 ? (
-                <View>
-                    <Text className="text-xl font-bold">Timeline</Text>
+            <View className="flex flex-col gap-3">
+                <Text className="text-xl font-bold">Output Timeline</Text>
+                {finalSchedule.length > 0 ? (
+                    <View>
+                        <View className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
+                            {finalSchedule.map((slot, index) => (
+                                <View
+                                    key={`${slot.subareaId}-${index}`}
+                                    className="rounded-md border border-border bg-white p-3"
+                                >
+                                    <Text className="font-semibold">
+                                        {slot.subarea}
+                                    </Text>
+                                    <Text>
+                                        {formatTime(slot.start)} -{" "}
+                                        {formatTime(slot.end)}
+                                    </Text>
+                                </View>
+                            ))}
 
-                    <View className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
-                        {finalSchedule.map((slot, index) => (
-                            <View
-                                key={`${slot.subareaId}-${index}`}
-                                className="rounded-md border border-border bg-white p-3"
+                            <Pressable
+                                onPress={actions.saveToDatabase}
+                                className="w-full rounded-md bg-primary px-4 py-3"
                             >
-                                <Text className="font-semibold">
-                                    {slot.subarea}
+                                <Text className="text-center font-semibold text-white">
+                                    {isLoading
+                                        ? "Saving..."
+                                        : "Save to Database"}
                                 </Text>
-                                <Text>
-                                    {formatTime(slot.start)} -{" "}
-                                    {formatTime(slot.end)}
-                                </Text>
-                            </View>
-                        ))}
-
-                        <Pressable
-                            onPress={actions.saveToDatabase}
-                            className="w-full rounded-md bg-primary px-4 py-3"
-                        >
-                            <Text className="text-center font-semibold text-white">
-                                {isLoading ? "Saving..." : "Save to Database"}
-                            </Text>
-                        </Pressable>
+                            </Pressable>
+                        </View>
                     </View>
-                </View>
-            ) : null}
+                ) : isGeneratedOnce ? (
+                    <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
+                        <Text className="mt-2 text-2xl font-bold text-foreground text-center">
+                            Wowzers 💀
+                        </Text>
+                        <Text className="mt-2 text-2xl font-bold text-foreground text-center">
+                            Nothing generated
+                        </Text>
+                        <Text className="mt-2 text-base text-muted-foreground text-center">
+                            No valid slots were available for your current
+                            timeframe.
+                        </Text>
+
+                        <Text className="mt-1 text-sm text-muted-foreground text-center">
+                            Maybe because the allocated events are too close to
+                            your sleep window or you set the minimum task
+                            duration too big or no areas and subareas?
+                        </Text>
+                    </View>
+                ) : (
+                    <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
+                        <Text className="mt-2 text-2xl font-bold text-foreground text-center">
+                            Nothing yet!
+                        </Text>
+                        <Text className="mt-2 text-sm font-bold text-muted-foreground text-center">
+                            Take your time, and reschedule it if needed!
+                        </Text>
+                    </View>
+                )}
+            </View>
         </ScrollView>
     );
 }

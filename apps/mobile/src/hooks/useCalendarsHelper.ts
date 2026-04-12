@@ -133,6 +133,7 @@ export function useCalendarEngine() {
     const [finalSchedule, setFinalSchedule] = useState<FinalScheduleItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isGeneratedOnce, setIsGeneratedOnce] = useState(false);
 
     const toTodayIso = (time: string) => {
         const [h, m] = time.split(":").map(Number);
@@ -331,8 +332,9 @@ export function useCalendarEngine() {
                 }
             }
         });
-
+        console.log(final);
         setFinalSchedule(final);
+        setIsGeneratedOnce(true);
     };
 
     const saveToDatabase = async () => {
@@ -498,6 +500,7 @@ export function useCalendarEngine() {
         error,
         user,
         schedule,
+        isGeneratedOnce,
         actions: {
             addManualEvent,
             removeManualEvent,

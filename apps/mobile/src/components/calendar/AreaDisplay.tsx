@@ -52,9 +52,19 @@ export const AreaDisplay = ({ areasDataOverride }: AreaDisplayProps) => {
         <View className="flex flex-col gap-3">
             <Text className="text-xl font-bold">Your areas</Text>
             <View className="flex flex-col gap-3">
-                {areas.map((a) => (
-                    <AreaSection key={a.areaId} area={a} />
-                ))}
+                {areas.length > 0 ? (
+                    areas.map((a) => <AreaSection key={a.areaId} area={a} />)
+                ) : (
+                    <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
+                        <Text className="mt-2 text-2xl font-bold text-foreground text-center">
+                            No areas and subareas listed!
+                        </Text>
+                        <Text className="mt-2 text-sm font-bold text-foreground text-center">
+                            Tip: To actually generate a timeline, make sure you
+                            have subarea listed too!
+                        </Text>
+                    </View>
+                )}
             </View>
         </View>
     );

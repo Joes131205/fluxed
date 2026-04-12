@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SubareaSection } from "./SubareaSection";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 export type AreaSectionItem = {
     areaId: string;
@@ -42,7 +41,7 @@ export const AreaSection = ({ area }: AreaSectionProps) => {
                         ))}
                     </View>
                     <Text className="text-base font-semibold text-muted-foreground">
-                        {isExpanded ? <ChevronUp /> : <ChevronDown />}
+                        {isExpanded ? "▲" : "▼"}
                     </Text>
                 </View>
             </Pressable>

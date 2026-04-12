@@ -46,7 +46,7 @@ export default function Dashboard() {
                     {weekday}
                 </Text>
                 <Text className="mt-2 text-3xl font-bold text-foreground">
-                    Hey, {user?.username ?? "there"}
+                    Hey, {user?.username ?? "User"}
                 </Text>
                 <Text className="mt-2 text-sm text-muted-foreground">
                     Is today your day?
