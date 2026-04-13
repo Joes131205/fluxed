@@ -65,14 +65,23 @@ export default function Reschedule() {
                 <Text className="text-xl font-bold">Busy Blocks</Text>
 
                 {isGoogleConnected ? (
-                    <Pressable
-                        onPress={actions.getData}
-                        className="w-full rounded-md bg-primary px-4 py-2"
-                    >
-                        <Text className="text-center font-semibold text-white">
-                            {isLoading ? "Syncing..." : "Sync Calendar"}
+                    <View className="rounded-xl border border-primary/30 bg-primary/10 p-4 flex flex-col gap-3">
+                        <Text className="font-semibold text-primary">
+                            Google calendar connected
                         </Text>
-                    </Pressable>
+                        <Text className="text-sm text-text/70">
+                            Sync your calendar to load your latest busy blocks
+                            before rescheduling.
+                        </Text>
+                        <Pressable
+                            onPress={actions.getData}
+                            className="w-full rounded-md bg-primary px-4 py-2"
+                        >
+                            <Text className="text-center font-semibold text-white">
+                                {isLoading ? "Syncing..." : "Sync Calendar"}
+                            </Text>
+                        </Pressable>
+                    </View>
                 ) : (
                     <>
                         <TextInput
@@ -125,36 +134,46 @@ export default function Reschedule() {
                 ))}
             </View>
 
-            <View className="flex flex-col gap-3">
-                <Text className="text-xl font-bold">Rescheduling style</Text>
+            <View className="flex flex-col gap-4">
+                <View className="flex flex-col gap-1">
+                    <Text className="text-xl font-black">
+                        Rescheduling Style
+                    </Text>
+                </View>
 
-                <View className="flex flex-row items-center gap-5 max-w-full">
+                <View className="flex flex-row items-stretch gap-3 max-w-full">
                     <Pressable
                         onPress={() => setAlgorithm("global")}
-                        className={`flex flex-col gap-1 flex-1 rounded-2xl border p-4 ${
+                        className={`flex flex-col gap-2 flex-1 rounded-3xl border-2 px-5 py-5 transition-all ${
                             algorithm === "global"
-                                ? "border-primary bg-primary/10"
-                                : "border-border bg-card"
+                                ? "border-primary bg-linear-to-br from-primary/20 to-primary/5 shadow-lg scale-105"
+                                : "border-border/50 bg-card shadow-sm"
                         }`}
                     >
-                        <Text className="text-xl font-bold">Classic</Text>
-                        <Text>Smooth mix of all of your categories.</Text>
+                        <Text className="text-lg font-black">✨ Classic</Text>
+                        <Text className="text-sm font-medium text-text/70">
+                            Smooth blend of all categories
+                        </Text>
                     </Pressable>
                     <Pressable
                         onPress={() => setAlgorithm("nested")}
-                        className={`flex flex-col gap-1 flex-1 rounded-2xl border p-4 ${
+                        className={`flex flex-col gap-2 flex-1 rounded-3xl border-2 px-5 py-5 transition-all ${
                             algorithm === "nested"
-                                ? "border-primary bg-primary/10"
-                                : "border-border bg-card"
+                                ? "border-primary bg-linear-to-br from-primary/20 to-primary/5 shadow-lg scale-105"
+                                : "border-border/50 bg-card shadow-sm"
                         }`}
                     >
-                        <Text className="text-xl font-bold">Specialist</Text>
-                        <Text>Group priorities by area and then subarea.</Text>
+                        <Text className="text-lg font-black">
+                            🎯 Specialist
+                        </Text>
+                        <Text className="text-sm font-medium text-text/70">
+                            Organized by area & subarea
+                        </Text>
                     </Pressable>
                 </View>
                 <Pressable
                     onPress={() => actions.runReschedule(algorithm)}
-                    className="w-full bg-primary text-white p-x-3 py-2 text-center rounded-md"
+                    className="w-full bg-linear-to-r from-primary to-primary/80 rounded-2xl py-4 shadow-lg transition-all"
                 >
                     <Text className="text-white font-semibold text-center">
                         Reschedule
@@ -174,10 +193,26 @@ export default function Reschedule() {
                                     key={`${slot.subareaId}-${index}`}
                                     className="rounded-md border border-border bg-white p-3"
                                 >
-                                    <Text className="font-semibold">
-                                        {slot.subarea}
-                                    </Text>
-                                    <Text>
+                                    <View className="flex flex-row items-center gap-5">
+                                        <View className="flex flex-col gap-1">
+                                            <Text className="text-xs font-black uppercase tracking-widest text-text/30">
+                                                Area
+                                            </Text>
+                                            <Text className="text-lg font-black tracking-tight text-text mb-4">
+                                                {slot.area}
+                                            </Text>
+                                        </View>
+
+                                        <View className="flex flex-col gap-1">
+                                            <Text className="text-xs font-black uppercase tracking-widest text-text/30">
+                                                Subarea
+                                            </Text>
+                                            <Text className="text-lg font-black tracking-tight text-text mb-4">
+                                                {slot.subarea}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <Text className="text-md">
                                         {formatTime(slot.start)} -{" "}
                                         {formatTime(slot.end)}
                                     </Text>

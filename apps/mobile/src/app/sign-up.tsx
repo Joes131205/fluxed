@@ -1,6 +1,5 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import axios from "axios";
 import {
     Text,
     TextInput,
@@ -8,8 +7,11 @@ import {
     Pressable,
     Alert,
     ActivityIndicator,
+    Linking,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authClient } from "../lib/client";
+import { API_URL } from "../lib/env";
 
 export default function SignUp() {
     const router = useRouter();
@@ -35,17 +37,19 @@ export default function SignUp() {
 
         setLoading(true);
         try {
-            console.log(
-                `${process.env.API_URL || "http://localhost:3000"}/api/auth/register`,
-            );
-            const response = await axios.post(
-                `${process.env.API_URL || "http://localhost:3000"}/api/auth/register`,
-                { username, email, password },
-                {
-                    headers: { "Content-Type": "application/json" },
-                },
-            );
-            const data = response.data as { token: string };
+            const response = await authClient.register.$post({
+                json: { username, email, password },
+            });
+
+            const data = (await response.json()) as {
+                token?: string;
+                error?: string;
+            };
+
+            if (!response.ok || !data.token) {
+                Alert.alert("Sign Up Failed", data.error || "Unknown error");
+                return;
+            }
 
             await AsyncStorage.setItem("token", data.token);
 
@@ -56,13 +60,6 @@ export default function SignUp() {
                 },
             ]);
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-                const apiError = (error.response.data as { error?: string })
-                    ?.error;
-                Alert.alert("Sign Up Failed", apiError || "Unknown error");
-                return;
-            }
-
             Alert.alert(
                 "Error",
                 error instanceof Error ? error.message : "Network error",
@@ -71,7 +68,18 @@ export default function SignUp() {
             setLoading(false);
         }
     };
-
+    const handleGoogleSignIn = async () => {
+        try {
+            await Linking.openURL(`${API_URL}/api/auth/google/start`);
+        } catch (error) {
+            Alert.alert(
+                "Google Sign In Failed",
+                error instanceof Error
+                    ? error.message
+                    : "Unable to open Google sign in",
+            );
+        }
+    };
     return (
         <View className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
             <Text className="text-3xl font-bold mb-6">Create Account</Text>
@@ -125,6 +133,27 @@ export default function SignUp() {
                 )}
             </Pressable>
 
+            <View className="my-2 w-full flex-row items-center gap-3">
+                <View className="h-px flex-1 bg-gray-300" />
+                <Text className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                    or
+                </Text>
+                <View className="h-px flex-1 bg-gray-300" />
+            </View>
+            <Pressable
+                onPress={handleGoogleSignIn}
+                disabled={loading}
+                className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3"
+            >
+                <View className="flex-row items-center justify-center gap-2">
+                    <Text className="text-base font-black text-gray-700">
+                        G
+                    </Text>
+                    <Text className="font-semibold text-gray-800">
+                        Continue with Google
+                    </Text>
+                </View>
+            </Pressable>
             <Pressable
                 onPress={() => router.push("/sign-in")}
                 disabled={loading}

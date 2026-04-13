@@ -4,6 +4,7 @@ import axios from "axios";
 import {
     ActivityIndicator,
     Alert,
+    Linking,
     Pressable,
     Text,
     TextInput,
@@ -12,12 +13,6 @@ import {
 import { API_URL } from "../lib/env";
 import { authClient } from "../lib/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-type AuthResponse = {
-    ok?: boolean;
-    token?: string;
-    error?: string;
-};
 
 export default function SignIn() {
     const router = useRouter();
@@ -40,30 +35,15 @@ export default function SignIn() {
                 json: { email, password },
             });
 
-            const contentType = response.headers.get("content-type") ?? "";
-            const isJson = contentType.includes("application/json");
+            const data = (await response.json()) as {
+                token?: string;
+                error?: string;
+            };
 
-            let data: AuthResponse | null = null;
-            let rawBody = "";
-
-            if (isJson) {
-                data = (await response.json()) as AuthResponse;
-            } else {
-                rawBody = await response.text();
-            }
-
-            if (!response.ok) {
-                const errorMessage =
-                    data?.error ||
-                    (rawBody ? rawBody.slice(0, 120) : "Invalid credentials");
-                Alert.alert("Sign In Failed", errorMessage);
-                return;
-            }
-
-            if (!data?.token) {
+            if (!response.ok || !data.token) {
                 Alert.alert(
                     "Sign In Failed",
-                    "Server response did not include an auth token.",
+                    data.error || "Unable to sign in",
                 );
                 return;
             }
@@ -90,6 +70,19 @@ export default function SignIn() {
             );
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        try {
+            await Linking.openURL(`${API_URL}/api/auth/google/start`);
+        } catch (error) {
+            Alert.alert(
+                "Google Sign In Failed",
+                error instanceof Error
+                    ? error.message
+                    : "Unable to open Google sign in",
+            );
         }
     };
 
@@ -126,6 +119,27 @@ export default function SignIn() {
                         Sign In
                     </Text>
                 )}
+            </Pressable>
+
+            <View className="my-2 w-full flex-row items-center gap-3">
+                <View className="h-px flex-1 bg-gray-300" />
+                <Text className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                    or
+                </Text>
+                <View className="h-px flex-1 bg-gray-300" />
+            </View>
+
+            <Pressable
+                onPress={handleGoogleSignIn}
+                disabled={loading}
+                className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3"
+            >
+                <View className="flex-row items-center justify-center gap-2">
+                    <Text className="text-base font-black text-gray-700">G</Text>
+                    <Text className="font-semibold text-gray-800">
+                        Continue with Google
+                    </Text>
+                </View>
             </Pressable>
 
             <Pressable

@@ -63,11 +63,11 @@ export const PlanSection = () => {
             )}
 
             {!isPlansLoading && planItems.length === 0 && (
-                <View className="text-center py-16 border-2 border-dashed border-border rounded-3xl bg-secondary/20">
-                    <Text className="text-sm font-bold text-text/50">
+                <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
+                    <Text className="text-sm font-bold text-text/50 text-center text-2xl font-bold">
                         Your plan is empty
                     </Text>
-                    <Text className="text-primary">
+                    <Text className="text-center">
                         Get started by rescheduling!
                     </Text>
                 </View>

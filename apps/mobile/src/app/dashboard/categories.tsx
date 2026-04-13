@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import { View } from "react-native";
 
-export const Categories = () => {
-    return <div>Categories</div>;
-};
+export default function Categories() {
+    const [category, setCategory] = useState<"area" | "subarea">("area");
+    return <View></View>;
+}

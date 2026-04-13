@@ -25,27 +25,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthLoading, setIsAuthLoading] = useState(true);
 
+    const loadCurrentUser = async () => {
+        const headers = await getAuthHeaders();
+        const response = await authClient.me.$get(
+            {},
+            {
+                headers,
+            },
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to fetch current user");
+        }
+
+        const data = (await response.json()) as { user: User };
+        setUser(data.user);
+    };
+
     useEffect(() => {
         const checkAuth = async () => {
             setIsAuthLoading(true);
             const token = await AsyncStorage.getItem("token");
             if (token) {
                 try {
-                    const response = await authClient.me.$get(
-                        {},
-                        {
-                            headers: getAuthHeaders,
-                        },
-                    );
-                    if (response.ok) {
-                        const data = await response.json();
-                        setUser(data.user);
-                    } else if (response.status === 401) {
-                        AsyncStorage.clear();
-                    }
+                    await loadCurrentUser();
                 } catch (error) {
                     console.error(error);
-                    AsyncStorage.clear();
+                    await AsyncStorage.clear();
                 }
             }
             setIsAuthLoading(false);
@@ -59,9 +65,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            AsyncStorage.setItem("token", data.token);
-            setUser(data.user);
+            const data = (await response.json()) as { token?: string };
+            if (!data.token) {
+                throw new Error("Login failed: token missing");
+            }
+            await AsyncStorage.setItem("token", data.token);
+            await loadCurrentUser();
         } else {
             throw new Error("Login failed");
         }
@@ -76,16 +85,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             json: { username, email, password },
         });
         if (response.ok) {
-            const data = await response.json();
-            AsyncStorage.setItem("token", data.token);
-            setUser(data.user);
+            const data = (await response.json()) as { token?: string };
+            if (!data.token) {
+                throw new Error("Signup failed: token missing");
+            }
+            await AsyncStorage.setItem("token", data.token);
+            await loadCurrentUser();
         } else {
             throw new Error("Signup failed");
         }
     };
 
     const logout = async () => {
-        AsyncStorage.clear();
+        await AsyncStorage.clear();
         setUser(null);
     };
 

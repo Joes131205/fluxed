@@ -10,7 +10,7 @@ export default function Layout() {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <Slot />
-                {/* <Navbar /> */}
+                <Navbar />
             </AuthProvider>
         </QueryClientProvider>
     );
