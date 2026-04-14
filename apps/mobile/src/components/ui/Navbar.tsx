@@ -35,8 +35,10 @@ export const Navbar = () => {
         },
     ];
 
+    const hiddenLinks = ["/sign-in", "/sign-up", "/"];
+
     return (
-        <View className="absolute bottom-0 left-0 right-0">
+        <View className={`${hiddenLinks.includes(pathname) ? "hidden" : ""}`}>
             <View className="flex-row items-center justify-between bg-white p2">
                 {navItems.map((item) => {
                     const isActive = pathname === item.to;
@@ -61,7 +63,9 @@ export const Navbar = () => {
                                 ellipsizeMode="clip"
                                 adjustsFontSizeToFit
                                 minimumFontScale={0.8}
-                                className="w-full text-center text-xs"
+                                className={`w-full text-center text-xs ${
+                                    isActive ? "font-bold" : "font-medium"
+                                }`}
                             >
                                 {item.label}
                             </Text>

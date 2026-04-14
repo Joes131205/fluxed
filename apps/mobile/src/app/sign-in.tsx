@@ -13,14 +13,19 @@ import {
 import { API_URL } from "../lib/env";
 import { authClient } from "../lib/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../hooks/useAuth";
 
 export default function SignIn() {
+    const { user } = useAuth();
+
     const router = useRouter();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-
+    if (user) {
+        router.replace("/dashboard");
+    }
     const handleSignIn = async () => {
         if (!email || !password) {
             Alert.alert("Error", "Please fill in all fields");
@@ -135,7 +140,9 @@ export default function SignIn() {
                 className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3"
             >
                 <View className="flex-row items-center justify-center gap-2">
-                    <Text className="text-base font-black text-gray-700">G</Text>
+                    <Text className="text-base font-black text-gray-700">
+                        G
+                    </Text>
                     <Text className="font-semibold text-gray-800">
                         Continue with Google
                     </Text>

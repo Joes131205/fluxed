@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { usePlans } from "../../hooks/usePlans";
 import { useEffect, useState } from "react";
 
@@ -55,9 +55,10 @@ export const PlanSection = () => {
             </View>
 
             {isPlansLoading && (
-                <View className="flex flex-col items-center py-12 gap-3">
-                    <Text className="text-xs font-bold text-text/40 uppercase tracking-widest">
-                        Loading...
+                <View className="flex-1 items-center justify-center bg-background">
+                    <ActivityIndicator />
+                    <Text className="text-center font-bold text-xl">
+                        Getting your plan...
                     </Text>
                 </View>
             )}

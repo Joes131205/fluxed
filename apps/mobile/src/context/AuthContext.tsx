@@ -3,6 +3,8 @@ import { getAuthHeaders } from "../lib/authHeaders";
 import { authClient } from "../lib/client";
 import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { Alert } from "react-native";
 
 type AuthContextType = {
     user: User | null;
@@ -24,7 +26,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthLoading, setIsAuthLoading] = useState(true);
-
+    const router = useRouter();
     const loadCurrentUser = async () => {
         const headers = await getAuthHeaders();
         const response = await authClient.me.$get(
@@ -97,8 +99,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const logout = async () => {
-        await AsyncStorage.clear();
-        setUser(null);
+        Alert.alert("Logout", "Are you sure you want to log out?", [
+            {
+                text: "No!",
+                style: "cancel",
+            },
+            {
+                text: "Yuh!",
+                onPress: async () => {
+                    await AsyncStorage.clear();
+                    setUser(null);
+                    router.replace("/sign-in");
+                },
+            },
+        ]);
     };
 
     return (

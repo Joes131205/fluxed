@@ -12,15 +12,20 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authClient } from "../lib/client";
 import { API_URL } from "../lib/env";
+import { useAuth } from "../hooks/useAuth";
 
 export default function SignUp() {
+    const { user } = useAuth();
+
     const router = useRouter();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
-
+    if (user) {
+        router.replace("/dashboard");
+    }
     const handleSignUp = async () => {
         if (!username || !email || !password || !confirmPassword) {
             Alert.alert("Error", "Please fill in all fields");
