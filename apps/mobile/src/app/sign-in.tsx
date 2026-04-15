@@ -99,7 +99,7 @@ export default function SignIn() {
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
+                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-foreground"
                 editable={!loading}
             />
 
@@ -108,14 +108,14 @@ export default function SignIn() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
+                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-foreground"
                 editable={!loading}
             />
 
             <Pressable
                 onPress={handleSignIn}
                 disabled={loading}
-                className="w-full bg-blue-500 rounded-lg py-3 mt-4 flex items-center justify-center"
+                className="w-full bg-primary rounded-lg py-3 mt-4 flex items-center justify-center"
             >
                 {loading ? (
                     <ActivityIndicator color="white" />
@@ -153,7 +153,7 @@ export default function SignIn() {
                 onPress={() => router.push("/sign-up")}
                 disabled={loading}
             >
-                <Text className="text-blue-500 text-sm mt-4">
+                <Text className="text-primary text-sm mt-4">
                     Don't have an account? Sign Up
                 </Text>
             </Pressable>

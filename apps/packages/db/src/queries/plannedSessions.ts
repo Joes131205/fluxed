@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db, plannedSessions, subareas } from "..";
+import { areas, db, plannedSessions, subareas } from "..";
 import type { NewPlannedSessions } from "../schema";
 
 export const updatePlan = async (planned: NewPlannedSessions[]) => {
@@ -20,9 +20,11 @@ export const getPlan = async (userId: string) => {
             subareaId: subareas.id,
             subareaName: subareas.name,
             subareaWeight: subareas.weight,
+            areaName: areas.name,
         })
         .from(plannedSessions)
         .innerJoin(subareas, eq(plannedSessions.subarea_id, subareas.id))
+        .innerJoin(areas, eq(subareas.area_id, areas.id))
         .where(eq(plannedSessions.user_id, userId));
     console.log(results);
     return results;

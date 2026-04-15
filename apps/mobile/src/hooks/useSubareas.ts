@@ -1,14 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { areasClient } from "../lib/client";
 import { getAuthHeaders } from "../lib/authHeaders";
+import { subareasClient } from "../lib/client";
 
-export const useAreas = () => {
+export const useSubareas = (areaId: string) => {
     return useQuery({
-        queryKey: ["areas"],
+        queryKey: ["subareas", areaId],
         queryFn: async () => {
             const headers = await getAuthHeaders();
-            const response = await areasClient.$get(
-                {},
+            const response = await subareasClient[":id"].$get(
+                {
+                    param: { id: areaId },
+                },
                 {
                     headers,
                 },
@@ -16,26 +18,28 @@ export const useAreas = () => {
 
             return response.json();
         },
+        enabled: !!areaId,
     });
 };
 
-export const useCreateArea = () => {
+export const useCreateSubarea = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (newArea: any) => {
+        mutationFn: async (newSubarea: any) => {
             const headers = await getAuthHeaders();
-            const response = await areasClient.$post(
-                { json: newArea },
+            const response = await subareasClient.$post(
+                { json: newSubarea },
                 {
                     headers,
                 },
             );
+
             return response.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["areas"],
+                queryKey: ["subareas"],
             });
         },
     });

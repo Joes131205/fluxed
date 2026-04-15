@@ -93,7 +93,7 @@ export default function SignUp() {
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
+                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-base"
                 editable={!loading}
             />
 
@@ -102,7 +102,7 @@ export default function SignUp() {
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
+                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-base"
                 editable={!loading}
             />
 
@@ -111,7 +111,7 @@ export default function SignUp() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
+                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-base"
                 editable={!loading}
             />
 
@@ -120,14 +120,14 @@ export default function SignUp() {
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base"
+                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-base"
                 editable={!loading}
             />
 
             <Pressable
                 onPress={handleSignUp}
                 disabled={loading}
-                className="w-full bg-blue-500 rounded-lg py-3 mt-4 flex items-center justify-center"
+                className="w-full bg-primary rounded-lg py-3 mt-4 flex items-center justify-center"
             >
                 {loading ? (
                     <ActivityIndicator color="white" />
@@ -163,7 +163,7 @@ export default function SignUp() {
                 onPress={() => router.push("/sign-in")}
                 disabled={loading}
             >
-                <Text className="text-blue-500 text-sm mt-4">
+                <Text className="text-primary text-sm mt-4">
                     Already have an account? Sign In
                 </Text>
             </Pressable>

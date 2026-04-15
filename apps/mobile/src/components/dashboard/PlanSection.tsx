@@ -10,6 +10,7 @@ type PlanItem = {
     subareaId: string;
     subareaName: string;
     subareaWeight: number | null;
+    areaName: string;
 };
 
 export const PlanSection = () => {
@@ -65,7 +66,7 @@ export const PlanSection = () => {
 
             {!isPlansLoading && planItems.length === 0 && (
                 <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
-                    <Text className="text-sm font-bold text-text/50 text-center text-2xl font-bold">
+                    <Text className="text-2xl font-bold text-foreground text-center">
                         Your plan is empty
                     </Text>
                     <Text className="text-center">
@@ -95,7 +96,7 @@ export const PlanSection = () => {
                                                 Area
                                             </Text>
                                             <Text className="text-xl font-black tracking-tight text-text mb-4">
-                                                Area Name
+                                                {item.areaName}
                                             </Text>
                                         </View>
 

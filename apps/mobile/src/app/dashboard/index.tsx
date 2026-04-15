@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { PlanSection } from "../../components/dashboard/PlanSection";
 
 export default function Dashboard() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const router = useRouter();
 
     const now = new Date();
@@ -14,27 +14,6 @@ export default function Dashboard() {
         month: "long",
         day: "numeric",
     });
-
-    const formatTime = (value: string | null | undefined) => {
-        if (!value) return "Not set";
-
-        if (/^\d{2}:\d{2}/.test(value)) {
-            return new Date(`1970-01-01T${value}`).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-            });
-        }
-
-        return new Date(value).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-    };
-
-    const handleSignOut = async () => {
-        await logout();
-        router.replace("/sign-in");
-    };
 
     return (
         <ScrollView
