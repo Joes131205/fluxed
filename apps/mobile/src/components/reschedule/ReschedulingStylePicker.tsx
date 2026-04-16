@@ -22,7 +22,7 @@ export function ReschedulingStylePicker({
                     onPress={() => onAlgorithmChange("global")}
                     className={`flex flex-col gap-2 flex-1 rounded-3xl border-2 px-5 py-5 transition-all ${
                         algorithm === "global"
-                            ? "border-primary bg-primary"
+                            ? "border-primary bg-primary/20"
                             : "border-border/50 bg-card shadow-sm"
                     }`}
                 >
@@ -35,7 +35,7 @@ export function ReschedulingStylePicker({
                     onPress={() => onAlgorithmChange("nested")}
                     className={`flex flex-col gap-2 flex-1 rounded-3xl border-2 px-5 py-5 transition-all ${
                         algorithm === "nested"
-                            ? "border-primary bg-primary"
+                            ? "border-primary bg-primary/20"
                             : "border-border/50 bg-card shadow-sm"
                     }`}
                 >
@@ -47,7 +47,7 @@ export function ReschedulingStylePicker({
             </View>
             <Pressable
                 onPress={onReschedule}
-                className="w-full bg-linear-to-r from-primary to-primary/80 rounded-2xl py-4 shadow-lg transition-all"
+                className="w-full rounded-md bg-primary px-4 py-2"
             >
                 <Text className="text-white font-semibold text-center">
                     Reschedule

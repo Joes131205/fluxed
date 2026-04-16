@@ -36,8 +36,8 @@ export const SubareaSection = ({ subareas }: SubareaSectionProps) => {
                                     key={`${subarea.subareaId}-${i}`}
                                     className={
                                         i < subarea.weight
-                                            ? "h-2 w-2 rounded-full bg-primary"
-                                            : "h-2 w-2 rounded-full bg-gray-500"
+                                            ? "h-2 w-2 bg-primary"
+                                            : "h-2 w-2 bg-gray-500"
                                     }
                                 />
                             ))}

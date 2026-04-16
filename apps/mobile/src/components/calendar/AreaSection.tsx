@@ -34,8 +34,8 @@ export const AreaSection = ({ area }: AreaSectionProps) => {
                                 key={`${area.areaId}-${i}`}
                                 className={
                                     i < area.weight
-                                        ? "bg-primary h-2 w-2 rounded-full"
-                                        : "bg-gray-500 h-2 w-2 rounded-full"
+                                        ? "bg-primary h-2 w-2"
+                                        : "bg-gray-500 h-2 w-2"
                                 }
                             />
                         ))}

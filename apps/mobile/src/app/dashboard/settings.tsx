@@ -180,7 +180,7 @@ export default function Settings() {
                     <Pressable
                         onPress={handleSave}
                         disabled={isSaving}
-                        className="rounded-xl bg-blue-500 py-4"
+                        className="rounded-xl bg-primary py-4"
                     >
                         {isSaving ? (
                             <ActivityIndicator color="white" />
