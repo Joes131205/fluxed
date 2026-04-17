@@ -1,12 +1,26 @@
 {
   "expo": {
-    "scheme": "acme",
+    "scheme": "fluxed",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
+    "ios": {
+      "bundleIdentifier": "com.joes131205.fluxed"
+    },
+    "android": {
+      "package": "com.joes131205.fluxed"
+    },
     "web": {
       "output": "static"
     },
-    "name": "mobile",
-    "slug": "mobile"
+    "name": "fluxed",
+    "slug": "fluxed",
+    "extra": {
+      "eas": {
+        "projectId": "6a9b29f1-965d-4108-a3b2-2c3ca25d78e7"
+      }
+    },
+    "plugins": [
+      "expo-web-browser"
+    ]
   }
 }

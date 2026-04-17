@@ -4,7 +4,6 @@ import axios from "axios";
 import {
     ActivityIndicator,
     Alert,
-    Linking,
     Pressable,
     Text,
     TextInput,
@@ -14,6 +13,7 @@ import { API_URL } from "../lib/env";
 import { authClient } from "../lib/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../hooks/useAuth";
+import * as WebBrowser from "expo-web-browser";
 
 export default function SignIn() {
     const { user } = useAuth();
@@ -80,7 +80,35 @@ export default function SignIn() {
 
     const handleGoogleSignIn = async () => {
         try {
-            await Linking.openURL(`${API_URL}/api/auth/google/start`);
+            const startUrl = `${API_URL}/api/auth/google/start?state=mobile`;
+            const redirectUrl = "fluxed://auth-success";
+
+            const result = await WebBrowser.openAuthSessionAsync(
+                startUrl,
+                redirectUrl,
+            );
+
+            if (result.type !== "success" || !result.url) {
+                return;
+            }
+
+            const queryString = result.url.split("?")[1] ?? "";
+            const params = new URLSearchParams(queryString);
+            const token = params.get("token");
+            const error = params.get("error");
+
+            if (error) {
+                Alert.alert("Google Sign In Failed", error);
+                return;
+            }
+
+            if (!token) {
+                Alert.alert("Google Sign In Failed", "Missing auth token.");
+                return;
+            }
+
+            await AsyncStorage.setItem("token", token);
+            router.replace("/dashboard");
         } catch (error) {
             Alert.alert(
                 "Google Sign In Failed",

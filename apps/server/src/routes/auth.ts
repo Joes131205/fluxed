@@ -82,6 +82,8 @@ const app = new Hono<{ Variables: AppType }>()
         );
     })
     .get("/google/start", async (c) => {
+        const state = c.req.query("state") ?? "web";
+
         const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
         authUrl.searchParams.set("client_id", googleClientId);
         authUrl.searchParams.set("redirect_uri", googleRedirectURI);
@@ -89,7 +91,7 @@ const app = new Hono<{ Variables: AppType }>()
         authUrl.searchParams.set("scope", googleOAuthScopes);
         authUrl.searchParams.set("access_type", "offline");
         authUrl.searchParams.set("prompt", "consent");
-
+        authUrl.searchParams.set("state", state);
         return c.redirect(authUrl.toString());
     })
     .get("/google/callback", async (c) => {
@@ -106,6 +108,8 @@ const app = new Hono<{ Variables: AppType }>()
         }
 
         const code = c.req.query("code");
+        const state = c.req.query("state") ?? "web";
+
         if (!code) {
             return c.json({ ok: false, error: "Not Authorized" }, 403);
         }
@@ -234,7 +238,9 @@ const app = new Hono<{ Variables: AppType }>()
 
             const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
             return c.redirect(
-                `http://localhost:3001/auth-success?token=${token}`,
+                state === "mobile"
+                    ? `fluxed://auth-success?token=${token}`
+                    : `http://localhost:3001/auth-success?token=${token}`,
             );
         } catch (error) {
             console.error("Google callback failed", error);
