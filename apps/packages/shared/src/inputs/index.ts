@@ -11,10 +11,15 @@ export const logInSchema = z.object({
     password: z.string().min(8),
 });
 
+const hexColorSchema = z.string().regex(/^#[0-9a-fA-F]{6}$/, {
+    message: "Color must be a 6-digit hex value like #00cdfd",
+});
+
 export const areaSchema = z.object({
     id: z.string().optional(),
     name: z.string().nonempty(),
     weight: z.number().default(0),
+    color: hexColorSchema.default("#00cdfd"),
 });
 
 const hhmmSchema = z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {

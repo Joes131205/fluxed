@@ -36,7 +36,7 @@ export function BusyBlocks({
             <Text className="text-xl font-bold">Busy Blocks</Text>
 
             {isGoogleConnected ? (
-                <View className="rounded-xl border border-primary/30 bg-primary/10 p-4 flex flex-col gap-3">
+                <View className="rounded-xl border border-primary/30 bg-primary/5 p-4 flex flex-col gap-3">
                     <Text className="font-semibold text-primary">
                         Google calendar connected
                     </Text>
@@ -85,20 +85,27 @@ export function BusyBlocks({
                 >
                     <Text className="font-semibold">{item.name}</Text>
                     <View className="mt-2 flex flex-col gap-2">
-                        {item.busy.map((slot, index) => (
-                            <Pressable
-                                key={`${item.id}-${index}`}
-                                onPress={() =>
-                                    !isGoogleConnected && onRemoveEvent(index)
-                                }
-                                className="rounded-md border border-border px-3 py-2"
-                            >
-                                <Text>
-                                    {formatTime(slot.start)} -{" "}
-                                    {formatTime(slot.end)}
-                                </Text>
-                            </Pressable>
-                        ))}
+                        {item.busy.length > 0 ? (
+                            item.busy.map((slot, index) => (
+                                <Pressable
+                                    key={`${item.id}-${index}`}
+                                    onPress={() =>
+                                        !isGoogleConnected &&
+                                        onRemoveEvent(index)
+                                    }
+                                    className="rounded-md border border-border px-3 py-2"
+                                >
+                                    <Text>
+                                        {formatTime(slot.start)} -{" "}
+                                        {formatTime(slot.end)}
+                                    </Text>
+                                </Pressable>
+                            ))
+                        ) : (
+                            <View className="flex flex-col gap-2">
+                                <Text className="text-xs">Empty!</Text>
+                            </View>
+                        )}
                     </View>
                 </View>
             ))}

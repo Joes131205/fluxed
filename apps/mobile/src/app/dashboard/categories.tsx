@@ -3,13 +3,23 @@ import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useAreas, useCreateArea } from "../../hooks/useAreas";
 import { useCreateSubarea } from "../../hooks/useSubareas";
 
+import ColorPicker, {
+    Panel1,
+    Swatches,
+    Preview,
+    OpacitySlider,
+    HueSlider,
+} from "reanimated-color-picker";
 type Section = "areas" | "subareas";
 
 type AreaRecord = {
     id: string;
     name: string;
     weight: number;
+    color?: string;
 };
+
+const DEFAULT_AREA_COLOR = "#00cdfd";
 
 const parseWeight = (value: string) => {
     const next = Number.parseInt(value, 10);
@@ -21,16 +31,29 @@ const parseWeight = (value: string) => {
     return Math.min(5, Math.max(1, next));
 };
 
+const parseColor = (value: string) => {
+    const raw = value.trim().replace(/^#+/, "").slice(0, 6);
+    const normalized = `#${raw}`;
+
+    if (!/^#[0-9a-fA-F]{6}$/.test(normalized)) {
+        return null;
+    }
+
+    return normalized.toLowerCase();
+};
+
 export default function Categories() {
     const [section, setSection] = useState<Section>("areas");
     const [message, setMessage] = useState<string | null>(null);
 
     const [areaName, setAreaName] = useState("");
     const [areaWeight, setAreaWeight] = useState("1");
+    const [areaColor, setAreaColor] = useState(DEFAULT_AREA_COLOR);
 
     const [subareaName, setSubareaName] = useState("");
     const [subareaWeight, setSubareaWeight] = useState("1");
     const [selectedAreaId, setSelectedAreaId] = useState("");
+    const [subareaColor, setSubareaColor] = useState(DEFAULT_AREA_COLOR);
 
     const { data: areasData, isLoading: isAreasLoading } = useAreas();
     const { mutateAsync: createArea, isPending: isAreaPending } =
@@ -54,16 +77,23 @@ export default function Categories() {
 
         const name = areaName.trim();
         const weight = parseWeight(areaWeight);
+        const color = parseColor(areaColor);
 
         if (!name) {
             setMessage("Area name is required.");
             return;
         }
 
+        if (!color) {
+            setMessage("Color must be a valid hex value like #00cdfd.");
+            return;
+        }
+
         try {
-            await createArea({ name, weight });
+            await createArea({ name, weight, color });
             setAreaName("");
             setAreaWeight("1");
+            setAreaColor(DEFAULT_AREA_COLOR);
             setMessage("Area created.");
         } catch {
             setMessage("Could not create area. Try again.");
@@ -190,6 +220,33 @@ export default function Categories() {
                         />
                     </View>
 
+                    <View className="flex flex-col gap-2">
+                        <Text className="text-sm font-semibold text-muted-foreground">
+                            Color
+                        </Text>
+                        <View className="flex-row items-center gap-3">
+                            <View
+                                className="h-10 w-10 rounded-xl border border-border"
+                                style={{
+                                    backgroundColor:
+                                        parseColor(areaColor) ??
+                                        DEFAULT_AREA_COLOR,
+                                }}
+                            />
+                            <ColorPicker
+                                style={{ width: "70%" }}
+                                value={areaColor}
+                                onComplete={({ hex }) => {
+                                    setAreaColor(hex);
+                                }}
+                            >
+                                <Panel1 />
+                                <Preview />
+                                <HueSlider />
+                            </ColorPicker>
+                        </View>
+                    </View>
+
                     <Pressable
                         onPress={handleCreateArea}
                         disabled={isSubmitting}
@@ -269,6 +326,33 @@ export default function Categories() {
                             className="rounded-xl border border-border bg-white px-4 py-3"
                             editable={!isSubmitting}
                         />
+                    </View>
+
+                    <View className="flex flex-col gap-2">
+                        <Text className="text-sm font-semibold text-muted-foreground">
+                            Color
+                        </Text>
+                        <View className="flex-row items-center gap-3">
+                            <View
+                                className="h-10 w-10 rounded-xl border border-border"
+                                style={{
+                                    backgroundColor:
+                                        parseColor(areaColor) ??
+                                        DEFAULT_AREA_COLOR,
+                                }}
+                            />
+                            <ColorPicker
+                                style={{ width: "70%" }}
+                                value={areaColor}
+                                onComplete={({ hex }) => {
+                                    setAreaColor(hex);
+                                }}
+                            >
+                                <Panel1 />
+                                <Preview />
+                                <HueSlider />
+                            </ColorPicker>
+                        </View>
                     </View>
 
                     <Pressable

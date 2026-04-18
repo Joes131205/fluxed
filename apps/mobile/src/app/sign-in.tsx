@@ -15,6 +15,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../hooks/useAuth";
 import * as WebBrowser from "expo-web-browser";
 
+WebBrowser.maybeCompleteAuthSession();
+
 export default function SignIn() {
     const { user } = useAuth();
 

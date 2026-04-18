@@ -237,6 +237,7 @@ const app = new Hono<{ Variables: AppType }>()
             }
 
             const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
+            console.log(token);
             return c.redirect(
                 state === "mobile"
                     ? `fluxed://auth-success?token=${token}`

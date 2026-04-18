@@ -20,6 +20,7 @@ export const areas = pgTable("areas", {
         })
         .notNull(),
     name: varchar("name", { length: 256 }).notNull(),
+    color: varchar("color", { length: 7 }).default("#00cdfd").notNull(),
     weight: integer("weight").default(1),
 });
 
