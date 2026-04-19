@@ -32,6 +32,7 @@ export const subareas = pgTable("subareas", {
     allocatedMinutes: integer("allocated_minutes").default(0),
     startTime: timestamp("start_time"),
     endTime: timestamp("end_time"),
+    color: varchar("color", { length: 7 }).default("#00cdfd").notNull(),
 });
 
 export type NewSubareas = typeof subareas.$inferInsert;

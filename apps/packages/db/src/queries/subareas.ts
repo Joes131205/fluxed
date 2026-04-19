@@ -1,9 +1,13 @@
 import { eq } from "drizzle-orm";
 import { db, subareas } from "..";
 import type { SubareaInput } from "../../../shared/src/inputs";
+import type { NewSubareas } from "../schema";
 
 export const createSubarea = async (subarea: SubareaInput) => {
-    const [result] = await db.insert(subareas).values(subarea).returning();
+    const [result] = await db
+        .insert(subareas)
+        .values(subarea as NewSubareas)
+        .returning();
     return result;
 };
 

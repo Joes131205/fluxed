@@ -2,14 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useAreas, useCreateArea } from "../../hooks/useAreas";
 import { useCreateSubarea } from "../../hooks/useSubareas";
-
-import ColorPicker, {
-    Panel1,
-    Swatches,
-    Preview,
-    OpacitySlider,
-    HueSlider,
-} from "reanimated-color-picker";
+import { ColorField } from "../../components/ui/ColorField";
 type Section = "areas" | "subareas";
 
 type AreaRecord = {
@@ -105,6 +98,7 @@ export default function Categories() {
 
         const name = subareaName.trim();
         const weight = parseWeight(subareaWeight);
+        const color = parseColor(subareaColor);
 
         if (!selectedAreaId) {
             setMessage("Pick an area first.");
@@ -121,9 +115,11 @@ export default function Categories() {
                 area_id: selectedAreaId,
                 name,
                 weight,
+                color,
             });
             setSubareaName("");
             setSubareaWeight("1");
+            setSubareaColor(DEFAULT_AREA_COLOR);
             setMessage("Subarea created.");
         } catch {
             setMessage("Could not create subarea. Try again.");
@@ -220,32 +216,12 @@ export default function Categories() {
                         />
                     </View>
 
-                    <View className="flex flex-col gap-2">
-                        <Text className="text-sm font-semibold text-muted-foreground">
-                            Color
-                        </Text>
-                        <View className="flex-row items-center gap-3">
-                            <View
-                                className="h-10 w-10 rounded-xl border border-border"
-                                style={{
-                                    backgroundColor:
-                                        parseColor(areaColor) ??
-                                        DEFAULT_AREA_COLOR,
-                                }}
-                            />
-                            <ColorPicker
-                                style={{ width: "70%" }}
-                                value={areaColor}
-                                onComplete={({ hex }) => {
-                                    setAreaColor(hex);
-                                }}
-                            >
-                                <Panel1 />
-                                <Preview />
-                                <HueSlider />
-                            </ColorPicker>
-                        </View>
-                    </View>
+                    <ColorField
+                        label="Color"
+                        value={areaColor}
+                        onChange={setAreaColor}
+                        editable={!isSubmitting}
+                    />
 
                     <Pressable
                         onPress={handleCreateArea}
@@ -328,32 +304,12 @@ export default function Categories() {
                         />
                     </View>
 
-                    <View className="flex flex-col gap-2">
-                        <Text className="text-sm font-semibold text-muted-foreground">
-                            Color
-                        </Text>
-                        <View className="flex-row items-center gap-3">
-                            <View
-                                className="h-10 w-10 rounded-xl border border-border"
-                                style={{
-                                    backgroundColor:
-                                        parseColor(areaColor) ??
-                                        DEFAULT_AREA_COLOR,
-                                }}
-                            />
-                            <ColorPicker
-                                style={{ width: "70%" }}
-                                value={areaColor}
-                                onComplete={({ hex }) => {
-                                    setAreaColor(hex);
-                                }}
-                            >
-                                <Panel1 />
-                                <Preview />
-                                <HueSlider />
-                            </ColorPicker>
-                        </View>
-                    </View>
+                    <ColorField
+                        label="Color"
+                        value={subareaColor}
+                        onChange={setSubareaColor}
+                        editable={!isSubmitting}
+                    />
 
                     <Pressable
                         onPress={handleCreateSubarea}

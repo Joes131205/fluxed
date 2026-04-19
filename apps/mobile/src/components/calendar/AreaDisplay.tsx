@@ -34,11 +34,13 @@ export const AreaDisplay = ({ areasDataOverride }: AreaDisplayProps) => {
                     return {
                         areaId: area.id,
                         areaName: area.name,
+                        color: area.color,
                         subareas: (subareaData.data || []).map(
                             (subarea: any) => ({
                                 subareaId: subarea.id,
                                 subareaName: subarea.name,
                                 weight: subarea.weight || 1,
+                                color: subarea.color,
                             }),
                         ),
                         weight: area.weight,

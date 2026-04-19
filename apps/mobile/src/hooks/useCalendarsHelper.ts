@@ -466,7 +466,8 @@ export function useCalendarEngine() {
                         { headers: await getAuthHeaders() },
                     );
                     const subareaData: any = await response.json();
-
+                    console.log(areasData);
+                    console.log(subareaData);
                     return {
                         areaId: area.id,
                         areaName: area.name,
@@ -476,12 +477,15 @@ export function useCalendarEngine() {
                                 subareaId: subarea.id,
                                 subareaName: subarea.name,
                                 weight: subarea.weight || 1,
+                                color: subarea.color,
                             }),
                         ),
+                        color: area.color,
                     };
                 }),
             ).then((transformedData) => setSchedule(transformedData));
         }
+        console.log(schedule);
     }, [areasData]);
 
     useEffect(() => {

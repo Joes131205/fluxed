@@ -55,6 +55,7 @@ export const subareaSchema = z.object({
     area_id: z.string().optional(),
     name: z.string().optional(),
     weight: z.number().default(0).optional(),
+    color: hexColorSchema.default("#00cdfd"),
     allocatedMinutes: z.number().optional(),
 });
 

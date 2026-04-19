@@ -1,0 +1,1 @@
+ALTER TABLE "subareas" ADD COLUMN "color" varchar(7) DEFAULT '#00cdfd' NOT NULL;
