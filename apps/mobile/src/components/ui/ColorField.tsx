@@ -1,13 +1,20 @@
-import { Text, TextInput, View } from "react-native";
-
-import ColorPicker, {
-    HueSlider,
-    Panel1,
-    Preview,
-    Swatches,
-} from "reanimated-color-picker";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 const DEFAULT_COLOR = "#00cdfd";
+const SWATCHES = [
+    "#00cdfd",
+    "#06b6d4",
+    "#22c55e",
+    "#84cc16",
+    "#eab308",
+    "#f97316",
+    "#ef4444",
+    "#ec4899",
+    "#a855f7",
+    "#6366f1",
+    "#0f172a",
+    "#6b7280",
+] as const;
 
 const parseColor = (value: string) => {
     const raw = value.trim().replace(/^#+/, "").slice(0, 6);
@@ -59,18 +66,27 @@ export function ColorField({
                     />
                 </View>
 
-                <ColorPicker
-                    style={{ width: "100%" }}
-                    value={resolvedColor}
-                    onComplete={({ hex }) => {
-                        onChange(hex);
-                    }}
-                >
-                    <Panel1 style={{ borderRadius: 12, minHeight: 120 }} />
-                    <Preview style={{ marginTop: 8, borderRadius: 12 }} />
-                    <HueSlider style={{ marginTop: 8, borderRadius: 9999 }} />
-                    <Swatches style={{ marginTop: 8 }} />
-                </ColorPicker>
+                <View className="flex-row flex-wrap gap-2">
+                    {SWATCHES.map((swatch) => {
+                        const isSelected = resolvedColor === swatch;
+
+                        return (
+                            <Pressable
+                                key={swatch}
+                                className="h-9 w-9 rounded-lg border"
+                                disabled={!editable}
+                                style={{
+                                    backgroundColor: swatch,
+                                    borderColor: isSelected
+                                        ? "#111827"
+                                        : "#d1d5db",
+                                    borderWidth: isSelected ? 2 : 1,
+                                }}
+                                onPress={() => onChange(swatch)}
+                            />
+                        );
+                    })}
+                </View>
             </View>
 
             <Text className="text-xs text-muted-foreground">

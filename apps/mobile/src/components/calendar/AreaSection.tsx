@@ -35,7 +35,7 @@ export const AreaSection = ({ area }: AreaSectionProps) => {
                         {[...new Array(5)].map((_, i) => (
                             <View
                                 key={`${area.areaId}-${i}`}
-                                className="h-2 w-2 rounded-full"
+                                className="h-2 w-2 "
                                 style={{
                                     backgroundColor:
                                         i < area.weight ? color : "#6b7280",

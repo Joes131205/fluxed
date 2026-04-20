@@ -35,6 +35,25 @@ const parseColor = (value: string) => {
     return normalized.toLowerCase();
 };
 
+const getTextColorBasedOnRGB = (r: number, g: number, b: number) => {
+    // based on W3C
+    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
+};
+
+const getTextColorFromHex = (hex: string) => {
+    const normalized = parseColor(hex);
+
+    if (!normalized) {
+        return "#ffffff";
+    }
+
+    const r = Number.parseInt(normalized.slice(1, 3), 16);
+    const g = Number.parseInt(normalized.slice(3, 5), 16);
+    const b = Number.parseInt(normalized.slice(5, 7), 16);
+
+    return getTextColorBasedOnRGB(r, g, b);
+};
+
 export default function Categories() {
     const [section, setSection] = useState<Section>("areas");
     const [message, setMessage] = useState<string | null>(null);
@@ -262,13 +281,35 @@ export default function Categories() {
                                                 ? "bg-primary border-primary"
                                                 : "bg-white border-border"
                                         }`}
+                                        style={{
+                                            backgroundColor:
+                                                selectedAreaId === area.id
+                                                    ? (area.color ??
+                                                      DEFAULT_AREA_COLOR)
+                                                    : "white",
+                                            borderColor:
+                                                selectedAreaId === area.id
+                                                    ? (area.color ??
+                                                      DEFAULT_AREA_COLOR)
+                                                    : "#d0e2e3",
+                                        }}
                                     >
                                         <Text
                                             className={`font-medium ${
                                                 selectedAreaId === area.id
-                                                    ? "text-white"
+                                                    ? ""
                                                     : "text-foreground"
                                             }`}
+                                            style={
+                                                selectedAreaId === area.id
+                                                    ? {
+                                                          color: getTextColorFromHex(
+                                                              area.color ??
+                                                                  DEFAULT_AREA_COLOR,
+                                                          ),
+                                                      }
+                                                    : undefined
+                                            }
                                         >
                                             {area.name}
                                         </Text>

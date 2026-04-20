@@ -38,7 +38,7 @@ export const SubareaSection = ({ subareas }: SubareaSectionProps) => {
                                     {[...new Array(5)].map((_, i) => (
                                         <View
                                             key={`${subarea.subareaId}-${i}`}
-                                            className="h-2 w-2 rounded-full"
+                                            className="h-2 w-2"
                                             style={{
                                                 backgroundColor:
                                                     i < subarea.weight
