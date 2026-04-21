@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { Slot, useRouter } from "expo-router";
+import { Slot, usePathname, useRouter } from "expo-router";
 import { AuthProvider } from "../context/AuthContext";
 import { Navbar } from "../components/ui/Navbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,12 +13,15 @@ const queryClient = new QueryClient();
 function RootLayoutContent() {
     const { isAuthenticated, isAuthLoading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
+
+    const publicRoutes = new Set(["/", "/sign-in", "/sign-up", "/auth-success"]);
 
     useEffect(() => {
-        if (!isAuthLoading && !isAuthenticated) {
+        if (!isAuthLoading && !isAuthenticated && !publicRoutes.has(pathname)) {
             router.replace("/sign-in");
         }
-    }, [isAuthenticated, isAuthLoading, router]);
+    }, [isAuthenticated, isAuthLoading, pathname, router]);
 
     if (isAuthLoading) {
         return (

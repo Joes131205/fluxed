@@ -16,6 +16,7 @@ import {
     googleClientSecret,
     googleOAuthScopes,
     googleRedirectURI,
+    mobileAuthSuccessURI,
     jwtSecret,
 } from "../env";
 import { authCheck } from "../middlewares/authMiddleware";
@@ -95,6 +96,7 @@ const app = new Hono<{ Variables: AppType }>()
         return c.redirect(authUrl.toString());
     })
     .get("/google/callback", async (c) => {
+        console.log("getting token...");
         const oauthError = c.req.query("error");
         const oauthErrorDescription = c.req.query("error_description");
         if (oauthError) {
@@ -238,9 +240,10 @@ const app = new Hono<{ Variables: AppType }>()
 
             const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
             console.log(token);
+            console.log("Redirecting..." + state);
             return c.redirect(
                 state === "mobile"
-                    ? `fluxed://auth-success?token=${token}`
+                    ? `${mobileAuthSuccessURI}?token=${token}`
                     : `http://localhost:3001/auth-success?token=${token}`,
             );
         } catch (error) {
