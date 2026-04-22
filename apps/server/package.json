@@ -19,6 +19,8 @@
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "@types/jsonwebtoken": "^9.0.10"
+        "@types/jsonwebtoken": "^9.0.10",
+        "tsdown": "^0.14.1",
+        "typescript": "^5.8.2"
     }
 }
