@@ -1,14 +1,13 @@
 {
-  "version": 2,
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/[[...route]].ts"
-    }
-  ]
+    "functions": {
+        "api/[[...route]].ts": {
+            "runtime": "nodejs22.x"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/[[...route]]"
+        }
+    ]
 }
