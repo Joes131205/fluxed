@@ -85,6 +85,7 @@ export function useCalendarEngine() {
         const night = new Date();
         night.setHours(23, 59, 59, 999);
 
+        const gaps: Array<{ start: string; end: string; durationMinutes: number }> = [];
         for (const slot of sorted) {
             const start = new Date(slot.start);
             const end = new Date(slot.end);
@@ -238,7 +239,7 @@ export function useCalendarEngine() {
     const saveToDatabase = async () => {
         setIsLoading(true);
 
-        if (plansData?.data!) {
+        if (plansData && 'data' in plansData && plansData.data) {
             const confirmation = await window.confirm(
                 "You have saved plan, saving it means deleting the whole plan, are you sure?",
             );

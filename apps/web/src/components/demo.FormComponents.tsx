@@ -11,11 +11,7 @@ import { Switch as ShadcnSwitch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
 export function SubscribeButton({ label }: { label: string }) {
-    return (
-        <Button type="submit">
-            {label}
-        </Button>
-    );
+    return <Button type="submit">{label}</Button>;
 }
 
 function ErrorMessages({
@@ -88,7 +84,9 @@ export function Select({
                 </ShadcnSelect.SelectTrigger>
                 <ShadcnSelect.SelectContent>
                     <ShadcnSelect.SelectGroup>
-                        <ShadcnSelect.SelectLabel>{label}</ShadcnSelect.SelectLabel>
+                        <ShadcnSelect.SelectLabel>
+                            {label}
+                        </ShadcnSelect.SelectLabel>
                         {values.map((value) => (
                             <ShadcnSelect.SelectItem
                                 key={value.value}

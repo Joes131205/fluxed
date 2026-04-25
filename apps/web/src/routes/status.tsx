@@ -12,8 +12,8 @@ function RouteComponent() {
         const getStatus = async () => {
             const res = await client.api.$get();
             const data = await res.json();
-            console.log(data.message);
-            setStatus(data.message);
+            console.log(data);
+            setStatus(data.ok ? "Server is healthy" : "Server is down");
         };
         getStatus();
     }, []);

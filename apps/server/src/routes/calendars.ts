@@ -85,7 +85,7 @@ const app = new Hono<{ Variables: AppType }>().get(
         // count the true free time
         const timeline = getTimeline(calendarData);
         console.log(timeline);
-        const freeTime = [];
+        const freeTime: Array<{ start: string; end: string; durationMinutes: number }> = [];
         let curr = now;
 
         for (let i = 0; i < timeline.length; i++) {
