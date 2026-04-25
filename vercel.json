@@ -1,0 +1,14 @@
+{
+  "installCommand": "bun install",
+  "buildCommand": "VITE_API_URL=https://$VERCEL_URL bun --cwd apps/web run build",
+  "outputDirectory": "apps/web/dist",
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
+  ]
+}
