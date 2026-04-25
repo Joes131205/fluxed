@@ -1,4 +1,5 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
 
 type Payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
