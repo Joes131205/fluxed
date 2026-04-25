@@ -1,6 +1,6 @@
 {
     "installCommand": "bun install",
-    "buildCommand": "VITE_API_URL=https://$VERCEL_URL bun --cwd apps/web run build",
+    "buildCommand": "cd apps/web && VITE_API_URL=https://$VERCEL_URL bun run build",
     "outputDirectory": "apps/web/dist",
     "routes": [
         { "handle": "filesystem" },
