@@ -3,6 +3,7 @@
     "buildCommand": "cd apps/web && VITE_API_URL=https://$VERCEL_URL bun run build",
     "outputDirectory": "apps/web/dist",
     "routes": [
+        { "src": "/api/.*", "dest": "/api/[[...route]]" },
         { "handle": "filesystem" },
         { "src": "/.*", "dest": "/index.html" }
     ]
