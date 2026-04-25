@@ -40,9 +40,13 @@ export interface Subarea {
     created_at: Date;
     updated_at: Date;
     area_id: string;
+    user_id: string;
     name: string;
     weight: number | null;
-    allocatedMinutes: number;
+    allocatedMinutes: number | null;
+    startTime: string | null;
+    endTime: string | null;
+    color: string;
 }
 
 export type NewSubarea = Omit<Subarea, "id" | "created_at" | "updated_at"> & {

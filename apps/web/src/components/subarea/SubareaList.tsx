@@ -20,7 +20,14 @@ const SubareaList: React.FC<SubareaListProp> = ({ areaId }) => {
             {data &&
                 "data" in data &&
                 data.data.map((subarea) => (
-                    <SubareaCard key={subarea.id} subarea={subarea} />
+                    <SubareaCard
+                        key={subarea.id}
+                        subarea={{
+                            ...subarea,
+                            created_at: new Date(subarea.created_at),
+                            updated_at: new Date(subarea.updated_at),
+                        }}
+                    />
                 ))}
         </div>
     );
