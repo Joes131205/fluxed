@@ -29,5 +29,6 @@ const app = new Hono()
     .route("/", api);
 
 export { app };
+export default app;
 
 export type AppType = typeof app;
