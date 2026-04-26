@@ -1,7 +1,0 @@
-{
-    "installCommand": "bun install",
-    "buildCommand": "turbo build --filter=@app/db",
-    "env": {
-        "NODE_ENV": "production"
-    }
-}
