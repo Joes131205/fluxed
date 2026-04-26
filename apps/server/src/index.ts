@@ -18,7 +18,7 @@ const api = new Hono()
 
 const app = new Hono()
     .use(
-        "/api/*",
+        "/*",
         cors({
             allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE"],
             origin: (origin) => origin || "*",
@@ -26,7 +26,7 @@ const app = new Hono()
             credentials: true,
         }),
     )
-    .route("/api", api);
+    .route("/", api);
 
 export { app };
 
