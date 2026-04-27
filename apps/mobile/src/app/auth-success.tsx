@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { useAuth } from "../hooks/useAuth";
 
 export default function AuthSuccess() {
     const router = useRouter();
@@ -9,26 +10,36 @@ export default function AuthSuccess() {
         token?: string | string[];
         error?: string | string[];
     }>();
-
+    const { loadCurrentUser } = useAuth();
     useEffect(() => {
         const value = Array.isArray(token) ? token[0] : token;
         const errorValue = Array.isArray(error) ? error[0] : error;
-
+        console.log(value);
         const completeAuth = async () => {
             if (errorValue) {
                 Alert.alert("Google Sign In Failed", errorValue);
-                router.replace("/sign-in");
                 return;
             }
 
             if (!value) {
                 Alert.alert("Google Sign In Failed", "Missing auth token.");
-                router.replace("/sign-in");
                 return;
             }
+            console.log("Token saved:", value);
 
-            await AsyncStorage.setItem("token", value);
-            router.replace("/dashboard");
+            try {
+                await AsyncStorage.setItem("token", value);
+                await new Promise((resolve) => setTimeout(resolve, 500));
+                console.log("About to load current user");
+                await loadCurrentUser();
+                console.log("User loaded successfully");
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+
+                router.replace("/dashboard");
+            } catch (err) {
+                console.error("Auth error:", err);
+                Alert.alert("Error", `Failed to complete auth: ${err}`);
+            }
         };
 
         void completeAuth();

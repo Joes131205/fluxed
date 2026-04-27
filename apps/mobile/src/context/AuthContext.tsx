@@ -16,6 +16,7 @@ type AuthContextType = {
         password: string,
     ) => Promise<void>;
     logout: () => Promise<void>;
+    loadCurrentUser: () => Promise<void>;
     isAuthLoading: boolean;
 };
 
@@ -27,21 +28,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthLoading, setIsAuthLoading] = useState(true);
     const router = useRouter();
+
     const loadCurrentUser = async () => {
-        const headers = await getAuthHeaders();
-        const response = await authClient.me.$get(
-            {},
-            {
-                headers,
-            },
-        );
+        try {
+            const headers = await getAuthHeaders();
+            const response = await authClient.me.$get(
+                {},
+                {
+                    headers,
+                },
+            );
 
-        if (!response.ok) {
-            throw new Error("Unable to fetch current user");
+            if (!response.ok) {
+                console.error("Failed to fetch user:", response.status);
+                throw new Error("Unable to fetch current user");
+            }
+
+            const data = (await response.json()) as { user: User };
+            setUser(data.user);
+        } catch (error) {
+            console.error("loadCurrentUser error:", error);
+            throw error;
         }
-
-        const data = (await response.json()) as { user: User };
-        setUser(data.user);
     };
 
     useEffect(() => {
@@ -123,6 +131,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 login,
                 signup,
                 logout,
+                loadCurrentUser,
                 isAuthLoading,
             }}
         >

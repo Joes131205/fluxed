@@ -82,7 +82,7 @@ export default function SignIn() {
 
     const handleGoogleSignIn = async () => {
         try {
-            const startUrl = `${API_URL}/api/auth/google/start?state=mobile`;
+            const startUrl = `${API_URL}/auth/google/start?state=mobile`;
             const redirectUrl = "fluxed://auth-success";
 
             const result = await WebBrowser.openAuthSessionAsync(
