@@ -15,7 +15,7 @@ import { API_URL } from "../lib/env";
 import { useAuth } from "../hooks/useAuth";
 
 export default function SignUp() {
-    const { user } = useAuth();
+    const { user, getCurrentUser } = useAuth();
 
     const router = useRouter();
     const [username, setUsername] = useState("");
@@ -57,7 +57,7 @@ export default function SignUp() {
             }
 
             await AsyncStorage.setItem("token", data.token);
-
+            await getCurrentUser();
             Alert.alert("Success", "Account created! Redirecting...", [
                 {
                     text: "OK",

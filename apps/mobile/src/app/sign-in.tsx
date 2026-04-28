@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
     ActivityIndicator,
@@ -18,16 +18,19 @@ import * as WebBrowser from "expo-web-browser";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SignIn() {
-    const { user } = useAuth();
+    const { user, getCurrentUser } = useAuth();
 
     const router = useRouter();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    if (user) {
-        router.replace("/dashboard");
-    }
+
+    useEffect(() => {
+        if (user) {
+            router.replace("/dashboard");
+        }
+    }, [router, user]);
     const handleSignIn = async () => {
         if (!email || !password) {
             Alert.alert("Error", "Please fill in all fields");
@@ -56,7 +59,7 @@ export default function SignIn() {
             }
 
             await AsyncStorage.setItem("token", data.token);
-
+            await getCurrentUser();
             Alert.alert("Success", "Signed in! Redirecting...", [
                 {
                     text: "OK",

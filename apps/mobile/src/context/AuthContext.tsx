@@ -1,10 +1,49 @@
 import { User } from "../../../packages/shared/src/types";
-import { getMe } from "../utils/getMe";
 import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
+import { API_URL } from "../lib/env";
 import { authClient } from "../lib/client";
+
+export const fetchCurrentUser = async () => {
+    const token = await AsyncStorage.getItem("token");
+    console.log("Retrieved token from storage:", token + "...");
+
+    if (!token) {
+        return null;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/auth/me`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log("fetchCurrentUser status:", response.status);
+
+        if (!response.ok) {
+            const body = await response.text();
+            console.log("fetchCurrentUser non-ok body:", body);
+            return null;
+        }
+
+        const data = (await response.json()) as {
+            ok?: boolean;
+            user?: User;
+            error?: string;
+        };
+
+        console.log("fetchCurrentUser data:", data);
+
+        return data.user ?? null;
+    } catch (error) {
+        console.error("fetchCurrentUser error:", error);
+        return null;
+    }
+};
 
 type AuthContextType = {
     user: User | null;
@@ -16,7 +55,7 @@ type AuthContextType = {
         password: string,
     ) => Promise<void>;
     logout: () => Promise<void>;
-    loadCurrentUser: () => Promise<void>;
+    getCurrentUser: () => Promise<User | null>;
     isAuthLoading: boolean;
 };
 
@@ -29,18 +68,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthLoading, setIsAuthLoading] = useState(true);
     const router = useRouter();
 
-    const loadCurrentUser = async () => {
-        try {
-            const data = await getMe();
-            console.log(data);
-            if (!data || !data.user) {
-                throw new Error("Unable to fetch current user");
-            }
-            setUser(data.user);
-        } catch (error) {
-            console.error("loadCurrentUser error:", error);
-            throw error;
+    const getCurrentUser = async () => {
+        const currentUser = await fetchCurrentUser();
+        setUser(currentUser);
+        if (!currentUser) {
+            setUser(null);
         }
+
+        return currentUser;
     };
 
     useEffect(() => {
@@ -49,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = await AsyncStorage.getItem("token");
             if (token) {
                 try {
-                    await loadCurrentUser();
+                    await getCurrentUser();
                 } catch (error) {
                     console.error(error);
                     await AsyncStorage.clear();
@@ -71,7 +106,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 throw new Error("Login failed: token missing");
             }
             await AsyncStorage.setItem("token", data.token);
-            await loadCurrentUser();
+            const currentUser = await getCurrentUser();
+            if (!currentUser) {
+                throw new Error("Login succeeded, but loading the user failed");
+            }
         } else {
             throw new Error("Login failed");
         }
@@ -91,7 +129,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 throw new Error("Signup failed: token missing");
             }
             await AsyncStorage.setItem("token", data.token);
-            await loadCurrentUser();
+            const currentUser = await getCurrentUser();
+            if (!currentUser) {
+                throw new Error(
+                    "Signup succeeded, but loading the user failed",
+                );
+            }
         } else {
             throw new Error("Signup failed");
         }
@@ -122,7 +165,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 login,
                 signup,
                 logout,
-                loadCurrentUser,
+                getCurrentUser,
                 isAuthLoading,
             }}
         >

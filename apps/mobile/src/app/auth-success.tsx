@@ -10,7 +10,7 @@ export default function AuthSuccess() {
         token?: string | string[];
         error?: string | string[];
     }>();
-    const { loadCurrentUser } = useAuth();
+    const { getCurrentUser } = useAuth();
     useEffect(() => {
         const value = Array.isArray(token) ? token[0] : token;
         const errorValue = Array.isArray(error) ? error[0] : error;
@@ -40,7 +40,7 @@ export default function AuthSuccess() {
                 );
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 console.log("About to load current user");
-                await loadCurrentUser();
+                await getCurrentUser();
                 console.log("User loaded successfully");
                 await new Promise((resolve) => setTimeout(resolve, 2000));
 

@@ -1,8 +1,8 @@
 import { router } from "expo-router";
-import { getMe } from "./getMe";
+import { fetchCurrentUser } from "../context/AuthContext";
 
 export const requireAuth = async () => {
-    const user = await getMe();
+    const user = await fetchCurrentUser();
     if (!user) {
         router.replace("/sign-in");
     }
