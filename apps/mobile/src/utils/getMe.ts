@@ -12,8 +12,15 @@ export const getMe = async () => {
     if (!token) return null;
 
     try {
-        console.log("Attempting request to:", `${API_URL}/auth/me`);
-        const response = await axios.get(`${API_URL}/auth/me`, {
+        const url = `${API_URL}/auth/me`;
+        console.log("API_URL:", API_URL);
+        console.log("Full request URL:", url);
+        console.log(
+            "Authorization header value:",
+            `Bearer ${token?.substring(0, 30)}...`,
+        );
+
+        const response = await axios.get(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
