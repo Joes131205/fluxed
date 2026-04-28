@@ -16,17 +16,20 @@ const api = new Hono()
     .route("/calendars", calendarsRoute)
     .route("/plan", plannedSessionsRoute);
 
+const corsMiddleware = cors({
+    allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE"],
+    origin: "*",
+    allowHeaders: ["Content-Type", "Authorization", "Accept"],
+    exposeHeaders: ["Content-Type"],
+    credentials: false,
+});
+
 const app = new Hono()
-    .use(
-        "/*",
-        cors({
-            allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE"],
-            origin: "*",
-            allowHeaders: ["Content-Type", "Authorization", "Accept"],
-            exposeHeaders: ["Content-Type"],
-            credentials: false,
-        }),
-    )
+    .use("/*", corsMiddleware)
+    .use((c, next) => {
+        console.log("Request headers:", c.req.header("Authorization"));
+        return next();
+    })
     .route("/", api);
 
 export { app };
