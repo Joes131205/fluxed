@@ -1,10 +1,10 @@
 import { User } from "../../../packages/shared/src/types";
-import { getAuthHeaders } from "../lib/authHeaders";
-import { authClient } from "../lib/client";
+import { getMe } from "../utils/getMe";
 import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
+import { authClient } from "../lib/client";
 
 type AuthContextType = {
     user: User | null;
@@ -31,20 +31,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const loadCurrentUser = async () => {
         try {
-            const headers = await getAuthHeaders();
-            const response = await authClient.me.$get(
-                {},
-                {
-                    headers,
-                },
-            );
-
-            if (!response.ok) {
-                console.error("Failed to fetch user:", response.status);
+            const data = await getMe();
+            console.log(data);
+            if (!data || !data.user) {
                 throw new Error("Unable to fetch current user");
             }
-
-            const data = (await response.json()) as { user: User };
             setUser(data.user);
         } catch (error) {
             console.error("loadCurrentUser error:", error);

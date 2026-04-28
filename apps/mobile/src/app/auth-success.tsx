@@ -14,7 +14,11 @@ export default function AuthSuccess() {
     useEffect(() => {
         const value = Array.isArray(token) ? token[0] : token;
         const errorValue = Array.isArray(error) ? error[0] : error;
-        console.log(value);
+        console.log(
+            "Auth success - received token:",
+            value?.substring(0, 50) + "...",
+        );
+        console.log("Auth success - received error:", errorValue);
         const completeAuth = async () => {
             if (errorValue) {
                 Alert.alert("Google Sign In Failed", errorValue);
@@ -25,10 +29,15 @@ export default function AuthSuccess() {
                 Alert.alert("Google Sign In Failed", "Missing auth token.");
                 return;
             }
-            console.log("Token saved:", value);
+            console.log("Token to save:", value?.substring(0, 50) + "...");
 
             try {
                 await AsyncStorage.setItem("token", value);
+                const savedToken = await AsyncStorage.getItem("token");
+                console.log(
+                    "Token saved and verified:",
+                    savedToken?.substring(0, 50) + "...",
+                );
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 console.log("About to load current user");
                 await loadCurrentUser();
