@@ -44,6 +44,7 @@ export default function AuthSuccess() {
                 console.log("User loaded successfully");
                 await new Promise((resolve) => setTimeout(resolve, 2000));
 
+                Alert.alert("Success", "Successfully logged in using Google!");
                 router.replace("/dashboard");
             } catch (err) {
                 console.error("Auth error:", err);

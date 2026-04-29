@@ -119,8 +119,8 @@ const demoBusySlots: BusySlot[] = [
 
 export function useCalendarEngine() {
     const { user } = useAuth();
-    const { data: areasData } = useAreas();
-    const { data: plansData } = usePlans();
+    const { data: areasData, isLoading: isAreaLoading } = useAreas();
+    const { data: plansData, isLoading: isPlanLoading } = usePlans();
     const queryClient = useQueryClient();
 
     const [calendar, setCalendar] = useState<CalendarItem[]>([]);
@@ -131,6 +131,7 @@ export function useCalendarEngine() {
         [],
     );
     const [finalSchedule, setFinalSchedule] = useState<FinalScheduleItem[]>([]);
+    const [isScheduleLoading, setIsScheduleLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isGeneratedOnce, setIsGeneratedOnce] = useState(false);
@@ -458,34 +459,57 @@ export function useCalendarEngine() {
     };
 
     useEffect(() => {
-        if (areasData?.ok && areasData.data) {
-            Promise.all(
-                areasData.data.map(async (area: any) => {
-                    const response = await subareasClient[":id"].$get(
-                        { param: { id: area.id } },
-                        { headers: await getAuthHeaders() },
-                    );
-                    const subareaData: any = await response.json();
-                    console.log(areasData);
-                    console.log(subareaData);
-                    return {
-                        areaId: area.id,
-                        areaName: area.name,
-                        weight: area.weight || 1,
-                        subareas: (subareaData.data || []).map(
-                            (subarea: any) => ({
-                                subareaId: subarea.id,
-                                subareaName: subarea.name,
-                                weight: subarea.weight || 1,
-                                color: subarea.color,
-                            }),
-                        ),
-                        color: area.color,
-                    };
-                }),
-            ).then((transformedData) => setSchedule(transformedData));
+        if (!areasData?.ok || !areasData.data) {
+            setSchedule([]);
+            setIsScheduleLoading(false);
+            return;
         }
-        console.log(schedule);
+
+        let isMounted = true;
+
+        const hydrateSchedule = async () => {
+            setIsScheduleLoading(true);
+            try {
+                const headers = await getAuthHeaders();
+                const transformedData = await Promise.all(
+                    areasData.data.map(async (area: any) => {
+                        const response = await subareasClient[":id"].$get(
+                            { param: { id: area.id } },
+                            { headers },
+                        );
+                        const subareaData: any = await response.json();
+                        return {
+                            areaId: area.id,
+                            areaName: area.name,
+                            weight: area.weight || 1,
+                            subareas: (subareaData.data || []).map(
+                                (subarea: any) => ({
+                                    subareaId: subarea.id,
+                                    subareaName: subarea.name,
+                                    weight: subarea.weight || 1,
+                                    color: subarea.color,
+                                }),
+                            ),
+                            color: area.color,
+                        };
+                    }),
+                );
+
+                if (isMounted) {
+                    setSchedule(transformedData);
+                }
+            } finally {
+                if (isMounted) {
+                    setIsScheduleLoading(false);
+                }
+            }
+        };
+
+        void hydrateSchedule();
+
+        return () => {
+            isMounted = false;
+        };
     }, [areasData]);
 
     useEffect(() => {
@@ -501,6 +525,9 @@ export function useCalendarEngine() {
         rescheduledData,
         finalSchedule,
         isLoading,
+        isPlanLoading,
+        isAreaLoading,
+        isScheduleLoading,
         error,
         user,
         schedule,

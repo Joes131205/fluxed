@@ -22,6 +22,23 @@ export const useSubareas = (areaId: string) => {
     });
 };
 
+export const useAllSubareas = () => {
+    return useQuery({
+        queryKey: ["subareas"],
+        queryFn: async () => {
+            const headers = await getAuthHeaders();
+            const response = await subareasClient.$get(
+                {},
+                {
+                    headers,
+                },
+            );
+
+            return response.json();
+        },
+    });
+};
+
 export const useCreateSubarea = () => {
     const queryClient = useQueryClient();
 

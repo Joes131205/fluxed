@@ -1,4 +1,4 @@
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -10,12 +10,15 @@ import {
     TextInput,
     View,
 } from "react-native";
-import { getAuthHeaders } from "../../lib/authHeaders";
-import { usersClient } from "../../lib/client";
-import { API_URL } from "../../lib/env";
+import { getAuthHeaders } from "../../../lib/authHeaders";
+import { usersClient } from "../../../lib/client";
+import { API_URL } from "../../../lib/env";
+import { useRouter } from "expo-router";
 
 export default function Settings() {
     const { user, logout } = useAuth();
+
+    const router = useRouter();
 
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -195,6 +198,26 @@ export default function Settings() {
 
             <View className="flex flex-col gap-5">
                 <Text className="text-gray-500 font-bold">Others</Text>
+                <Pressable
+                    onPress={() => {
+                        router.navigate("/settings/area");
+                    }}
+                    className="rounded-xl bg-primary py-4"
+                >
+                    <Text className="text-center font-semibold text-white">
+                        Edit Area
+                    </Text>
+                </Pressable>
+                <Pressable
+                    onPress={() => {
+                        router.navigate("/settings/subarea");
+                    }}
+                    className="rounded-xl bg-primary py-4"
+                >
+                    <Text className="text-center font-semibold text-white">
+                        Edit Subarea
+                    </Text>
+                </Pressable>
                 <Pressable
                     onPress={logout}
                     className="rounded-xl bg-red-500 py-4"

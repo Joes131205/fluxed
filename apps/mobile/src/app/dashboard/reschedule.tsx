@@ -12,11 +12,10 @@ export default function Reschedule() {
     const [end, setEnd] = useState("");
     const {
         calendar,
-        minutes,
-        rescheduledData,
         isGeneratedOnce,
         finalSchedule,
         isLoading,
+        isScheduleLoading,
         error,
         user,
         schedule,
@@ -84,7 +83,10 @@ export default function Reschedule() {
                 onReschedule={() => actions.runReschedule(algorithm)}
             />
 
-            <AreaDisplay areasDataOverride={schedule} />
+            <AreaDisplay
+                areasDataOverride={schedule}
+                isLoadingOverride={isScheduleLoading}
+            />
 
             <OutputTimeline
                 finalSchedule={finalSchedule}
