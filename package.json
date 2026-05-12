@@ -23,5 +23,8 @@
     },
     "overrides": {
         "axios": "~1.13.6"
+    },
+    "dependencies": {
+        "@react-native-vector-icons/fontawesome6": "^13.1.1"
     }
 }

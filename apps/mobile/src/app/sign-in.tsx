@@ -1,19 +1,15 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-    ActivityIndicator,
-    Alert,
-    Pressable,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { API_URL } from "../lib/env";
 import { authClient } from "../lib/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../hooks/useAuth";
 import * as WebBrowser from "expo-web-browser";
+import { PrimaryButton } from "../components/ui/PrimaryButton";
+import { GoogleAuthButton } from "../components/ui/GoogleAuthButton";
+import { TextPrimaryInput } from "../components/ui/TextPrimaryInput";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -40,7 +36,6 @@ export default function SignIn() {
         setLoading(true);
 
         try {
-            console.log(API_URL);
             const response = await authClient.login.$post({
                 json: { email, password },
             });
@@ -125,71 +120,63 @@ export default function SignIn() {
     };
 
     return (
-        <View className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
-            <Text className="text-3xl font-bold mb-6">Log In</Text>
-            <TextInput
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-foreground"
-                editable={!loading}
-            />
+        <ScrollView
+            className="flex-1 bg-background"
+            contentContainerClassName="px-5 pt-10 pb-32"
+        >
+            <View className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
+                <Text className="text-3xl font-bold mb-6">Log In</Text>
+                <TextPrimaryInput
+                    label="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    editable={!loading}
+                />
 
-            <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                className="w-full bg-white border border-primary rounded-lg px-4 py-3 text-foreground"
-                editable={!loading}
-            />
+                <TextPrimaryInput
+                    label="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Password"
+                    secureTextEntry
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    textContentType="password"
+                    editable={!loading}
+                />
 
-            <Pressable
-                onPress={handleSignIn}
-                disabled={loading}
-                className="w-full bg-primary rounded-lg py-3 mt-4 flex items-center justify-center"
-            >
-                {loading ? (
-                    <ActivityIndicator color="white" />
-                ) : (
-                    <Text className="text-white font-semibold text-base">
-                        Sign In
+                <PrimaryButton
+                    label="Sign In"
+                    onPress={handleSignIn}
+                    loading={loading}
+                />
+
+                <View className="my-2 w-full flex-row items-center gap-3">
+                    <View className="h-px flex-1 bg-gray-300" />
+                    <Text className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                        or
                     </Text>
-                )}
-            </Pressable>
-
-            <View className="my-2 w-full flex-row items-center gap-3">
-                <View className="h-px flex-1 bg-gray-300" />
-                <Text className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                    or
-                </Text>
-                <View className="h-px flex-1 bg-gray-300" />
-            </View>
-
-            <Pressable
-                onPress={handleGoogleSignIn}
-                disabled={loading}
-                className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3"
-            >
-                <View className="flex-row items-center justify-center gap-2">
-                    <Text className="text-base font-black text-gray-700">
-                        G
-                    </Text>
-                    <Text className="font-semibold text-gray-800">
-                        Continue with Google
-                    </Text>
+                    <View className="h-px flex-1 bg-gray-300" />
                 </View>
-            </Pressable>
 
-            <Pressable
-                onPress={() => router.push("/sign-up")}
-                disabled={loading}
-            >
-                <Text className="text-primary text-sm mt-4">
-                    Don't have an account? Sign Up
-                </Text>
-            </Pressable>
-        </View>
+                <GoogleAuthButton
+                    onPress={handleGoogleSignIn}
+                    loading={loading}
+                />
+
+                <Pressable
+                    onPress={() => router.push("/sign-up")}
+                    disabled={loading}
+                >
+                    <Text className="text-primary text-sm mt-4">
+                        Don't have an account? Sign Up
+                    </Text>
+                </Pressable>
+            </View>
+        </ScrollView>
     );
 }

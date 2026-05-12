@@ -5,22 +5,21 @@
 
 body {
     @apply m-0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
 }
 
 :root {
-    --background: oklch(0.98 0.01 196);
-    --foreground: oklch(0.18 0.03 258);
+    --background: #ffffff;
+    --foreground: #09090b;
 
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.18 0.03 258);
@@ -28,11 +27,11 @@ code {
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.18 0.03 258);
 
-    --primary: oklch(0.78 0.16 220);
+    --primary: #4ade80;
     --primary-foreground: oklch(0.98 0.01 196);
 
     --secondary: oklch(0.98 0.01 200);
-    --secondary-foreground: oklch(0.78 0.16 220);
+    --secondary-foreground: oklch(0.68 0.22 145);
 
     --muted: oklch(0.96 0.01 200);
     --muted-foreground: oklch(0.45 0.03 258);
@@ -43,9 +42,7 @@ code {
     --destructive: oklch(0.57 0.24 27);
     --destructive-foreground: oklch(1 0 0);
 
-    --border: oklch(89.965% 0.01931 201.136);
-    --input: oklch(0.9 0.02 200);
-    --ring: oklch(0.78 0.16 220);
+    --border: #09090b;
 
     --radius: 0.75rem;
 }
