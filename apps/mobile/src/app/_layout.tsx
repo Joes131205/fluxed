@@ -15,7 +15,12 @@ function RootLayoutContent() {
     const router = useRouter();
     const pathname = usePathname();
 
-    const publicRoutes = new Set(["/", "/sign-in", "/sign-up", "/auth-success"]);
+    const publicRoutes = new Set([
+        "/",
+        "/sign-in",
+        "/sign-up",
+        "/auth-success",
+    ]);
 
     useEffect(() => {
         if (!isAuthLoading && !isAuthenticated && !publicRoutes.has(pathname)) {

@@ -47,20 +47,11 @@ export default function Reschedule() {
             className="flex-1 bg-background "
             contentContainerClassName="px-5 pt-10 pb-32 flex flex-col gap-10"
         >
-            <View className="flex flex-col gap-2">
-                <Text className="text-2xl font-bold text-center">
-                    Reschedule
+            <View className="flex flex-col gap-2 pb-5 border-b-2 border-b-accent">
+                <Text className="text-xl font-bold">Reschedule</Text>
+                <Text>
+                    Derailed? Don't worry, you can reschedule your day here!
                 </Text>
-                <Text className="text-center">
-                    Derailed? No problem, reschedule here!
-                </Text>
-                <Pressable
-                    onPress={actions.loadDemoData}
-                    className="self-center rounded-md border border-border bg-card px-4 py-2"
-                >
-                    <Text className="font-semibold">Load Demo Data</Text>
-                </Pressable>
-                {error ? <Text className="text-red-500">{error}</Text> : null}
             </View>
 
             <BusyBlocks

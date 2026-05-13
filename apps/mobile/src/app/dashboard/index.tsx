@@ -18,26 +18,28 @@ export default function Dashboard() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName="px-5 pt-10 pb-32"
+            contentContainerClassName="pb-5 flex flex-col gap-5"
         >
-            <View className="rounded-3xl border border-border bg-card p-5 flex flex-col gap-2">
-                <Text className=" font-semibold uppercase tracking-widest text-muted-foreground">
+            <View className="w-full p-5 text-center">
+                <Text className="text-center text-[2px] font-semibold text-slate-400">
                     {weekday}
                 </Text>
-                <Text className="mt-2 text-3xl font-bold text-foreground">
-                    Hey, {user?.username ?? "User"}
-                </Text>
-                <Text className="mt-2 text-sm text-muted-foreground">
-                    Is today your day?
-                </Text>
-                <Pressable
-                    className="w-full bg-primary text-white p-x-3 py-2 text-center rounded-md"
-                    onPress={() => router.push("/dashboard/reschedule")}
-                >
-                    <Text className="text-white font-semibold text-center">
-                        Reschedule
+
+                <View className="mt-5 flex flex-col gap-2">
+                    <Text
+                        className="text-center text-3xl font-black tracking-tight text-white"
+                        style={{ fontFamily: "PressStart2P_400Regular" }}
+                    >
+                        Hey, {user?.username ?? "User"}!
                     </Text>
-                </Pressable>
+                    <Text className="text-center text-base leading-6 text-slate-300">
+                        Your schedule is the run. Keep the streak alive, reroute
+                        the day, and lock in the next move.
+                    </Text>
+                    <Text className="text-center text-base leading-6 text-slate-300">
+                        You got this :)
+                    </Text>
+                </View>
             </View>
             <PlanSection />
         </ScrollView>

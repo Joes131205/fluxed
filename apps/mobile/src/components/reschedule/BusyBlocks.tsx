@@ -1,5 +1,5 @@
 import { Pressable, Text, TextInput, View } from "react-native";
-
+import { ArrowRight } from "lucide-react";
 type BusyBlocksProps = {
     isGoogleConnected: boolean;
     isLoading: boolean;
@@ -33,7 +33,7 @@ export function BusyBlocks({
 }: BusyBlocksProps) {
     return (
         <View className="flex flex-col gap-3">
-            <Text className="text-xl font-bold">Busy Blocks</Text>
+            <Text className="text-xl font-bold">Busy Time</Text>
 
             {isGoogleConnected ? (
                 <View className="rounded-xl border border-primary/30 bg-primary/5 p-4 flex flex-col gap-3">
@@ -55,18 +55,21 @@ export function BusyBlocks({
                 </View>
             ) : (
                 <>
-                    <TextInput
-                        value={start}
-                        onChangeText={onStartChange}
-                        placeholder="Start (HH:MM)"
-                        className="rounded-md border border-border bg-white px-3 py-2"
-                    />
-                    <TextInput
-                        value={end}
-                        onChangeText={onEndChange}
-                        placeholder="End (HH:MM)"
-                        className="rounded-md border border-border bg-white px-3 py-2"
-                    />
+                    <View className="flex flex-row items-center justify-between">
+                        <TextInput
+                            value={start}
+                            onChangeText={onStartChange}
+                            placeholder="Start (HH:MM)"
+                            className="rounded-md border border-border bg-white px-3 py-2"
+                        />
+                        <ArrowRight />
+                        <TextInput
+                            value={end}
+                            onChangeText={onEndChange}
+                            placeholder="End (HH:MM)"
+                            className="rounded-md border border-border bg-white px-3 py-2"
+                        />
+                    </View>
                     <Pressable
                         onPress={onAddEvent}
                         className="rounded-md bg-primary px-4 py-2"

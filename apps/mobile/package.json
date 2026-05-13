@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@expo-google-fonts/press-start-2p": "^0.4.1",
+    "@expo-google-fonts/vt323": "^0.4.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-google-signin/google-signin": "^16.1.2",
     "@react-native-vector-icons/evil-icons": "^13.1.1",
@@ -13,6 +15,7 @@
     "axios": "~1.13.6",
     "expo": "~54.0.33",
     "expo-dev-client": "~6.0.20",
+    "expo-font": "^55.0.7",
     "expo-router": "~6.0.23",
     "expo-status-bar": "~3.0.9",
     "expo-web-browser": "~15.0.10",
