@@ -52,7 +52,7 @@ export const PlanSection = () => {
                     className="text-xl text-white tracking-widest font-bold"
                     style={{ fontFamily: "PressStart2P_400Regular" }}
                 >
-                    Your plan
+                    Your Plan Timeline
                 </Text>
             </View>
 
@@ -73,7 +73,7 @@ export const PlanSection = () => {
                         className="text-center text-lg text-white mb-2"
                         style={{ fontFamily: "PressStart2P_400Regular" }}
                     >
-                        Empty Slate
+                        Empty State
                     </Text>
                     <Text className="text-white/60 font-bold uppercase text-xs tracking-widest">
                         Reschedule to generate plan

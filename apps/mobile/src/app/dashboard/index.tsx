@@ -33,10 +33,6 @@ export default function Dashboard() {
                         Hey, {user?.username ?? "User"}!
                     </Text>
                     <Text className="text-center text-base leading-6 text-slate-300">
-                        Your schedule is the run. Keep the streak alive, reroute
-                        the day, and lock in the next move.
-                    </Text>
-                    <Text className="text-center text-base leading-6 text-slate-300">
                         You got this :)
                     </Text>
                 </View>

@@ -33,25 +33,27 @@ export const TextPrimaryInput = ({
     autoCorrect,
 }: TextPrimaryInputProps) => {
     return (
-        <View className="flex flex-col gap-2 w-full">
-            {label && (
-                <Text className="mb-2 text-xs font-black uppercase tracking-widest text-foreground/80">
-                    {label}
-                </Text>
-            )}
-            <TextInput
-                value={value}
-                onChangeText={onChangeText}
-                placeholder={placeholder}
-                keyboardType={keyboardType}
-                secureTextEntry={secureTextEntry}
-                editable={editable}
-                autoCapitalize={autoCapitalize}
-                textContentType={textContentType}
-                autoCorrect={autoCorrect}
-                placeholderTextColor="#7c7c7c"
-                className="w-full border-4 border-foreground bg-white px-4 py-4 text-base font-bold text-foreground"
-            />
+        <View className="w-full mb-6">
+            <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                {label}
+            </Text>
+
+            <View className="flex-row items-center border-2 border-white/30 bg-black px-4 py-4">
+                <TextInput
+                    value={value}
+                    onChangeText={onChangeText}
+                    placeholder={placeholder}
+                    keyboardType={keyboardType}
+                    secureTextEntry={secureTextEntry}
+                    editable={editable}
+                    autoCapitalize={autoCapitalize}
+                    textContentType={textContentType}
+                    autoCorrect={autoCorrect}
+                    placeholderTextColor="rgba(255, 255, 255, 0.2)"
+                    className="flex-1 text-white font-mono text-base"
+                    selectionColor="#ffffff"
+                />
+            </View>
         </View>
     );
 };

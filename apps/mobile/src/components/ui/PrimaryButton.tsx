@@ -23,19 +23,18 @@ export const PrimaryButton = ({
             {({ pressed }) => (
                 <View
                     className={`
-                        w-full py-2 border-4 border-foreground
-                        bg-primary flex items-center justify-center transition-transform
-                        ${pressed ? "scale-95" : "scale-100"}
-                        ${disabled || loading ? "opacity-70" : "opacity-100"}
+                        w-full py-5 border-2 flex items-center justify-center 
+                        ${pressed ? "bg-white border-white" : "bg-black border-white"}
                     `}
                 >
-                    {loading ? (
-                        <ActivityIndicator color="#0f172a" />
-                    ) : (
-                        <Text className="text-foreground font-black text-base">
-                            {label}
-                        </Text>
-                    )}
+                    <Text
+                        className={`uppercase tracking-widest text-sm ${
+                            pressed ? "text-black" : "text-white"
+                        }`}
+                        style={{ fontFamily: "PressStart2P_400Regular" }}
+                    >
+                        {label}
+                    </Text>
                 </View>
             )}
         </Pressable>

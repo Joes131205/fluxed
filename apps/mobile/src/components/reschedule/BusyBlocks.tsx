@@ -1,5 +1,7 @@
-import { Pressable, Text, TextInput, View } from "react-native";
-import { ArrowRight } from "lucide-react";
+import { Pressable, Text, View, TextInput } from "react-native";
+import { TextPrimaryInput } from "../ui/TextPrimaryInput";
+import { PrimaryButton } from "../ui/PrimaryButton";
+
 type BusyBlocksProps = {
     isGoogleConnected: boolean;
     isLoading: boolean;
@@ -32,86 +34,97 @@ export function BusyBlocks({
     formatTime,
 }: BusyBlocksProps) {
     return (
-        <View className="flex flex-col gap-3">
-            <Text className="text-xl font-bold">Busy Time</Text>
+        <View className="flex flex-col gap-6 mt-4">
+            <View className="border-b-2 border-dashed border-white/30 pb-4">
+                <Text
+                    className="text-xl text-white uppercase"
+                    style={{ fontFamily: "PressStart2P_400Regular" }}
+                >
+                    Busy Blocks
+                </Text>
+            </View>
 
             {isGoogleConnected ? (
-                <View className="rounded-xl border border-primary/30 bg-primary/5 p-4 flex flex-col gap-3">
-                    <Text className="font-semibold text-primary">
-                        Google calendar connected
+                <View className="border-2 border-dashed border-white/30 p-5">
+                    <Text className="text-white/70 font-mono uppercase mb-5 leading-5 text-xs">
+                        Google Calendar Linked!
                     </Text>
-                    <Text className="text-sm text-text/70">
-                        Sync your calendar to load your latest busy blocks
-                        before rescheduling.
-                    </Text>
-                    <Pressable
-                        onPress={onSyncCalendar}
-                        className="w-full rounded-md bg-primary px-4 py-2"
-                    >
-                        <Text className="text-center font-semibold text-white">
-                            {isLoading ? "Syncing..." : "Sync Calendar"}
-                        </Text>
+                    
+                    <Pressable onPress={onSyncCalendar} className="w-full">
+                        {({ pressed }) => (
+                            <View className={`border-2 py-4 flex items-center justify-center ${pressed ? "bg-white border-white" : "bg-black border-white"}`}>
+                                <Text 
+                                    className={`uppercase tracking-widest text-xs font-black ${pressed ? "text-black" : "text-white"}`}
+                                >
+                                    {isLoading ? "SYNCING..." : "FETCH DATA"}
+                                </Text>
+                            </View>
+                        )}
                     </Pressable>
                 </View>
             ) : (
-                <>
-                    <View className="flex flex-row items-center justify-between">
-                        <TextInput
+                <View className="flex flex-col gap-4">
+                    <TextPrimaryInput
+                            label="Start Time"
                             value={start}
                             onChangeText={onStartChange}
-                            placeholder="Start (HH:MM)"
-                            className="rounded-md border border-border bg-white px-3 py-2"
+                            placeholder="HH:MM"
                         />
-                        <ArrowRight />
-                        <TextInput
+                        <TextPrimaryInput
+                            label="End Time"
                             value={end}
                             onChangeText={onEndChange}
-                            placeholder="End (HH:MM)"
-                            className="rounded-md border border-border bg-white px-3 py-2"
+                            placeholder="HH:MM"
                         />
-                    </View>
-                    <Pressable
-                        onPress={onAddEvent}
-                        className="rounded-md bg-primary px-4 py-2"
-                    >
-                        <Text className="text-center font-semibold text-white">
-                            Add Event
-                        </Text>
-                    </Pressable>
-                </>
+                        <PrimaryButton 
+                            label="Inject Block" 
+                            onPress={onAddEvent} 
+                        />
+                </View>
             )}
 
-            {calendar.map((item) => (
-                <View
-                    key={item.id}
-                    className="mt-2 rounded-xl border border-border bg-white p-3"
-                >
-                    <Text className="font-semibold">{item.name}</Text>
-                    <View className="mt-2 flex flex-col gap-2">
-                        {item.busy.length > 0 ? (
-                            item.busy.map((slot, index) => (
-                                <Pressable
-                                    key={`${item.id}-${index}`}
-                                    onPress={() =>
-                                        !isGoogleConnected &&
-                                        onRemoveEvent(index)
-                                    }
-                                    className="rounded-md border border-border px-3 py-2"
-                                >
-                                    <Text>
-                                        {formatTime(slot.start)} -{" "}
-                                        {formatTime(slot.end)}
-                                    </Text>
-                                </Pressable>
-                            ))
-                        ) : (
-                            <View className="flex flex-col gap-2">
-                                <Text className="text-xs">Empty!</Text>
-                            </View>
-                        )}
+            <View className="mt-4">
+                {calendar.map((item) => (
+                    <View key={item.id} className="mb-6">
+                        <Text className="mb-3 text-[10px] font-black uppercase tracking-widest text-white/50 border-b-2 border-white/10 pb-2">
+                            Category -> {item.name}
+                        </Text>
+                        
+                        <View className="flex flex-col gap-1">
+                            {item.busy.length > 0 ? (
+                                item.busy.map((slot, index) => (
+                                    <View
+                                        key={`${item.id}-${index}`}
+                                        className={`flex flex-row items-center justify-between py-2 ${
+                                            !isGoogleConnected ? "opacity-100" : "opacity-50"
+                                        }`}
+                                    >
+                                        <Text className="text-white font-mono text-sm">
+                                            {formatTime(slot.start)} <Text className="text-white/50">-></Text> {formatTime(slot.end)}
+                                        </Text>
+                                        {!isGoogleConnected && (
+                                            <Pressable
+                                                onPress={() => onRemoveEvent(index)}
+                                                className="px-2 py-1"
+                                            >
+                                                {({ pressed }) => (
+                                                    <Text className={`font-mono text-xs ${pressed ? "text-red-400" : "text-white/50"}`}>
+                                                        X
+                                                    </Text>
+                                                )}
+                                            </Pressable>
+                                        )}
+                                    </View>
+                                ))
+                            ) : (
+                                <Text className="text-white/30 font-mono text-xs uppercase py-2">
+                                    Empty!
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
-            ))}
+                ))}
+            </View>
         </View>
     );
 }

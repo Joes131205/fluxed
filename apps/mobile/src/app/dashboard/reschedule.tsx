@@ -47,10 +47,16 @@ export default function Reschedule() {
             className="flex-1 bg-background "
             contentContainerClassName="px-5 pt-10 pb-32 flex flex-col gap-10"
         >
-            <View className="flex flex-col gap-2 pb-5 border-b-2 border-b-accent">
-                <Text className="text-xl font-bold">Reschedule</Text>
-                <Text>
-                    Derailed? Don't worry, you can reschedule your day here!
+            <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
+                <Text
+                    className="text-2xl text-white uppercase"
+                    style={{ fontFamily: "PressStart2P_400Regular" }}
+                >
+                    Reschedule
+                </Text>
+
+                <Text className="mt-3 text-xs text-white/70 font-mono uppercase tracking-widest leading-5">
+                    Derailed? Don't worry. You can reschedule your day here.
                 </Text>
             </View>
 
