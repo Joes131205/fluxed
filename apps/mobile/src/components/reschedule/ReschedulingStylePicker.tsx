@@ -1,58 +1,99 @@
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import { PrimaryButton } from "../ui/PrimaryButton";
 
 type ReschedulingStylePickerProps = {
-    algorithm: "global" | "nested";
-    onAlgorithmChange: (algo: "global" | "nested") => void;
+    algorithmTypes: Array<{
+        type: string;
+        description: string;
+    }>;
+    onAlgorithmChange: (idx: number) => void;
     onReschedule: () => void;
+    currentAlgorithm: string;
+    description: string;
 };
 
 export function ReschedulingStylePicker({
-    algorithm,
+    algorithmTypes,
     onAlgorithmChange,
     onReschedule,
+    currentAlgorithm,
+    description,
 }: ReschedulingStylePickerProps) {
     return (
         <View className="flex flex-col gap-4">
-            <View className="flex flex-col gap-1">
-                <Text className="text-xl font-black">Rescheduling Style</Text>
-            </View>
-
-            <View className="flex flex-row items-stretch gap-3 max-w-full">
-                <Pressable
-                    onPress={() => onAlgorithmChange("global")}
-                    className={`flex flex-col gap-2 flex-1 rounded-3xl border-2 px-5 py-5 transition-all ${
-                        algorithm === "global"
-                            ? "border-primary bg-primary/20"
-                            : "border-border/50 bg-card shadow-sm"
-                    }`}
+            <View className="border-b-2 border-dashed border-white/30 pb-4">
+                <Text
+                    className="text-xl text-white uppercase"
+                    style={{ fontFamily: "PressStart2P_400Regular" }}
                 >
-                    <Text className="text-lg font-black">Classic</Text>
-                    <Text className="text-sm font-medium text-text/70">
-                        Smooth blend of all categories
-                    </Text>
-                </Pressable>
-                <Pressable
-                    onPress={() => onAlgorithmChange("nested")}
-                    className={`flex flex-col gap-2 flex-1 rounded-3xl border-2 px-5 py-5 transition-all ${
-                        algorithm === "nested"
-                            ? "border-primary bg-primary/20"
-                            : "border-border/50 bg-card shadow-sm"
-                    }`}
-                >
-                    <Text className="text-lg font-black">Specialist</Text>
-                    <Text className="text-sm font-medium text-text/70">
-                        Organized by area & subarea
-                    </Text>
-                </Pressable>
-            </View>
-            <Pressable
-                onPress={onReschedule}
-                className="w-full rounded-md bg-primary px-4 py-2"
-            >
-                <Text className="text-white font-semibold text-center">
-                    Reschedule
+                    Rescheduling Style
                 </Text>
-            </Pressable>
+            </View>
+            <View className="mb-8">
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 12,
+                        paddingBottom: 8,
+                    }}
+                >
+                    {algorithmTypes.map((item, idx) => {
+                        const isActive =
+                            currentAlgorithm.toLowerCase() ===
+                            item.type.toLowerCase();
+
+                        return (
+                            <Pressable
+                                key={idx}
+                                onPress={() => onAlgorithmChange(idx)}
+                            >
+                                {({ pressed }) => (
+                                    <View
+                                        className={`
+                                px-5 py-3 border-2 
+                                ${
+                                    isActive
+                                        ? "bg-white border-white"
+                                        : "bg-black border-white/30 border-dashed"
+                                }
+                                ${pressed && !isActive ? "bg-white/10" : ""}
+                            `}
+                                    >
+                                        <Text
+                                            className={`uppercase tracking-widest text-xs font-black ${
+                                                isActive
+                                                    ? "text-black"
+                                                    : "text-white/50"
+                                            }`}
+                                        >
+                                            {item.type}
+                                        </Text>
+                                    </View>
+                                )}
+                            </Pressable>
+                        );
+                    })}
+                </ScrollView>
+
+                <View className="mt-4 border-2 border-white/30 p-5">
+                    <Text
+                        className="text-lg text-white uppercase mb-4"
+                        style={{ fontFamily: "PressStart2P_400Regular" }}
+                    >
+                        {currentAlgorithm}
+                    </Text>
+
+                    <View className="flex-row">
+                        <Text className="flex-1 text-white/80 font-mono text-sm leading-6">
+                            {description}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+            <PrimaryButton label={"Reschedule"} onPress={onReschedule} />
         </View>
     );
 }

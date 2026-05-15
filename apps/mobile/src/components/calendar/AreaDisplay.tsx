@@ -86,25 +86,29 @@ export const AreaDisplay = ({
         isLoadingOverride ?? (isAreaLoading || isSubareasLoading);
 
     return (
-        <View className="flex flex-col gap-3">
-            <Text className="text-xl font-bold">Your areas</Text>
-            <View className="flex flex-col gap-3">
+        <View className="flex flex-col gap-4 mt-2">
+            <View className="border-b-2 border-dashed border-white/30 pb-4 mb-2">
+                <Text
+                    className="text-xl text-white uppercase"
+                    style={{ fontFamily: "PressStart2P_400Regular" }}
+                >
+                    Areas
+                </Text>
+            </View>
+
+            <View className="flex flex-col gap-4">
                 {areas.length > 0 ? (
                     areas.map((a) => <AreaSection key={a.areaId} area={a} />)
                 ) : shouldShowLoading ? (
-                    <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
-                        <Text className="mt-2 text-2xl font-bold text-foreground text-center">
-                            Loading areas...
+                    <View className="border-2 border-white/20 p-5 border-dashed">
+                        <Text className="font-mono text-white/70 uppercase text-xs">
+                            Fetching...
                         </Text>
                     </View>
                 ) : (
-                    <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
-                        <Text className="mt-2 text-2xl font-bold text-foreground text-center">
-                            No areas and subareas listed!
-                        </Text>
-                        <Text className="mt-2 text-sm font-bold text-foreground text-center">
-                            Tip: To actually generate a timeline, make sure you
-                            have subarea listed too!
+                    <View className="border-2 border-white/20 p-5 border-dashed">
+                        <Text className="font-mono text-white/50 uppercase text-xs mb-4">
+                            No Areas!
                         </Text>
                     </View>
                 )}

@@ -7,7 +7,20 @@ import { ReschedulingStylePicker } from "../../components/reschedule/Reschedulin
 import { OutputTimeline } from "../../components/reschedule/OutputTimeline";
 
 export default function Reschedule() {
-    const [algorithm, setAlgorithm] = useState<"global" | "nested">("global");
+    const algorithmType = [
+        {
+            type: "global",
+            description: "Smooth blend of all categories",
+        },
+        {
+            type: "nested",
+            description: "Organized by area & subarea",
+        },
+    ];
+    const [algorithmIdx, setAlgorithmIdx] = useState(0);
+    const type = algorithmType[algorithmIdx].type;
+    const description = algorithmType[algorithmIdx].description;
+
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
     const {
@@ -45,7 +58,7 @@ export default function Reschedule() {
     return (
         <ScrollView
             className="flex-1 bg-background "
-            contentContainerClassName="px-5 pt-10 pb-32 flex flex-col gap-10"
+            contentContainerClassName="px-5 pt-10 pb-32 flex flex-col gap-5"
         >
             <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
                 <Text
@@ -75,9 +88,11 @@ export default function Reschedule() {
             />
 
             <ReschedulingStylePicker
-                algorithm={algorithm}
-                onAlgorithmChange={setAlgorithm}
-                onReschedule={() => actions.runReschedule(algorithm)}
+                algorithmTypes={algorithmType}
+                onAlgorithmChange={setAlgorithmIdx}
+                onReschedule={() => actions.runReschedule(type)}
+                description={description}
+                currentAlgorithm={type}
             />
 
             <AreaDisplay

@@ -14,45 +14,49 @@ type SubareaSectionProps = {
 export const SubareaSection = ({ subareas }: SubareaSectionProps) => {
     if (!subareas.length) {
         return (
-            <Text className="text-sm text-muted-foreground">
-                No subareas yet.
-            </Text>
+            <View className="mt-4 pt-4 border-t-2 border-dashed border-white/10">
+                <Text className="text-xs font-mono text-white/40 uppercase">
+                    No Subareas!
+                </Text>
+            </View>
         );
     }
-    console.log(subareas);
+
     return (
-        <View className="mt-3 flex flex-row flex-wrap gap-2">
-            {subareas.map((subarea) => (
-                <View
-                    key={subarea.subareaId}
-                    className="rounded-md border border-border bg-card px-3 py-2"
-                >
-                    {(() => {
-                        const color = subarea.color;
-                        return (
-                            <View className="flex flex-col gap-2 items-center justify-between">
-                                <Text className="text-sm font-semibold">
-                                    {subarea.subareaName}
-                                </Text>
-                                <View className="flex flex-row gap-1">
-                                    {[...new Array(5)].map((_, i) => (
+        <View className="mt-4 pt-4 border-t-2 border-dashed border-white/10 flex flex-row flex-wrap gap-3">
+            {subareas.map((subarea) => {
+                const color = subarea.color ?? "rgba(255,255,255,0.5)";
+
+                return (
+                    <View
+                        key={subarea.subareaId}
+                        className="border border-white/20 px-3 py-2 min-w-[120px]"
+                    >
+                        <View className="flex flex-col gap-3">
+                            <Text className="text-xs font-mono text-white/80">
+                                {subarea.subareaName}
+                            </Text>
+
+                            <View className="flex flex-row gap-1">
+                                {[...new Array(5)].map((_, i) => {
+                                    const isActive = i < subarea.weight;
+                                    return (
                                         <View
                                             key={`${subarea.subareaId}-${i}`}
-                                            className="h-2 w-2"
+                                            className={`h-2 w-2 border ${isActive ? "border-transparent" : "border-white/20"}`}
                                             style={{
-                                                backgroundColor:
-                                                    i < subarea.weight
-                                                        ? color
-                                                        : "#6b7280",
+                                                backgroundColor: isActive
+                                                    ? color
+                                                    : "transparent",
                                             }}
                                         />
-                                    ))}
-                                </View>
+                                    );
+                                })}
                             </View>
-                        );
-                    })()}
-                </View>
-            ))}
+                        </View>
+                    </View>
+                );
+            })}
         </View>
     );
 };

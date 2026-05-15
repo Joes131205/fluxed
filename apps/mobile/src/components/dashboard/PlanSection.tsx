@@ -68,7 +68,7 @@ export const PlanSection = () => {
             )}
 
             {!isPlansLoading && planItems.length === 0 && (
-                <View className="py-10 border-2 border-dashed border-white/30 rounded-3xl items-center justify-center">
+                <View className="py-10 border-2 border-dashed border-white/30 items-center justify-center">
                     <Text
                         className="text-center text-lg text-white mb-2"
                         style={{ fontFamily: "PressStart2P_400Regular" }}
@@ -110,7 +110,7 @@ export const PlanSection = () => {
                         }
 
                         return (
-                            <View>
+                            <View key={idx}>
                                 <View
                                     key={item.sessionId}
                                     className={cardStyle}

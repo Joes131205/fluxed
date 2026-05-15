@@ -1,4 +1,5 @@
 import { Pressable, Text, View } from "react-native";
+import { PrimaryButton } from "../ui/PrimaryButton";
 
 type OutputTimelineProps = {
     finalSchedule: Array<{
@@ -23,53 +24,59 @@ export function OutputTimeline({
 }: OutputTimelineProps) {
     return (
         <View className="flex flex-col gap-3">
-            <Text className="text-xl font-bold">Output Timeline</Text>
+            <View className="border-b-2 border-dashed border-white/30 pb-4 mb-2">
+                <Text
+                    className="text-xl text-white uppercase"
+                    style={{ fontFamily: "PressStart2P_400Regular" }}
+                >
+                    Proposed Timeline
+                </Text>
+            </View>{" "}
             {finalSchedule.length > 0 ? (
-                <View>
-                    <View className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
+                <View className="mb-10 mt-4">
+                    <View className="flex flex-col gap-3">
                         {finalSchedule.map((slot, index) => (
                             <View
                                 key={`${slot.subareaId}-${index}`}
-                                className="rounded-md border border-border bg-white p-3"
+                                className="flex-row items-center justify-between border-2 border-dashed border-white/30 bg-black p-5"
                             >
-                                <View className="flex flex-row items-center gap-5">
-                                    <View className="flex flex-col gap-1">
-                                        <Text className="text-xs font-black uppercase tracking-widest text-text/30">
-                                            Area
-                                        </Text>
-                                        <Text className="text-lg font-black tracking-tight text-text mb-4">
-                                            {slot.area}
-                                        </Text>
-                                    </View>
-
-                                    <View className="flex flex-col gap-1">
-                                        <Text className="text-xs font-black uppercase tracking-widest text-text/30">
-                                            Subarea
-                                        </Text>
-                                        <Text className="text-lg font-black tracking-tight text-text mb-4">
-                                            {slot.subarea}
-                                        </Text>
-                                    </View>
+                                <View className="flex-1 pr-4">
+                                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                                        {slot.area}
+                                    </Text>
+                                    <Text
+                                        className="text-sm leading-6 text-white"
+                                        style={{
+                                            fontFamily:
+                                                "PressStart2P_400Regular",
+                                        }}
+                                        numberOfLines={2}
+                                    >
+                                        {slot.subarea}
+                                    </Text>
                                 </View>
-                                <Text className="text-md">
-                                    {formatTime(slot.start)} -{" "}
-                                    {formatTime(slot.end)}
-                                </Text>
+
+                                <View className="border-l-2 border-white/10 pl-4 items-end">
+                                    <Text className="font-mono text-sm font-black text-white">
+                                        {formatTime(slot.start)}
+                                    </Text>
+                                    <Text className="mt-1 font-mono text-xs font-bold text-white/50">
+                                        {formatTime(slot.end)}
+                                    </Text>
+                                </View>
                             </View>
                         ))}
+                    </View>
 
-                        <Pressable
+                    <View className="mt-6">
+                        <PrimaryButton
                             onPress={onSaveToDatabase}
-                            className="w-full rounded-md bg-primary px-4 py-3"
-                        >
-                            <Text className="text-center font-semibold text-white">
-                                {isLoading ? "Saving..." : "Save to Database"}
-                            </Text>
-                        </Pressable>
+                            label={isLoading ? "Processing..." : "Confirm Plan"}
+                        />
                     </View>
                 </View>
             ) : isGeneratedOnce ? (
-                <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
+                <View className="border-2 border-dashed border-white/20 p-5 mt-4">
                     <Text className="mt-2 text-2xl font-bold text-foreground text-center">
                         Wowzers 💀
                     </Text>
@@ -80,7 +87,6 @@ export function OutputTimeline({
                         No valid slots were available for your current
                         timeframe.
                     </Text>
-
                     <Text className="mt-1 text-sm text-muted-foreground text-center">
                         Maybe because the allocated events are too close to your
                         sleep window or you set the minimum task duration too
@@ -88,7 +94,7 @@ export function OutputTimeline({
                     </Text>
                 </View>
             ) : (
-                <View className="rounded-2xl bg-card p-5 text-center flex flex-col gap-2">
+                <View className="border-2 border-dashed border-white/20 p-5 mt-4">
                     <Text className="mt-2 text-2xl font-bold text-foreground text-center">
                         Nothing yet!
                     </Text>

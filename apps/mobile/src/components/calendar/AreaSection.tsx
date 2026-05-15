@@ -21,33 +21,46 @@ type AreaSectionProps = {
 
 export const AreaSection = ({ area }: AreaSectionProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const color = area.color ?? "#6b7280";
+    const color = area.color ?? "rgba(255,255,255,0.5)";
 
     return (
-        <View className="p-5 bg-white rounded-md w-full">
+        <View className="border-2 border-white/30 bg-black p-4 w-full mb-1">
             <Pressable
                 onPress={() => setIsExpanded((prev) => !prev)}
                 className="flex flex-row items-center justify-between w-full"
             >
-                <Text className="text-lg font-bold">{area.areaName}</Text>
-                <View className="flex flex-row items-center gap-3">
-                    <View className="flex flex-row gap-1">
-                        {[...new Array(5)].map((_, i) => (
-                            <View
-                                key={`${area.areaId}-${i}`}
-                                className="h-2 w-2 "
-                                style={{
-                                    backgroundColor:
-                                        i < area.weight ? color : "#6b7280",
-                                }}
-                            />
-                        ))}
-                    </View>
-                    <Text className="text-base font-semibold text-muted-foreground">
-                        {isExpanded ? "▲" : "▼"}
+                <View className="flex flex-row items-center flex-1 pr-4">
+                    <Text className="text-white/50 font-mono text-sm mr-3">
+                        {isExpanded ? "[-]" : "[+]"}
+                    </Text>
+                    <Text
+                        className={`text-sm font-black uppercase tracking-widest ${isExpanded ? "text-white" : "text-white/70"}`}
+                        numberOfLines={1}
+                    >
+                        {area.areaName}
                     </Text>
                 </View>
+
+                <View className="flex flex-row items-center gap-3">
+                    <View className="flex flex-row gap-1">
+                        {[...new Array(5)].map((_, i) => {
+                            const isActive = i < area.weight;
+                            return (
+                                <View
+                                    key={`${area.areaId}-${i}`}
+                                    className={`h-3 w-3 border ${isActive ? "border-transparent" : "border-white/20"}`}
+                                    style={{
+                                        backgroundColor: isActive
+                                            ? color
+                                            : "transparent",
+                                    }}
+                                />
+                            );
+                        })}
+                    </View>
+                </View>
             </Pressable>
+
             {isExpanded ? <SubareaSection subareas={area.subareas} /> : null}
         </View>
     );

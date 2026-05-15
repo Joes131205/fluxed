@@ -49,37 +49,27 @@ export function BusyBlocks({
                     <Text className="text-white/70 font-mono uppercase mb-5 leading-5 text-xs">
                         Google Calendar Linked!
                     </Text>
-                    
-                    <Pressable onPress={onSyncCalendar} className="w-full">
-                        {({ pressed }) => (
-                            <View className={`border-2 py-4 flex items-center justify-center ${pressed ? "bg-white border-white" : "bg-black border-white"}`}>
-                                <Text 
-                                    className={`uppercase tracking-widest text-xs font-black ${pressed ? "text-black" : "text-white"}`}
-                                >
-                                    {isLoading ? "SYNCING..." : "FETCH DATA"}
-                                </Text>
-                            </View>
-                        )}
-                    </Pressable>
+
+                    <PrimaryButton
+                        label="Fetch Data"
+                        onPress={onSyncCalendar}
+                    />
                 </View>
             ) : (
                 <View className="flex flex-col gap-4">
                     <TextPrimaryInput
-                            label="Start Time"
-                            value={start}
-                            onChangeText={onStartChange}
-                            placeholder="HH:MM"
-                        />
-                        <TextPrimaryInput
-                            label="End Time"
-                            value={end}
-                            onChangeText={onEndChange}
-                            placeholder="HH:MM"
-                        />
-                        <PrimaryButton 
-                            label="Inject Block" 
-                            onPress={onAddEvent} 
-                        />
+                        label="Start Time"
+                        value={start}
+                        onChangeText={onStartChange}
+                        placeholder="HH:MM"
+                    />
+                    <TextPrimaryInput
+                        label="End Time"
+                        value={end}
+                        onChangeText={onEndChange}
+                        placeholder="HH:MM"
+                    />
+                    <PrimaryButton label="Add Block" onPress={onAddEvent} />
                 </View>
             )}
 
@@ -87,28 +77,38 @@ export function BusyBlocks({
                 {calendar.map((item) => (
                     <View key={item.id} className="mb-6">
                         <Text className="mb-3 text-[10px] font-black uppercase tracking-widest text-white/50 border-b-2 border-white/10 pb-2">
-                            Category -> {item.name}
+                            {item.name}
                         </Text>
-                        
+
                         <View className="flex flex-col gap-1">
                             {item.busy.length > 0 ? (
                                 item.busy.map((slot, index) => (
                                     <View
                                         key={`${item.id}-${index}`}
                                         className={`flex flex-row items-center justify-between py-2 ${
-                                            !isGoogleConnected ? "opacity-100" : "opacity-50"
+                                            !isGoogleConnected
+                                                ? "opacity-100"
+                                                : "opacity-50"
                                         }`}
                                     >
                                         <Text className="text-white font-mono text-sm">
-                                            {formatTime(slot.start)} <Text className="text-white/50">-></Text> {formatTime(slot.end)}
+                                            {formatTime(slot.start)}{" "}
+                                            <Text className="text-white/50">
+                                                -{">"}
+                                            </Text>{" "}
+                                            {formatTime(slot.end)}
                                         </Text>
                                         {!isGoogleConnected && (
                                             <Pressable
-                                                onPress={() => onRemoveEvent(index)}
+                                                onPress={() =>
+                                                    onRemoveEvent(index)
+                                                }
                                                 className="px-2 py-1"
                                             >
                                                 {({ pressed }) => (
-                                                    <Text className={`font-mono text-xs ${pressed ? "text-red-400" : "text-white/50"}`}>
+                                                    <Text
+                                                        className={`font-mono text-xs ${pressed ? "text-red-400" : "text-white/50"}`}
+                                                    >
                                                         X
                                                     </Text>
                                                 )}

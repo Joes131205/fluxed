@@ -202,7 +202,9 @@ export function useCalendarEngine() {
         const currentBusy = calendar[0]?.busy ?? [];
         const newBusy = [...currentBusy, { start: startIso, end: endIso }];
 
-        setCalendar([{ id: "offline", name: "Manual", busy: newBusy }]);
+        setCalendar([
+            { id: "offline", name: "Manual Busy Blocks", busy: newBusy },
+        ]);
         updateGaps(newBusy);
     };
 
@@ -229,7 +231,7 @@ export function useCalendarEngine() {
         setFinalSchedule([]);
     };
 
-    const runReschedule = (algo: "global" | "nested") => {
+    const runReschedule = (algo: string) => {
         const [hour = "23", minute = "59"] = (user?.endTime ?? "23:59").split(
             ":",
         );
