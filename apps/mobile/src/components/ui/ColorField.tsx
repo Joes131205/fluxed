@@ -28,7 +28,7 @@ const parseColor = (value: string) => {
 };
 
 type ColorFieldProps = {
-    label: string;
+    label?: string;
     value: string;
     onChange: (value: string) => void;
     editable: boolean;
@@ -42,55 +42,60 @@ export function ColorField({
 }: ColorFieldProps) {
     const resolvedColor = parseColor(value) ?? DEFAULT_COLOR;
 
+    const displayValue = value.replace(/^#+/, "");
+
     return (
-        <View className="flex flex-col gap-2">
-            <Text className="text-sm font-semibold text-muted-foreground">
-                {label}
-            </Text>
+        <View className="flex flex-col gap-3">
+            <View className="flex-row items-center gap-3">
+                <View
+                    className="h-14 w-14 rounded-xl border-2 border-white/10"
+                    style={{ backgroundColor: resolvedColor }}
+                />
 
-            <View className="flex flex-col gap-3 rounded-2xl border border-border bg-white p-3">
-                <View className="flex-row items-center gap-3">
-                    <View
-                        className="h-10 w-10 rounded-xl border border-border"
-                        style={{ backgroundColor: resolvedColor }}
-                    />
-
+                <View className="flex-1 flex-row items-center rounded-xl border border-white/20 bg-black px-4 py-4">
+                    <Text className="text-white/40 font-mono text-base mr-1">
+                        #
+                    </Text>
                     <TextInput
-                        value={value}
-                        onChangeText={onChange}
-                        placeholder="#00cdfd"
+                        value={displayValue}
+                        onChangeText={(text) => onChange(`#${text}`)}
+                        placeholder="00CDFD"
+                        placeholderTextColor="rgba(255, 255, 255, 0.2)"
                         autoCapitalize="none"
                         autoCorrect={false}
                         editable={editable}
-                        className="flex-1 rounded-xl border border-border bg-white px-4 py-3"
+                        maxLength={6}
+                        selectionColor="#ffffff"
+                        className="flex-1 text-white font-mono text-base"
                     />
-                </View>
-
-                <View className="flex-row flex-wrap gap-2">
-                    {SWATCHES.map((swatch) => {
-                        const isSelected = resolvedColor === swatch;
-
-                        return (
-                            <Pressable
-                                key={swatch}
-                                className="h-9 w-9 rounded-lg border"
-                                disabled={!editable}
-                                style={{
-                                    backgroundColor: swatch,
-                                    borderColor: isSelected
-                                        ? "#111827"
-                                        : "#d1d5db",
-                                    borderWidth: isSelected ? 2 : 1,
-                                }}
-                                onPress={() => onChange(swatch)}
-                            />
-                        );
-                    })}
                 </View>
             </View>
 
-            <Text className="text-xs text-muted-foreground">
-                Pick a color or type a 6-digit hex value.
+            <View className="flex-row flex-wrap gap-3 mt-1">
+                {SWATCHES.map((swatch) => {
+                    const isSelected = resolvedColor === swatch;
+
+                    return (
+                        <Pressable
+                            key={swatch}
+                            className={`h-10 w-10 rounded-lg border-2 ${
+                                isSelected
+                                    ? "border-white"
+                                    : "border-transparent"
+                            }`}
+                            disabled={!editable}
+                            style={{
+                                backgroundColor: swatch,
+                                opacity: editable ? 1 : 0.5,
+                            }}
+                            onPress={() => onChange(swatch)}
+                        />
+                    );
+                })}
+            </View>
+
+            <Text className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-1 ml-1">
+                Select a swatch or enter 6-digit hex
             </Text>
         </View>
     );

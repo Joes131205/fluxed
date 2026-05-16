@@ -62,55 +62,6 @@ const getTodayIsoAt = (hour: number, minute: number) => {
     return date.toISOString();
 };
 
-const demoSchedule: ScheduleItem[] = [
-    {
-        areaId: "demo-area-1",
-        areaName: "Health",
-        weight: 4,
-        subareas: [
-            {
-                subareaId: "demo-sub-1",
-                subareaName: "Workout",
-                weight: 5,
-            },
-            {
-                subareaId: "demo-sub-2",
-                subareaName: "Stretching",
-                weight: 2,
-            },
-        ],
-    },
-    {
-        areaId: "demo-area-2",
-        areaName: "Study",
-        weight: 5,
-        subareas: [
-            {
-                subareaId: "demo-sub-3",
-                subareaName: "Algorithms",
-                weight: 4,
-            },
-            {
-                subareaId: "demo-sub-4",
-                subareaName: "System Design",
-                weight: 3,
-            },
-        ],
-    },
-    {
-        areaId: "demo-area-3",
-        areaName: "Career",
-        weight: 3,
-        subareas: [
-            {
-                subareaId: "demo-sub-5",
-                subareaName: "Interview Prep",
-                weight: 4,
-            },
-        ],
-    },
-];
-
 const demoBusySlots: BusySlot[] = [
     { start: getTodayIsoAt(9, 0), end: getTodayIsoAt(10, 0) },
     { start: getTodayIsoAt(12, 0), end: getTodayIsoAt(13, 0) },
@@ -196,6 +147,10 @@ export function useCalendarEngine() {
         const endIso = toTodayIso(endTimeStr);
 
         if (!startIso || !endIso || new Date(endIso) <= new Date(startIso)) {
+            Alert.alert(
+                "Invalid Time",
+                "Please enter valid start and end times.",
+            );
             return;
         }
 
@@ -214,21 +169,6 @@ export function useCalendarEngine() {
 
         setCalendar([{ id: "offline", name: "Manual", busy: newBusy }]);
         updateGaps(newBusy);
-    };
-
-    const loadDemoData = () => {
-        setError(null);
-        setSchedule(demoSchedule);
-        setCalendar([
-            {
-                id: "demo-calendar",
-                name: "Demo Day",
-                busy: demoBusySlots,
-            },
-        ]);
-        updateGaps(demoBusySlots);
-        setRescheduledData([]);
-        setFinalSchedule([]);
     };
 
     const runReschedule = (algo: string) => {
@@ -412,6 +352,11 @@ export function useCalendarEngine() {
             );
 
             queryClient.invalidateQueries({ queryKey: ["plan"] });
+
+            Alert.alert(
+                "Success",
+                "Your schedule has been saved successfully!",
+            );
         } catch (saveError) {
             setError(
                 saveError instanceof Error
@@ -440,7 +385,9 @@ export function useCalendarEngine() {
 
             if (!data.ok) {
                 setCalendar([]);
-                setError(data.error ?? "Unable to load calendar data");
+                const errorMsg = data.error ?? "Unable to load calendar data";
+                setError(errorMsg);
+                Alert.alert("Error", errorMsg);
                 return;
             }
 
@@ -448,13 +395,15 @@ export function useCalendarEngine() {
             setFreeGaps(gaps);
             setMinutes(gaps.reduce((acc, gap) => acc + gap.durationMinutes, 0));
             setCalendar(data.calendarData ?? []);
+            Alert.alert("Success", "Calendar data loaded successfully!");
         } catch (loadError) {
             setCalendar([]);
-            setError(
+            const errorMsg =
                 loadError instanceof Error
                     ? loadError.message
-                    : "Unable to load calendar data",
-            );
+                    : "Unable to load calendar data";
+            setError(errorMsg);
+            Alert.alert("Error", errorMsg);
         } finally {
             setIsLoading(false);
         }
@@ -537,7 +486,6 @@ export function useCalendarEngine() {
         actions: {
             addManualEvent,
             removeManualEvent,
-            loadDemoData,
             runReschedule,
             saveToDatabase,
             getData,

@@ -8,35 +8,51 @@ type PrimaryButtonProps = {
     disabled?: boolean;
 };
 
-export const PrimaryButton = ({
+export function PrimaryButton({
     label,
     onPress,
-    loading = false,
-    disabled = false,
-}: PrimaryButtonProps) => {
+    disabled,
+    ...props
+}: PrimaryButtonProps) {
     return (
         <Pressable
             onPress={onPress}
-            disabled={disabled || loading}
+            disabled={disabled}
             className="w-full mt-2"
+            {...props}
         >
-            {({ pressed }) => (
-                <View
-                    className={`
-                        w-full py-5 border-2 flex items-center justify-center 
-                        ${pressed ? "bg-white border-white" : "bg-black border-white"}
-                    `}
-                >
-                    <Text
-                        className={`uppercase tracking-widest text-sm ${
-                            pressed ? "text-black" : "text-white"
-                        }`}
-                        style={{ fontFamily: "PressStart2P_400Regular" }}
+            {({ pressed }) => {
+                // 1. The Surface Elevation Fix
+                const bgColor = disabled
+                    ? "bg-transparent" // Fades into background when unusable
+                    : pressed
+                      ? "bg-white" // Flashes bright when tapped
+                      : "bg-[#1A1A1A]"; // <-- The new, visible resting state
+
+                const borderColor = disabled
+                    ? "border-white/10"
+                    : pressed
+                      ? "border-white"
+                      : "border-white/20";
+
+                const textColor = disabled
+                    ? "text-white/30"
+                    : pressed
+                      ? "text-black"
+                      : "text-white";
+
+                return (
+                    <View
+                        className={`rounded-xl border py-4 flex items-center justify-center transition-colors ${bgColor} ${borderColor}`}
                     >
-                        {label}
-                    </Text>
-                </View>
-            )}
+                        <Text
+                            className={`uppercase tracking-widest text-sm font-bold ${textColor}`}
+                        >
+                            {label}
+                        </Text>
+                    </View>
+                );
+            }}
         </Pressable>
     );
-};
+}

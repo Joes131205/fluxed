@@ -53,6 +53,7 @@ export function BusyBlocks({
                     <PrimaryButton
                         label="Fetch Data"
                         onPress={onSyncCalendar}
+                        loading={isLoading}
                     />
                 </View>
             ) : (

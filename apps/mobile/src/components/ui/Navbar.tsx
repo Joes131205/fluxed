@@ -10,7 +10,7 @@ export const Navbar = () => {
 
     const navItems = [
         {
-            label: "Dashboard",
+            label: "Home",
             to: "/dashboard",
             activeIcon: "home" as IconName,
             inactiveIcon: "home-outline" as IconName,
@@ -37,42 +37,47 @@ export const Navbar = () => {
 
     const hiddenLinks = ["/sign-in", "/sign-up", "/"];
 
-    return (
-        <View className={`${hiddenLinks.includes(pathname) ? "hidden" : ""}`}>
-            <View className="flex-row items-center justify-between bg-white p2">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.to;
+    if (hiddenLinks.includes(pathname)) {
+        return null;
+    }
 
-                    return (
-                        <Pressable
-                            key={item.to}
-                            onPress={() => router.push(item.to)}
-                            className="flex-1 items-center rounded-2xl px-1 py-2"
+    return (
+        <View className="border-t border-dashed border-white/20 bg-[#0A0A0A] pt-2 pb-8 px-4 flex-row items-center justify-between">
+            {navItems.map((item) => {
+                const isActive = pathname === item.to;
+
+                return (
+                    <Pressable
+                        key={item.to}
+                        onPress={() => router.push(item.to)}
+                        className={`flex-1 items-center justify-center py-3 rounded-xl transition-colors ${
+                            isActive ? "bg-white/10" : "bg-transparent"
+                        }`}
+                    >
+                        <Ionicons
+                            name={
+                                isActive ? item.activeIcon : item.inactiveIcon
+                            }
+                            size={22}
+                            color={
+                                isActive
+                                    ? "#ffffff"
+                                    : "rgba(255, 255, 255, 0.4)"
+                            }
+                        />
+                        <Text
+                            numberOfLines={1}
+                            className={`w-full text-center text-[10px] uppercase tracking-widest mt-1.5 ${
+                                isActive
+                                    ? "font-black text-white"
+                                    : "font-bold text-white/40"
+                            }`}
                         >
-                            <Ionicons
-                                name={
-                                    isActive
-                                        ? item.activeIcon
-                                        : item.inactiveIcon
-                                }
-                                size={24}
-                                color={isActive ? "#00cdfd" : "#6b7280"}
-                            />
-                            <Text
-                                numberOfLines={1}
-                                ellipsizeMode="clip"
-                                adjustsFontSizeToFit
-                                minimumFontScale={0.8}
-                                className={`w-full text-center text-xs ${
-                                    isActive ? "font-bold" : "font-medium"
-                                }`}
-                            >
-                                {item.label}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
+                            {item.label}
+                        </Text>
+                    </Pressable>
+                );
+            })}
         </View>
     );
 };

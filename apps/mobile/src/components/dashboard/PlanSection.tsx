@@ -46,7 +46,7 @@ export const PlanSection = () => {
     }, []);
 
     return (
-        <View className="p-5">
+        <View>
             <View className="mb-6">
                 <Text
                     className="text-xl text-white tracking-widest font-bold"

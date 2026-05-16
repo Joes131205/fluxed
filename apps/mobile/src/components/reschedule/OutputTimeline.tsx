@@ -31,39 +31,45 @@ export function OutputTimeline({
                 >
                     Proposed Timeline
                 </Text>
-            </View>{" "}
+            </View>
             {finalSchedule.length > 0 ? (
                 <View className="mb-10 mt-4">
                     <View className="flex flex-col gap-3">
-                        {finalSchedule.map((slot, index) => (
-                            <View
-                                key={`${slot.subareaId}-${index}`}
-                                className="flex-row items-center justify-between border-2 border-dashed border-white/30 bg-black p-5"
-                            >
-                                <View className="flex-1 pr-4">
-                                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
-                                        {slot.area}
-                                    </Text>
-                                    <Text
-                                        className="text-sm leading-6 text-white"
-                                        style={{
-                                            fontFamily:
-                                                "PressStart2P_400Regular",
-                                        }}
-                                        numberOfLines={2}
-                                    >
-                                        {slot.subarea}
-                                    </Text>
-                                </View>
+                        {finalSchedule.map((slot, idx) => (
+                            <View key={`${slot.subareaId}-${idx}`}>
+                                <View className="flex-row items-center justify-between border-2 border-dashed border-white/30 bg-black p-5">
+                                    <View className="flex-1 pr-4">
+                                        <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                                            {slot.area}
+                                        </Text>
+                                        <Text
+                                            className="text-sm leading-6 text-white"
+                                            style={{
+                                                fontFamily:
+                                                    "PressStart2P_400Regular",
+                                            }}
+                                            numberOfLines={2}
+                                        >
+                                            {slot.subarea}
+                                        </Text>
+                                    </View>
 
-                                <View className="border-l-2 border-white/10 pl-4 items-end">
-                                    <Text className="font-mono text-sm font-black text-white">
-                                        {formatTime(slot.start)}
-                                    </Text>
-                                    <Text className="mt-1 font-mono text-xs font-bold text-white/50">
-                                        {formatTime(slot.end)}
-                                    </Text>
+                                    <View className="border-l-2 border-white/10 pl-4 items-end">
+                                        <Text className="font-mono text-sm font-black text-white">
+                                            {formatTime(slot.start)}
+                                        </Text>
+                                        <Text className="mt-1 font-mono text-xs font-bold text-white/50">
+                                            {formatTime(slot.end)}
+                                        </Text>
+                                    </View>
                                 </View>
+                                {idx !== finalSchedule.length - 1 ? (
+                                    <Text className="text-center w-full mt-3 text-white/30">
+                                        |
+                                    </Text>
+                                ) : (
+                                    ""
+                                )}
                             </View>
                         ))}
                     </View>
@@ -72,6 +78,7 @@ export function OutputTimeline({
                         <PrimaryButton
                             onPress={onSaveToDatabase}
                             label={isLoading ? "Processing..." : "Confirm Plan"}
+                            loading={isLoading}
                         />
                     </View>
                 </View>

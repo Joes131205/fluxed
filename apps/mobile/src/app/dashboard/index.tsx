@@ -18,9 +18,9 @@ export default function Dashboard() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName="pb-5 flex flex-col gap-5"
+            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
         >
-            <View className="w-full p-5 text-center">
+            <View className="w-full text-center">
                 <Text className="text-center text-[2px] font-semibold text-slate-400">
                     {weekday}
                 </Text>

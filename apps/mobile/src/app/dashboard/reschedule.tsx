@@ -57,8 +57,8 @@ export default function Reschedule() {
 
     return (
         <ScrollView
-            className="flex-1 bg-background "
-            contentContainerClassName="px-5 pt-10 pb-32 flex flex-col gap-5"
+            className="flex-1 bg-background"
+            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
         >
             <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
                 <Text
