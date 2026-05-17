@@ -1,9 +1,9 @@
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
-import { useSubareas } from "../../../hooks/useSubareas";
+import { useAllSubareas, useSubareas } from "../../../hooks/useSubareas";
 
 export default function SubareaSetting() {
-    const { data: subareasData, isLoading: isAreaLoading } = useSubareas();
+    const { data: subareasData, isLoading: isAreaLoading } = useAllSubareas();
 
     return (
         <ScrollView

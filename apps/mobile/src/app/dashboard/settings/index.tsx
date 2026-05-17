@@ -85,7 +85,7 @@ export default function Settings() {
 
     const handleGoogleLink = async () => {
         try {
-            await Linking.openURL(`${API_URL}/api/auth/google/start`);
+            await Linking.openURL(`${API_URL}/auth/google/start`);
         } catch (error) {
             Alert.alert(
                 "Unable to open link",

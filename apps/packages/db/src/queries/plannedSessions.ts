@@ -13,6 +13,7 @@ export const deletePlan = async (userId: string) => {
 export const getPlan = async (userId: string) => {
     const results = await db
         .select({
+            id: plannedSessions.id,
             sessionId: plannedSessions.id,
             startTime: plannedSessions.start_time,
             endTime: plannedSessions.end_time,

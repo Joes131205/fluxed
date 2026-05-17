@@ -1,11 +1,10 @@
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { usePlans } from "../../hooks/usePlans";
-
-// Note: Removed ArrowRight as we will stack the times for a cleaner "ticket" look
-// matching the structured data in the reference images.
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type PlanItem = {
+    id: string;
     sessionId: string;
     startTime: string;
     endTime: string;
@@ -30,9 +29,11 @@ export const PlanSection = () => {
             ? ((plansData as { data: PlanItem[] }).data ?? [])
             : [];
 
+    const [length, setLength] = useState(0);
+    const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
 
-    const formatTimeOnly = (value: string) => {
+    const formatDateTime = (value: string) => {
         return new Date(value).toLocaleDateString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -40,22 +41,64 @@ export const PlanSection = () => {
         });
     };
 
+    const toggleEventCompletion = (id: string) => {
+        if (progress.includes(id)) {
+            setProgress(progress.filter((item) => item !== id));
+        } else {
+            setProgress((prev) => [...prev, id]);
+        }
+    };
+
+    useEffect(() => {
+        const loadProgress = async () => {
+            setLength(planItems.length);
+            const data = await AsyncStorage.getItem("progress");
+            if (!data) {
+                return;
+            }
+            const decoded = JSON.parse(data);
+            setProgress(decoded);
+        };
+        loadProgress();
+    }, [planItems.length]);
+
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 60000);
         return () => clearInterval(timer);
     }, []);
 
     return (
-        <View>
+        <View className="flex flex-col gap-5">
+            <Text
+                className="text-xl text-white tracking-widest font-bold"
+                style={{ fontFamily: "PressStart2P_400Regular" }}
+            >
+                Your Plan Timeline
+            </Text>
             <View className="mb-6">
-                <Text
-                    className="text-xl text-white tracking-widest font-bold"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
-                    Your Plan Timeline
+                <View className="flex-row justify-between items-center mb-2">
+                    <Text className="text-white font-bold text-sm uppercase tracking-widest">
+                        Progress
+                    </Text>
+                    <Text className="text-white/60 text-xs font-mono">
+                        {progress.length} / {length}
+                    </Text>
+                </View>
+                <View className="w-full h-4 bg-white/10 border border-white/30 overflow-hidden">
+                    <View
+                        className="h-full bg-white transition-all duration-500"
+                        style={{
+                            width: `${length > 0 ? (progress.length / length) * 100 : 0}%`,
+                        }}
+                    />
+                </View>
+                <Text className="text-white/40 text-xs mt-2 uppercase tracking-widest font-mono">
+                    {length > 0
+                        ? Math.round((progress.length / length) * 100)
+                        : 0}
+                    %
                 </Text>
             </View>
-
             {isPlansLoading && (
                 <View className="py-10">
                     <Text
@@ -89,8 +132,7 @@ export const PlanSection = () => {
                         const isNow = now >= startTime && now <= endTime;
                         const isPassed = now >= endTime;
 
-                        let cardStyle =
-                            "p-5 border-2 flex-row justify-between items-center ";
+                        let cardStyle = "p-5 border-2 flex-col ";
                         let textMainColor = "";
                         let textSubColor = "";
 
@@ -115,47 +157,111 @@ export const PlanSection = () => {
                                     key={item.sessionId}
                                     className={cardStyle}
                                 >
-                                    <View className="flex-1 pr-4">
-                                        <Text
-                                            className={`text-xs font-black uppercase tracking-widest mb-2 ${textSubColor}`}
-                                        >
-                                            {item.areaName}
-                                        </Text>
-                                        <Text
-                                            className={`text-sm leading-6 ${textMainColor}`}
-                                            style={{
-                                                fontFamily:
-                                                    "PressStart2P_400Regular",
-                                            }}
-                                            numberOfLines={2}
-                                        >
-                                            {item.subareaName}
-                                        </Text>
-                                    </View>
+                                    <View className="flex-row justify-between items-start gap-4 mb-4">
+                                        <View className="flex-1">
+                                            <Text
+                                                className={`text-xs font-black uppercase tracking-widest mb-2 ${textSubColor}`}
+                                            >
+                                                {item.areaName}
+                                            </Text>
+                                            <Text
+                                                className={`text-sm leading-6 ${textMainColor}`}
+                                                style={{
+                                                    fontFamily:
+                                                        "PressStart2P_400Regular",
+                                                }}
+                                                numberOfLines={2}
+                                            >
+                                                {item.subareaName}
+                                            </Text>
+                                        </View>
 
-                                    <View
-                                        className="items-end border-l-2 border-current pl-4"
-                                        style={{
-                                            borderColor: isNow
-                                                ? "rgba(0,0,0,0.1)"
-                                                : "rgba(255,255,255,0.1)",
-                                        }}
-                                    >
-                                        <Text
-                                            className={`font-mono text-sm font-black ${textMainColor}`}
+                                        <View
+                                            className="items-end border-l-2 border-current pl-4"
+                                            style={{
+                                                borderColor: isNow
+                                                    ? "rgba(0,0,0,0.1)"
+                                                    : "rgba(255,255,255,0.1)",
+                                            }}
                                         >
-                                            {formatTimeOnly(item.startTime)}
-                                        </Text>
-                                        <Text
-                                            className={`font-mono text-xs font-bold mt-1 ${textSubColor}`}
-                                        >
-                                            {formatTimeOnly(item.endTime)}
-                                        </Text>
-                                        <Text
-                                            className={`text-[10px] font-black uppercase mt-2 tracking-widest ${textMainColor}`}
-                                        >
-                                            {item.minutes} MIN
-                                        </Text>
+                                            <Text
+                                                className={`font-mono text-sm font-black ${textMainColor}`}
+                                            >
+                                                {formatDateTime(item.startTime)}
+                                            </Text>
+                                            <Text
+                                                className={`font-mono text-xs font-bold mt-1 ${textSubColor}`}
+                                            >
+                                                {formatDateTime(item.endTime)}
+                                            </Text>
+                                            <Text
+                                                className={`text-[10px] font-black uppercase mt-2 tracking-widest ${textMainColor}`}
+                                            >
+                                                {item.minutes} MIN
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View className="items-center justify-center">
+                                        {(() => {
+                                            const isCompleted =
+                                                progress.includes(item.id);
+                                            const hasNotStarted =
+                                                !isNow && !isPassed;
+                                            const isDisabled =
+                                                hasNotStarted || isPassed;
+
+                                            let buttonText = "Complete";
+                                            if (isCompleted)
+                                                buttonText = "Completed";
+                                            else if (isPassed)
+                                                buttonText = "Passed";
+                                            else if (hasNotStarted)
+                                                buttonText = "Not Started";
+
+                                            return (
+                                                <Pressable
+                                                    onPress={() =>
+                                                        !isDisabled &&
+                                                        toggleEventCompletion(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    disabled={isDisabled}
+                                                    className={`w-full px-3 py-2 border-2 border-current ${
+                                                        isDisabled
+                                                            ? "bg-transparent opacity-50"
+                                                            : isCompleted
+                                                              ? isNow
+                                                                  ? "bg-black"
+                                                                  : "bg-white/20"
+                                                              : isNow
+                                                                ? "bg-black"
+                                                                : "border-white bg-transparent"
+                                                    }`}
+                                                    style={{
+                                                        borderColor: isNow
+                                                            ? "rgba(0,0,0,0.3)"
+                                                            : "rgba(255,255,255,0.5)",
+                                                    }}
+                                                >
+                                                    <Text
+                                                        className={`w-full text-xs text-center font-black uppercase tracking-widest ${
+                                                            isDisabled
+                                                                ? "text-white/40"
+                                                                : isCompleted
+                                                                  ? isNow
+                                                                      ? "text-white"
+                                                                      : "text-white"
+                                                                  : isNow
+                                                                    ? "text-white"
+                                                                    : textMainColor
+                                                        }`}
+                                                    >
+                                                        {buttonText}
+                                                    </Text>
+                                                </Pressable>
+                                            );
+                                        })()}
                                     </View>
                                 </View>
                                 {idx !== planItems.length - 1 ? (

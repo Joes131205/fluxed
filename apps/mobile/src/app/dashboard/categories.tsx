@@ -84,13 +84,7 @@ export default function Categories() {
         [areasData],
     );
 
-    const clearMessage = () => {
-        // Message display removed in favor of alerts
-    };
-
     const handleCreateArea = async () => {
-        clearMessage();
-
         const name = areaName.trim();
         const weight = parseWeight(areaWeight);
         const color = parseColor(areaColor);
@@ -120,8 +114,6 @@ export default function Categories() {
     };
 
     const handleCreateSubarea = async () => {
-        clearMessage();
-
         const name = subareaName.trim();
         const weight = parseWeight(subareaWeight);
         const color = parseColor(subareaColor);
@@ -179,7 +171,6 @@ export default function Categories() {
                     }`}
                     onPress={() => {
                         setSection("areas");
-                        clearMessage();
                     }}
                 >
                     <Text
@@ -197,7 +188,6 @@ export default function Categories() {
                     }`}
                     onPress={() => {
                         setSection("subareas");
-                        clearMessage();
                     }}
                 >
                     <Text
