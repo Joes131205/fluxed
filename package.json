@@ -10,7 +10,8 @@
     "type": "module",
     "workspaces": [
         "apps/*",
-        "apps/packages/*"
+        "apps/packages/*",
+        "apps/nestjs/services/*"
     ],
     "scripts": {
         "dev": "turbo dev",
@@ -19,7 +20,9 @@
         "clean": "turbo clean",
         "db:generate": "turbo run db:generate",
         "db:migrate": "turbo run db:migrate",
-        "db:studio": "turbo run db:studio"
+        "db:studio": "turbo run db:studio",
+        "services:dev": "turbo run start:dev --filter='@app/*-service'",
+        "services:build": "turbo build --filter='@app/*-service'"
     },
     "overrides": {
         "axios": "~1.13.6"
