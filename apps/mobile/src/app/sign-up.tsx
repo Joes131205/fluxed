@@ -161,7 +161,7 @@ export default function SignUp() {
                     onPress={() => router.push("/sign-in")}
                     disabled={loading}
                 >
-                    <Text className="text-primary text-sm mt-4">
+                    <Text className="text-white text-sm mt-4">
                         Already have an account? Sign In
                     </Text>
                 </Pressable>

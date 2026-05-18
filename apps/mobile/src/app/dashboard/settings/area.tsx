@@ -18,12 +18,14 @@ export default function AreaSetting() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName="px-5 py-8 flex flex-col gap-6"
+            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
         >
-            <View className="flex flex-col gap-2">
-                <Text className="text-3xl font-bold">Area Settings</Text>
-                <Text className="text-muted-foreground">
-                    Edit your areas here!
+            <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
+                <Text
+                    className="text-2xl text-white uppercase"
+                    style={{ fontFamily: "PressStart2P_400Regular" }}
+                >
+                    Area Settings
                 </Text>
             </View>
 

@@ -1,36 +1,32 @@
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Text, View, Pressable } from "react-native";
+import { Text, View, ScrollView } from "react-native";
+import { useAuth } from "../hooks/useAuth";
+import { PrimaryButton } from "../components/ui/PrimaryButton";
 
 export default function App() {
     const router = useRouter();
+
+    const { user } = useAuth();
+
+    if (user?.id) {
+        router.navigate("/dashboard");
+    }
+
     return (
-        <View className="flex flex-col items-center justify-center flex-1 gap-5">
-            <Text>Hello World!</Text>
-            <Pressable
-                onPress={() => {
-                    router.navigate("/sign-up");
-                }}
-                className="bg-blue-500 px-6 py-3 rounded-lg"
-            >
-                <Text className="text-white font-semibold">Sign Up</Text>
-            </Pressable>
-            <Pressable
-                onPress={() => {
-                    router.navigate("/sign-in");
-                }}
-                className="bg-blue-500 px-6 py-3 rounded-lg"
-            >
-                <Text className="text-white font-semibold">Sign In</Text>
-            </Pressable>
-            <Pressable
-                onPress={() => {
-                    router.navigate("/dashboard");
-                }}
-                className="bg-blue-500 px-6 py-3 rounded-lg"
-            >
-                <Text className="text-white font-semibold">Dashboard</Text>
-            </Pressable>
-        </View>
+        <ScrollView
+            className="flex-1 bg-background"
+            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
+        >
+            {/* TODO: Logo */}
+            <Text>Fluxed</Text>
+
+            <View>
+                <Text>An app where </Text>
+            </View>
+            <PrimaryButton
+                label={"Sign In"}
+                onPress={() => router.navigate("/sign-in")}
+            />
+        </ScrollView>
     );
 }

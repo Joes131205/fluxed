@@ -151,7 +151,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 onPress: async () => {
                     await AsyncStorage.clear();
                     setUser(null);
-                    router.replace("/sign-in");
+                    router.replace("/");
                 },
             },
         ]);

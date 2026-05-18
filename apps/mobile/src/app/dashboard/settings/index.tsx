@@ -219,21 +219,25 @@ export default function Settings() {
 
             <View className="flex flex-col gap-4">
                 <Text className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">
-                    Directory Management
+                    Others
                 </Text>
 
                 <View className="flex-row gap-4 mb-2">
                     <View className="flex-1">
                         <SecondaryButton
                             label="Edit Areas"
-                            onPress={() => router.navigate("/settings/area")}
+                            onPress={() =>
+                                router.navigate("/dashboard/settings/area")
+                            }
                         />
                     </View>
 
                     <View className="flex-1">
                         <SecondaryButton
                             label="Edit Subareas"
-                            onPress={() => router.navigate("/settings/subarea")}
+                            onPress={() =>
+                                router.navigate("/dashboard/settings/subarea")
+                            }
                         />
                     </View>
                 </View>

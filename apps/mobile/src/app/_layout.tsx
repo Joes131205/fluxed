@@ -5,7 +5,7 @@ import { AuthProvider } from "../context/AuthContext";
 import { Navbar } from "../components/ui/Navbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "../hooks/useAuth";
-import { ActivityIndicator, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -31,9 +31,8 @@ function RootLayoutContent() {
     if (isAuthLoading) {
         return (
             <View className="flex-1 items-center justify-center bg-background flex flex-col gap-5">
-                <ActivityIndicator size={32} />
-                <Text className="text-center font-bold text-xl">
-                    Loading...
+                <Text className="text-center font-bold text-xl text-white">
+                    Loading user...
                 </Text>
             </View>
         );
