@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/nestjs/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/nestjs/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/nestjs",
+  "projects": {
+    "auth": {
+      "type": "application",
+      "root": "apps/auth",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
+      }
+    },
+    "category": {
+      "type": "application",
+      "root": "apps/category",
+      "entryFile": "main",
+      "sourceRoot": "apps/category/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/category/tsconfig.app.json"
+      }
+    },
+    "nestjs": {
+      "type": "application",
+      "root": "apps/nestjs",
+      "entryFile": "main",
+      "sourceRoot": "apps/nestjs/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/nestjs/tsconfig.app.json"
+      }
+    },
+    "server-api-gateaway": {
+      "type": "application",
+      "root": "apps/server-api-gateaway",
+      "entryFile": "main",
+      "sourceRoot": "apps/server-api-gateaway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/server-api-gateaway/tsconfig.app.json"
+      }
+    },
+    "user": {
+      "type": "application",
+      "root": "apps/user",
+      "entryFile": "main",
+      "sourceRoot": "apps/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user/tsconfig.app.json"
+      }
+    }
+  }
+}
