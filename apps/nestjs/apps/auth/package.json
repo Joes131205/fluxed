@@ -1,0 +1,14 @@
+{
+  "name": "auth",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build auth",
+    "start": "nest start --project auth",
+    "start:dev": "nest start --project auth --watch",
+    "start:debug": "nest start --project auth --debug --watch"
+  }
+}

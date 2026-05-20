@@ -1,0 +1,14 @@
+{
+  "name": "category",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build category",
+    "start": "nest start --project category",
+    "start:dev": "nest start --project category --watch",
+    "start:debug": "nest start --project category --debug --watch"
+  }
+}
