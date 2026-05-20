@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Area {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
+  name      String   @db.VarChar(256)
+  color     String   @default("#00cdfd") @db.VarChar(7)
+  weight    Int?     @default(1)
+
+  subareas Subarea[]
+
+  @@map("areas")
+}
+
+model Subarea {
+  id               String   @id @default(uuid())
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
+  areaId           String   @map("area_id")
+  userId           String   @map("user_id")
+  name             String   @db.VarChar(256)
+  weight           Int?     @default(1)
+  allocatedMinutes Int?     @default(0) @map("allocated_minutes")
+  startTime        DateTime? @map("start_time")
+  endTime          DateTime? @map("end_time")
+  color            String   @default("#00cdfd") @db.VarChar(7)
+
+  area           Area            @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  plannedSessions PlannedSession[]
+
+  @@map("subareas")
+}

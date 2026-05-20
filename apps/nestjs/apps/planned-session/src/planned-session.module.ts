@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { PlannedSessionController } from './planned-session.controller';
+import { PlannedSessionService } from './planned-session.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'packages/shared/strategy/jwt.strategy';
@@ -13,7 +13,7 @@ import { JwtStrategy } from 'packages/shared/strategy/jwt.strategy';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  controllers: [UserController],
-  providers: [UserService, JwtStrategy],
+  controllers: [PlannedSessionController],
+  providers: [PlannedSessionService, JwtStrategy],
 })
-export class UserModule {}
+export class PlannedSessionModule {}

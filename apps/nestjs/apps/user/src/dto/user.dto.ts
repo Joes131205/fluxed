@@ -1,4 +1,4 @@
-export class TimeRequest {
+export class UpdateSettingRequest {
   startTime!: string;
   endTime!: string;
   minDuration!: number;

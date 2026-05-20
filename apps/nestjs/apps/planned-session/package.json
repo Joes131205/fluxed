@@ -1,0 +1,14 @@
+{
+  "name": "planned-session",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build planned-session",
+    "start": "nest start --project planned-session",
+    "start:dev": "nest start --project planned-session --watch",
+    "start:debug": "nest start --project planned-session --debug --watch"
+  }
+}

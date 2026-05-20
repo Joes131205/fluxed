@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-  getHello(): string {
-    return 'Hello World!';
-  }
+  async register() {}
+
+  async login() {}
+
+  async getMe() {}
+
+  async startGoogleAuth() {}
+
+  async callbackGoogleAuth() {}
 }
