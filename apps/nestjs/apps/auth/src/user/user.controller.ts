@@ -5,6 +5,8 @@ import {
   Put,
   Request,
   UseGuards,
+  HttpCode,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateSettingRequest, UpdateUserRequest } from '../user/user.dto';
@@ -15,10 +17,15 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Put('/time')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  updateSettings(@Request() req: any, @Body() body: UpdateSettingRequest) {
+  async updateSettings(
+    @Request() req: any,
+    @Body() body: UpdateSettingRequest,
+  ) {
     try {
-      return this.userService.updateSettings(req.userId as string, body);
+      await this.userService.updateSettings(req.userId as string, body);
+      return { ok: true, message: 'Updated' };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -26,12 +33,17 @@ export class UserController {
   }
 
   @Put('/')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async updateUser(@Request() req: any, @Body() body: UpdateUserRequest) {
     try {
-      return await this.userService.updateUser(req.userId as string, body);
-    } catch (error) {
+      await this.userService.updateUser(req.userId as string, body);
+      return { ok: true };
+    } catch (error: any) {
       console.error(error);
+      if (error.message?.includes('not found')) {
+        throw new NotFoundException('User not found');
+      }
       throw new BadRequestException('Server Error');
     }
   }

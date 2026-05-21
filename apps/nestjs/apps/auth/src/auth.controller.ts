@@ -8,51 +8,69 @@ import {
   Req,
   Query,
   Redirect,
+  HttpCode,
+  Res,
+  ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginRequest, RegisterRequest } from './dto/auth.dto';
 import { JwtAuthGuard } from 'packages/shared/guard/jwt.guard';
+import type { Response } from 'express';
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  register(@Body() body: RegisterRequest) {
+  @HttpCode(201)
+  async register(@Body() body: RegisterRequest) {
     try {
-      return this.authService.register(body);
-    } catch (error) {
+      const result = await this.authService.register(body);
+      return { ok: true, ...result };
+    } catch (error: any) {
       console.error(error);
+      if (error.message?.includes('Email already exists')) {
+        throw new ConflictException('Email already exists');
+      }
       throw new BadRequestException('Server Error');
     }
   }
 
   @Post('/login')
-  login(@Body() body: LoginRequest) {
+  @HttpCode(200)
+  async login(@Body() body: LoginRequest) {
     try {
-      return this.authService.login(body);
+      const result = await this.authService.login(body);
+      return { ok: true, ...result };
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Server Error');
+      throw new UnauthorizedException('Invalid Credentials');
     }
   }
 
   @Get('/me')
   @UseGuards(JwtAuthGuard)
-  getMe(@Req() req) {
+  @HttpCode(200)
+  async getMe(@Req() req) {
     try {
-      return this.authService.getMe(req.userId);
+      const result = await this.authService.getMe(req.userId);
+      return { ok: true, ...result };
     } catch (error) {
       console.error(error);
-      throw new BadRequestException('Server Error');
+      throw new UnauthorizedException('User not found');
     }
   }
 
   @Get('/google/start')
-  @Redirect()
-  startGoogleAuth(@Query('state') state?: string) {
+  @HttpCode(307)
+  startGoogleAuth(@Query('state') state?: string, @Res() res?: Response) {
     try {
-      return this.authService.startGoogleAuth(state);
+      const result = this.authService.startGoogleAuth(state);
+      if (res) {
+        res.redirect(result.url);
+      }
+      return result;
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -60,23 +78,31 @@ export class AuthController {
   }
 
   @Get('/google/callback')
-  @Redirect()
+  @HttpCode(307)
   async callbackGoogleAuth(
     @Query('code') code?: string,
     @Query('state') state?: string,
     @Query('error') error?: string,
     @Query('error_description') errorDescription?: string,
+    @Res() res?: Response,
   ) {
     try {
-      return await this.authService.callbackGoogleAuth(
+      if (error) {
+        return res?.json({ ok: false, error: errorDescription ?? error });
+      }
+      const result = await this.authService.callbackGoogleAuth(
         code,
         state,
         error,
         errorDescription,
       );
-    } catch (err) {
+      if (res) {
+        res.redirect(result.url);
+      }
+      return result;
+    } catch (err: any) {
       console.error(err);
-      throw new BadRequestException('Server Error');
+      return res?.status(400).json({ ok: false, error: err.message });
     }
   }
 }

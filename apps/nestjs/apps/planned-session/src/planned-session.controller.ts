@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Body,
+  HttpCode,
 } from '@nestjs/common';
 import { PlannedSessionService } from './planned-session.service';
 import { JwtAuthGuard } from 'packages/shared/guard/jwt.guard';
@@ -17,10 +18,12 @@ export class PlannedSessionController {
   constructor(private readonly plannedSessionService: PlannedSessionService) {}
 
   @Get('/')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  getPlan(@Req() req) {
+  async getPlan(@Req() req) {
     try {
-      return this.plannedSessionService.getPlan(req.userId);
+      const data = await this.plannedSessionService.getPlan(req.userId);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -28,10 +31,12 @@ export class PlannedSessionController {
   }
 
   @Post('/')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  updatePlan(@Body() body: UpdatePlannedSessionRequest, @Req() req) {
+  async updatePlan(@Body() body: UpdatePlannedSessionRequest, @Req() req) {
     try {
-      return this.plannedSessionService.updatePlan(body.sessions);
+      await this.plannedSessionService.updatePlan(body.sessions);
+      return { ok: true };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -39,10 +44,12 @@ export class PlannedSessionController {
   }
 
   @Delete('/')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  deletePlan(@Req() req) {
+  async deletePlan(@Req() req) {
     try {
-      return this.plannedSessionService.deletePlan(req.userId);
+      await this.plannedSessionService.deletePlan(req.userId);
+      return { ok: true };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');

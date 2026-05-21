@@ -70,6 +70,7 @@ export class AuthService {
     const payload = { userId: user.id };
 
     return {
+      user,
       token: await this.jwtService.signAsync(payload),
     };
   }
@@ -245,10 +246,7 @@ export class AuthService {
         );
       }
 
-      const token = this.jwtService.sign(
-        { userId: user.id },
-        { secret: this.jwtSecret, expiresIn: '30d' },
-      );
+      const token = await this.jwtService.signAsync({ userId: user.id });
 
       console.log(token);
       console.log('Redirecting...' + state);

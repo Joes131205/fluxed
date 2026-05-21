@@ -9,6 +9,7 @@ import {
   Put,
   Req,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { SubareasService } from './subareas.service';
 import { JwtAuthGuard } from 'packages/shared/guard/jwt.guard';
@@ -22,10 +23,12 @@ export class SubareasController {
   constructor(private readonly subareasService: SubareasService) {}
 
   @Get('/:id')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  getSubareaByArea(@Param('id') id: string) {
+  async getSubareaByArea(@Param('id') id: string) {
     try {
-      return this.subareasService.getSubareaByArea(id);
+      const data = await this.subareasService.getSubareaByArea(id);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -33,10 +36,12 @@ export class SubareasController {
   }
 
   @Post('/')
+  @HttpCode(201)
   @UseGuards(JwtAuthGuard)
-  createSubarea(@Req() req, @Body() body: CreateSubareaRequest) {
+  async createSubarea(@Req() req, @Body() body: CreateSubareaRequest) {
     try {
-      return this.subareasService.createSubarea(req.userId, body);
+      const data = await this.subareasService.createSubarea(req.userId, body);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -44,10 +49,15 @@ export class SubareasController {
   }
 
   @Put('/:id')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  updateSubarea(@Param('id') id: string, @Body() body: UpdateSubareaRequest) {
+  async updateSubarea(
+    @Param('id') id: string,
+    @Body() body: UpdateSubareaRequest,
+  ) {
     try {
-      return this.subareasService.updateSubarea(id, body);
+      const data = await this.subareasService.updateSubarea(id, body);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -55,10 +65,12 @@ export class SubareasController {
   }
 
   @Delete('/:id')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  deleteSubarea(@Param('id') id: string) {
+  async deleteSubarea(@Param('id') id: string) {
     try {
-      return this.subareasService.deleteSubarea(id);
+      await this.subareasService.deleteSubarea(id);
+      return { ok: true };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');

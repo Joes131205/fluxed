@@ -9,6 +9,7 @@ import {
   Put,
   Req,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { AreasService } from './areas.service';
 import { JwtAuthGuard } from 'packages/shared/guard/jwt.guard';
@@ -19,10 +20,12 @@ export class AreasController {
   constructor(private readonly areasService: AreasService) {}
 
   @Get('/')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  getAreasByUser(@Req() req) {
+  async getAreasByUser(@Req() req) {
     try {
-      return this.areasService.getAreasByUser(req.userId);
+      const data = await this.areasService.getAreasByUser(req.userId);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -30,10 +33,12 @@ export class AreasController {
   }
 
   @Post('/')
+  @HttpCode(201)
   @UseGuards(JwtAuthGuard)
-  createArea(@Req() req, @Body() body: CreateAreaRequest) {
+  async createArea(@Req() req, @Body() body: CreateAreaRequest) {
     try {
-      return this.areasService.createArea(req.userId, body);
+      const data = await this.areasService.createArea(req.userId, body);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -41,14 +46,16 @@ export class AreasController {
   }
 
   @Put('/:id')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  updateArea(
+  async updateArea(
     @Param('id') id: string,
     @Req() req,
     @Body() body: UpdateAreaRequest,
   ) {
     try {
-      return this.areasService.updateArea(req.userId, id, body);
+      const data = await this.areasService.updateArea(req.userId, id, body);
+      return { ok: true, data };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
@@ -56,10 +63,12 @@ export class AreasController {
   }
 
   @Delete('/:id')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  deleteArea(@Param('id') id: string) {
+  async deleteArea(@Param('id') id: string) {
     try {
-      return this.areasService.deleteArea(id);
+      await this.areasService.deleteArea(id);
+      return { ok: true };
     } catch (error) {
       console.error(error);
       throw new BadRequestException('Server Error');
