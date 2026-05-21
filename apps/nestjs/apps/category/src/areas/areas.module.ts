@@ -1,9 +1,10 @@
-import { Delete, Get, Module, Post, Put } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AreasService } from './areas.service';
 import { AreasController } from './areas.controller';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
   controllers: [AreasController],
-  providers: [AreasService],
+  providers: [AreasService, PrismaService],
 })
 export class AreasModule {}

@@ -11,3 +11,16 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model PlannedSession {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  subareaId String   @map("subarea_id")
+  userId    String   @map("user_id")
+  startTime DateTime @map("start_time")
+  endTime   DateTime @map("end_time")
+  minutes   Int
+
+  @@map("planned_sessions")
+}

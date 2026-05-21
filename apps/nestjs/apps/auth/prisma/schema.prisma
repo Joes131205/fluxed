@@ -11,3 +11,18 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+    id String @id @default(uuid())
+    email String @unique
+    username String @unique
+    password String?
+    googleRefreshToken String? @map("google_refresh_token")
+    googleId String? @map("google_id")
+    startTime String @default("09:00") @map("start_time")
+    endTime String @default("23:59") @map("end_time")
+    minDuration Int @default(15) @map("min_duration")
+    timeBuffer Int @default(5) @map("time_buffer")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+}
