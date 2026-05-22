@@ -97,6 +97,10 @@ export function ColorField({
             <Text className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-1 ml-1">
                 Select a swatch or enter 6-digit hex
             </Text>
+            <Text className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-1 ml-1">
+                I would not suggest picking the color that blends in the
+                background
+            </Text>
         </View>
     );
 }

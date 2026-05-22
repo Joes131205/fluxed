@@ -21,7 +21,9 @@ export const getPlan = async (userId: string) => {
             subareaId: subareas.id,
             subareaName: subareas.name,
             subareaWeight: subareas.weight,
+            subareaColor: subareas.color,
             areaName: areas.name,
+            areaColor: areas.color,
         })
         .from(plannedSessions)
         .innerJoin(subareas, eq(plannedSessions.subarea_id, subareas.id))

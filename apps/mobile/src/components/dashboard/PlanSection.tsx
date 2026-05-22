@@ -13,6 +13,8 @@ type PlanItem = {
     subareaName: string;
     subareaWeight: number | null;
     areaName: string;
+    subareaColor?: string;
+    areaColor?: string;
 };
 
 export const PlanSection = () => {
@@ -32,6 +34,31 @@ export const PlanSection = () => {
     const [length, setLength] = useState(0);
     const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
+
+    const DEFAULT_COLOR = "#00cdfd";
+
+    const hexToRgba = (hex?: string, alpha = 1) => {
+        const fallback = DEFAULT_COLOR.replace(/^#+/, "").slice(0, 6);
+        const candidate = (hex ?? "").trim().replace(/^#+/, "").slice(0, 6);
+        const raw = /^[0-9a-fA-F]{6}$/.test(candidate) ? candidate : fallback;
+        const num = parseInt(raw, 16);
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        return `rgba(${r},${g},${b},${alpha})`;
+    };
+
+    const getContrastTextColor = (hex?: string) => {
+        const fallback = DEFAULT_COLOR.replace(/^#+/, "").slice(0, 6);
+        const candidate = (hex ?? "").trim().replace(/^#+/, "").slice(0, 6);
+        const raw = /^[0-9a-fA-F]{6}$/.test(candidate) ? candidate : fallback;
+        const num = parseInt(raw, 16);
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        return luminance > 150 ? "#0b0b0b" : "#ffffff";
+    };
 
     const formatDateTime = (value: string) => {
         return new Date(value).toLocaleDateString([], {
@@ -137,9 +164,9 @@ export const PlanSection = () => {
                         let textSubColor = "";
 
                         if (isNow) {
-                            cardStyle += "bg-white border-white shadow-lg";
-                            textMainColor = "text-black";
-                            textSubColor = "text-black/60";
+                            cardStyle += "shadow-lg";
+                            textMainColor = "text-white";
+                            textSubColor = "text-white/60";
                         } else if (isPassed) {
                             cardStyle +=
                                 "bg-transparent border-white/30 border-dashed";
@@ -156,6 +183,17 @@ export const PlanSection = () => {
                                 <View
                                     key={item.sessionId}
                                     className={cardStyle}
+                                    style={{
+                                        borderColor: isNow
+                                            ? hexToRgba(
+                                                  item.subareaColor ??
+                                                      item.areaColor,
+                                                  1,
+                                              )
+                                            : isPassed
+                                              ? "rgba(255,255,255,0.3)"
+                                              : "rgba(255,255,255,0.3)",
+                                    }}
                                 >
                                     <View className="flex-row justify-between items-start gap-4 mb-4">
                                         <View className="flex-1">
@@ -179,9 +217,10 @@ export const PlanSection = () => {
                                         <View
                                             className="items-end border-l-2 border-current pl-4"
                                             style={{
-                                                borderColor: isNow
-                                                    ? "rgba(0,0,0,0.1)"
-                                                    : "rgba(255,255,255,0.1)",
+                                                borderColor: hexToRgba(
+                                                    item.subareaColor ??
+                                                        item.areaColor,
+                                                ),
                                             }}
                                         >
                                             <Text
@@ -210,11 +249,11 @@ export const PlanSection = () => {
                                             const isDisabled =
                                                 hasNotStarted || isPassed;
 
-                                            let buttonText = "Complete";
+                                            let buttonText = "Check In";
                                             if (isCompleted)
                                                 buttonText = "Completed";
                                             else if (isPassed)
-                                                buttonText = "Passed";
+                                                buttonText = "Too Late";
                                             else if (hasNotStarted)
                                                 buttonText = "Not Started";
 
@@ -227,35 +266,44 @@ export const PlanSection = () => {
                                                         )
                                                     }
                                                     disabled={isDisabled}
-                                                    className={`w-full px-3 py-2 border-2 border-current ${
+                                                    className={`w-full px-3 py-4 border-2 ${
                                                         isDisabled
-                                                            ? "bg-transparent opacity-50"
-                                                            : isCompleted
-                                                              ? isNow
-                                                                  ? "bg-black"
-                                                                  : "bg-white/20"
-                                                              : isNow
-                                                                ? "bg-black"
-                                                                : "border-white bg-transparent"
+                                                            ? "opacity-50"
+                                                            : ""
                                                     }`}
                                                     style={{
                                                         borderColor: isNow
-                                                            ? "rgba(0,0,0,0.3)"
-                                                            : "rgba(255,255,255,0.5)",
+                                                            ? hexToRgba(
+                                                                  item.subareaColor ??
+                                                                      item.areaColor,
+                                                                  1,
+                                                              )
+                                                            : "rgba(255,255,255,0.6)",
+                                                        backgroundColor:
+                                                            !isDisabled && isNow
+                                                                ? hexToRgba(
+                                                                      item.subareaColor ??
+                                                                          item.areaColor,
+                                                                      1,
+                                                                  )
+                                                                : !isDisabled &&
+                                                                    isCompleted
+                                                                  ? "rgba(255,255,255,0.14)"
+                                                                  : "transparent",
                                                     }}
                                                 >
                                                     <Text
-                                                        className={`w-full text-xs text-center font-black uppercase tracking-widest ${
-                                                            isDisabled
-                                                                ? "text-white/40"
-                                                                : isCompleted
-                                                                  ? isNow
-                                                                      ? "text-white"
-                                                                      : "text-white"
-                                                                  : isNow
-                                                                    ? "text-white"
-                                                                    : textMainColor
-                                                        }`}
+                                                        className="w-full text-xs text-center font-black uppercase tracking-widest"
+                                                        style={{
+                                                            color: isDisabled
+                                                                ? "rgba(255,255,255,0.4)"
+                                                                : isNow
+                                                                  ? getContrastTextColor(
+                                                                        item.subareaColor ??
+                                                                            item.areaColor,
+                                                                    )
+                                                                  : "#ffffff",
+                                                        }}
                                                     >
                                                         {buttonText}
                                                     </Text>

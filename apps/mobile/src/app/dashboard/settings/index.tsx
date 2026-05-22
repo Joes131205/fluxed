@@ -112,7 +112,7 @@ export default function Settings() {
                 </Text>
             </View>
 
-            <View className="rounded-2xl border border-white/10 bg-black p-6 flex flex-col">
+            <View className="flex flex-col">
                 <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-6">
                     Time Parameters
                 </Text>
