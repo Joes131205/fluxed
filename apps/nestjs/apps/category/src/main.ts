@@ -1,20 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { CategoryModule } from './category.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(CategoryModule);
 
   app.enableCors();
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   const config = new DocumentBuilder()
     .setTitle('Fluxed API | Category Service')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, documentFactory);
+  const document = SwaggerModule.createDocument(app as any, config);
+  SwaggerModule.setup('docs', app as any, document);
 
-  await app.listen(3001);
+  await app.listen(3003);
 }
 bootstrap();

@@ -3,7 +3,8 @@
   "collection": "@nestjs/schematics",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true
+    "webpack": true,
+    "webpackConfigPath": "./webpack.config.cjs"
   },
   "monorepo": true,
   "projects": {
@@ -23,6 +24,15 @@
       "sourceRoot": "apps/category/src",
       "compilerOptions": {
         "tsConfigPath": "apps/category/tsconfig.app.json"
+      }
+    },
+    "planned-session": {
+      "type": "application",
+      "root": "apps/planned-session",
+      "entryFile": "main",
+      "sourceRoot": "apps/planned-session/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/planned-session/tsconfig.app.json"
       }
     },
     "server-api-gateaway": {

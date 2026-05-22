@@ -7,8 +7,11 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build planned-session",
-    "start": "nest start --project planned-session",
-    "start:dev": "nest start --project planned-session --watch",
-    "start:debug": "nest start --project planned-session --debug --watch"
+    "start:dev": "cd ../.. && nest start planned-session --watch",
+    "start:prod": "cd ../.. && node dist/apps/planned-session/main",
+    "start:debug": "cd ../.. && nest start planned-session --debug --watch",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   }
 }

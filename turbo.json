@@ -23,6 +23,11 @@
         "db:studio": {
             "cache": false,
             "persistent": true
+        },
+        "start:dev": {
+            "cache": false,
+            "persistent": true,
+            "dependsOn": ["db:generate"]
         }
     }
 }

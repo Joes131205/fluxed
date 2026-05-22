@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { join } from 'node:path';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { JwtModule } from '@nestjs/jwt';
@@ -9,9 +11,20 @@ import { PrismaService } from './prisma/prisma.service';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'default_secret',
-      signOptions: { expiresIn: '1d' },
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        join(process.cwd(), 'apps/nestjs/apps/category/.env'),
+        join(process.cwd(), 'apps/category/.env'),
+      ],
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService) => ({
+        secret: configService.get('JWT_SECRET') || 'default_secret',
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
     }),
     AreasModule,
     SubareasModule,

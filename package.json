@@ -9,22 +9,34 @@
     "private": true,
     "type": "module",
     "workspaces": [
-        "apps/*",
-        "apps/packages/*"
+        "apps/mobile",
+        "apps/web",
+        "apps/server",
+        "apps/nestjs/apps/*",
+        "packages/*"
     ],
     "scripts": {
         "dev": "turbo dev",
+        "start:dev": "turbo run start:dev --filter='./apps/nestjs/apps/*'",
+        "start:prod": "turbo run start:prod --filter='./apps/nestjs/apps/*'",
         "build": "turbo build",
         "lint": "turbo lint",
         "clean": "turbo clean",
         "db:generate": "turbo run db:generate",
         "db:migrate": "turbo run db:migrate",
-        "db:studio": "turbo run db:studio"
+        "db:studio": "turbo run db:studio",
+        "nestjs:auth": "turbo run start:dev --filter=auth",
+        "nestjs:category": "turbo run start:dev --filter=category",
+        "nestjs:planned-session": "turbo run start:dev --filter=planned-session",
+        "nestjs:all": "turbo run start:dev --filter='./apps/nestjs/apps/*'",
+        "start:services": "npm run db:generate && npm run nestjs:all"
     },
     "overrides": {
         "axios": "~1.13.6"
     },
     "dependencies": {
-        "@react-native-vector-icons/fontawesome6": "^13.1.1"
+        "@prisma/adapter-pg": "^7.8.0",
+        "@react-native-vector-icons/fontawesome6": "^13.1.1",
+        "pg": "^8.16.3"
     }
 }

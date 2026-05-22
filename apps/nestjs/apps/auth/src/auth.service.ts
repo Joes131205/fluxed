@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   InternalServerErrorException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoginRequest, RegisterRequest } from './dto/auth.dto';
@@ -57,7 +59,7 @@ export class AuthService {
       },
     });
     if (existingUser) {
-      throw new BadRequestException('Email already exists');
+      throw new ConflictException('Email already exists');
     }
     const hashedPassword = await hashPassword(body.password);
     const user = await this.prisma.user.create({
@@ -87,7 +89,7 @@ export class AuthService {
       !user.password ||
       !(await checkPasswordHash(body.password, user.password))
     ) {
-      throw new BadRequestException('Invalid Credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     const payload = { userId: user.id };
@@ -105,7 +107,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('User Not Found');
+      throw new UnauthorizedException('User not found');
     }
 
     return {
@@ -139,7 +141,7 @@ export class AuthService {
     }
 
     if (!code) {
-      throw new ForbiddenException('Not Authorized');
+      throw new BadRequestException('Not Authorized');
     }
 
     try {
@@ -246,7 +248,10 @@ export class AuthService {
         );
       }
 
-      const token = await this.jwtService.signAsync({ userId: user.id });
+      const token = await this.jwtService.signAsync({
+        userId: user.id,
+        sub: user.id,
+      });
 
       console.log(token);
       console.log('Redirecting...' + state);

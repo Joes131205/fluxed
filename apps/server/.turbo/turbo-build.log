@@ -1,0 +1,8 @@
+[6n[?9001h[?1004h[m]0;C:\Users\Steven\.bun\bin\bun.exe[?25h[35m[2m$[m [1m[2mtsdown --outDir dist
+[22m[34mℹ [mtsdown [2mv0.14.2[22m powered by rolldown [2mv1.0.0-rc.16
+[22m[34mℹ [mentry: [34msrc\index.ts
+[m[34mℹ [mtsconfig: [34mtsconfig.json
+ℹ [mBuild start
+[33mWarning: Invalid input options (1 issue found)
+- For the "define". Invalid key: Expected never but received "define". 
+[m[?9001l[?1004l

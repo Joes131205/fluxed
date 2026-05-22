@@ -11,40 +11,32 @@ import {
 import { UserService } from './user.service';
 import { UpdateSettingRequest, UpdateUserRequest } from '../user/user.dto';
 import { JwtAuthGuard } from 'packages/shared/guard/jwt.guard';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Put('/time')
+  @ApiOperation({ summary: "Update the user's setting" })
+  @ApiBearerAuth()
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async updateSettings(
     @Request() req: any,
     @Body() body: UpdateSettingRequest,
   ) {
-    try {
-      await this.userService.updateSettings(req.userId as string, body);
-      return { ok: true, message: 'Updated' };
-    } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Server Error');
-    }
+    await this.userService.updateSettings(req.user.userId, body);
+    return { ok: true, message: 'Updated' };
   }
 
   @Put('/')
+  @ApiOperation({ summary: 'Update user' })
+  @ApiBearerAuth()
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async updateUser(@Request() req: any, @Body() body: UpdateUserRequest) {
-    try {
-      await this.userService.updateUser(req.userId as string, body);
-      return { ok: true };
-    } catch (error: any) {
-      console.error(error);
-      if (error.message?.includes('not found')) {
-        throw new NotFoundException('User not found');
-      }
-      throw new BadRequestException('Server Error');
-    }
+    await this.userService.updateUser(req.user.userId, body);
+    return { ok: true };
   }
 }

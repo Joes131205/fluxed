@@ -13,16 +13,20 @@ import {
 } from '@nestjs/common';
 import { SubareasService } from './subareas.service';
 import { JwtAuthGuard } from 'packages/shared/guard/jwt.guard';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   CreateSubareaRequest,
   UpdateSubareaRequest,
 } from '../dto/subareas.dto';
 
+@ApiTags('Subareas')
+@ApiBearerAuth()
 @Controller('subareas')
 export class SubareasController {
   constructor(private readonly subareasService: SubareasService) {}
 
   @Get('/:id')
+  @ApiOperation({ summary: 'Get subareas for a given area id' })
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async getSubareaByArea(@Param('id') id: string) {
@@ -36,11 +40,15 @@ export class SubareasController {
   }
 
   @Post('/')
+  @ApiOperation({ summary: 'Create a new subarea under an area' })
   @HttpCode(201)
   @UseGuards(JwtAuthGuard)
   async createSubarea(@Req() req, @Body() body: CreateSubareaRequest) {
     try {
-      const data = await this.subareasService.createSubarea(req.userId, body);
+      const data = await this.subareasService.createSubarea(
+        req.user.userId,
+        body,
+      );
       return { ok: true, data };
     } catch (error) {
       console.error(error);
@@ -49,6 +57,7 @@ export class SubareasController {
   }
 
   @Put('/:id')
+  @ApiOperation({ summary: 'Update a subarea by id' })
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async updateSubarea(
@@ -65,6 +74,7 @@ export class SubareasController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Delete a subarea by id' })
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async deleteSubarea(@Param('id') id: string) {
