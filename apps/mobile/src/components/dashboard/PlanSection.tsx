@@ -20,6 +20,10 @@ type PlanItem = {
 export const PlanSection = () => {
     const { data: plansData, isLoading: isPlansLoading } = usePlans();
 
+    const [length, setLength] = useState(0);
+    const [progress, setProgress] = useState<string[]>([]);
+    const [now, setNow] = useState(new Date());
+
     const planItems: PlanItem[] =
         plansData &&
         typeof plansData === "object" &&
@@ -30,10 +34,6 @@ export const PlanSection = () => {
         Array.isArray((plansData as { data?: unknown }).data)
             ? ((plansData as { data: PlanItem[] }).data ?? [])
             : [];
-
-    const [length, setLength] = useState(0);
-    const [progress, setProgress] = useState<string[]>([]);
-    const [now, setNow] = useState(new Date());
 
     const DEFAULT_COLOR = "#00cdfd";
 
@@ -154,6 +154,7 @@ export const PlanSection = () => {
             {!isPlansLoading && planItems.length > 0 && (
                 <View className="flex flex-col gap-4">
                     {planItems.map((item, idx) => {
+                        const isCompleted = progress.includes(item.id);
                         const startTime = new Date(item.startTime);
                         const endTime = new Date(item.endTime);
                         const isNow = now >= startTime && now <= endTime;
@@ -163,17 +164,20 @@ export const PlanSection = () => {
                         let textMainColor = "";
                         let textSubColor = "";
 
-                        if (isNow) {
+                        if (isCompleted) {
+                            cardStyle += "shadow-lg";
+                            textMainColor = "text-white";
+                            textSubColor = "text-white/60";
+                        } else if (isNow) {
                             cardStyle += "shadow-lg";
                             textMainColor = "text-white";
                             textSubColor = "text-white/60";
                         } else if (isPassed) {
-                            cardStyle +=
-                                "bg-transparent border-white/30 border-dashed";
+                            cardStyle += "bg-transparent border-dashed";
                             textMainColor = "text-white/40";
                             textSubColor = "text-white/30";
                         } else {
-                            cardStyle += "bg-transparent border-white";
+                            cardStyle += "bg-transparent";
                             textMainColor = "text-white";
                             textSubColor = "text-white/60";
                         }
@@ -184,15 +188,16 @@ export const PlanSection = () => {
                                     key={item.sessionId}
                                     className={cardStyle}
                                     style={{
-                                        borderColor: isNow
-                                            ? hexToRgba(
-                                                  item.subareaColor ??
+                                        borderColor: isCompleted
+                                            ? hexToRgba("#00FF00", 0.4)
+                                            : isNow
+                                              ? hexToRgba(item.areaColor, 1)
+                                              : isPassed
+                                                ? "rgba(255,255,255,0.3)"
+                                                : hexToRgba(
                                                       item.areaColor,
-                                                  1,
-                                              )
-                                            : isPassed
-                                              ? "rgba(255,255,255,0.3)"
-                                              : "rgba(255,255,255,0.3)",
+                                                      0.4,
+                                                  ),
                                     }}
                                 >
                                     <View className="flex-row justify-between items-start gap-4 mb-4">
@@ -242,18 +247,17 @@ export const PlanSection = () => {
                                     </View>
                                     <View className="items-center justify-center">
                                         {(() => {
-                                            const isCompleted =
-                                                progress.includes(item.id);
                                             const hasNotStarted =
                                                 !isNow && !isPassed;
                                             const isDisabled =
-                                                hasNotStarted || isPassed;
+                                                !isCompleted &&
+                                                (hasNotStarted || isPassed);
 
                                             let buttonText = "Check In";
                                             if (isCompleted)
                                                 buttonText = "Completed";
                                             else if (isPassed)
-                                                buttonText = "Too Late";
+                                                buttonText = "Passed";
                                             else if (hasNotStarted)
                                                 buttonText = "Not Started";
 
@@ -272,37 +276,52 @@ export const PlanSection = () => {
                                                             : ""
                                                     }`}
                                                     style={{
-                                                        borderColor: isNow
+                                                        borderColor: isCompleted
                                                             ? hexToRgba(
-                                                                  item.subareaColor ??
-                                                                      item.areaColor,
-                                                                  1,
+                                                                  "#00FF00",
+                                                                  0.2,
                                                               )
-                                                            : "rgba(255,255,255,0.6)",
+                                                            : isNow
+                                                              ? hexToRgba(
+                                                                    item.subareaColor,
+                                                                    1,
+                                                                )
+                                                              : "rgba(255,255,255,0.6)",
                                                         backgroundColor:
-                                                            !isDisabled && isNow
+                                                            isCompleted
                                                                 ? hexToRgba(
-                                                                      item.subareaColor ??
-                                                                          item.areaColor,
-                                                                      1,
+                                                                      "#00FF00",
+                                                                      0.15,
                                                                   )
                                                                 : !isDisabled &&
-                                                                    isCompleted
-                                                                  ? "rgba(255,255,255,0.14)"
+                                                                    isNow
+                                                                  ? hexToRgba(
+                                                                        item.subareaColor,
+                                                                        0.1,
+                                                                    )
                                                                   : "transparent",
                                                     }}
                                                 >
                                                     <Text
                                                         className="w-full text-xs text-center font-black uppercase tracking-widest"
                                                         style={{
-                                                            color: isDisabled
-                                                                ? "rgba(255,255,255,0.4)"
-                                                                : isNow
-                                                                  ? getContrastTextColor(
-                                                                        item.subareaColor ??
-                                                                            item.areaColor,
+                                                            color: isCompleted
+                                                                ? getContrastTextColor(
+                                                                      item.subareaColor,
+                                                                  )
+                                                                : isDisabled
+                                                                  ? hexToRgba(
+                                                                        "#FFFFFF",
+                                                                        0.4,
                                                                     )
-                                                                  : "#ffffff",
+                                                                  : isNow
+                                                                    ? getContrastTextColor(
+                                                                          item.subareaColor,
+                                                                      )
+                                                                    : hexToRgba(
+                                                                          "#FFFFFF",
+                                                                          0.4,
+                                                                      ),
                                                         }}
                                                     >
                                                         {buttonText}
