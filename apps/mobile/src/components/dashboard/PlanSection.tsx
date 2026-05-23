@@ -189,7 +189,7 @@ export const PlanSection = () => {
                                     className={cardStyle}
                                     style={{
                                         borderColor: isCompleted
-                                            ? hexToRgba("#00FF00", 0.4)
+                                            ? hexToRgba("#00FF00", 0.7)
                                             : isNow
                                               ? hexToRgba(item.areaColor, 1)
                                               : isPassed
@@ -279,7 +279,7 @@ export const PlanSection = () => {
                                                         borderColor: isCompleted
                                                             ? hexToRgba(
                                                                   "#00FF00",
-                                                                  0.2,
+                                                                  0.7,
                                                               )
                                                             : isNow
                                                               ? hexToRgba(
@@ -306,8 +306,9 @@ export const PlanSection = () => {
                                                         className="w-full text-xs text-center font-black uppercase tracking-widest"
                                                         style={{
                                                             color: isCompleted
-                                                                ? getContrastTextColor(
-                                                                      item.subareaColor,
+                                                                ? hexToRgba(
+                                                                      "#FFFFFF",
+                                                                      0.9,
                                                                   )
                                                                 : isDisabled
                                                                   ? hexToRgba(
@@ -315,8 +316,9 @@ export const PlanSection = () => {
                                                                         0.4,
                                                                     )
                                                                   : isNow
-                                                                    ? getContrastTextColor(
-                                                                          item.subareaColor,
+                                                                    ? hexToRgba(
+                                                                          "#FFFFFF",
+                                                                          0.9,
                                                                       )
                                                                     : hexToRgba(
                                                                           "#FFFFFF",
