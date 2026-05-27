@@ -1,20 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { areasClient } from "../lib/client";
-import { getAuthHeaders } from "../lib/authHeaders";
 
 export const useAreas = () => {
     return useQuery({
         queryKey: ["areas"],
         queryFn: async () => {
-            const headers = await getAuthHeaders();
-            const response = await areasClient.$get(
-                {},
-                {
-                    headers,
-                },
-            );
-
-            return response.json();
+            const response = await areasClient.getAreasByUser();
+            return response.data;
         },
     });
 };
@@ -24,14 +16,8 @@ export const useCreateArea = () => {
 
     return useMutation({
         mutationFn: async (newArea: any) => {
-            const headers = await getAuthHeaders();
-            const response = await areasClient.$post(
-                { json: newArea },
-                {
-                    headers,
-                },
-            );
-            return response.json();
+            const response = await areasClient.createArea(newArea);
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({

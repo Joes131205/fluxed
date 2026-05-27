@@ -44,21 +44,21 @@ export default function SignUp() {
 
         setLoading(true);
         try {
-            const response = await authClient.register.$post({
-                json: { username, email, password },
-            });
+            const response = await authClient.register(
+                email,
+                password,
+                username,
+            );
 
-            const data = (await response.json()) as {
-                token?: string;
-                error?: string;
-            };
-
-            if (!response.ok || !data.token) {
-                Alert.alert("Sign Up Failed", data.error || "Unknown error");
+            if (!response.ok || !response.token) {
+                Alert.alert(
+                    "Sign Up Failed",
+                    response.error || "Unknown error",
+                );
                 return;
             }
 
-            await AsyncStorage.setItem("token", data.token);
+            await AsyncStorage.setItem("token", response.token);
             await getCurrentUser();
             Alert.alert("Success", "Account created! Redirecting...", [
                 {

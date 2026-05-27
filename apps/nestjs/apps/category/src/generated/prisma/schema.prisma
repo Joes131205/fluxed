@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client-js"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Area {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @map("user_id")
+  name      String
+  color     String   @default("#00cdfd")
+  weight    Int      @default(1)
+
+  subareas Subarea[]
+
+  @@map("areas")
+}
+
+model Subarea {
+  id               String    @id @default(uuid())
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  areaId           String    @map("area_id")
+  userId           String    @map("user_id")
+  name             String
+  weight           Int       @default(1)
+  allocatedMinutes Int       @default(0) @map("allocated_minutes")
+  startTime        DateTime? @map("start_time")
+  endTime          DateTime? @map("end_time")
+  color            String    @default("#00cdfd")
+
+  area Area @relation(fields: [areaId], references: [id], onDelete: Cascade)
+
+  @@map("subareas")
+}

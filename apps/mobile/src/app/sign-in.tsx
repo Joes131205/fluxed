@@ -27,6 +27,7 @@ export default function SignIn() {
             router.replace("/dashboard");
         }
     }, [router, user]);
+
     const handleSignIn = async () => {
         if (!email || !password) {
             Alert.alert("Error", "Please fill in all fields");
@@ -36,24 +37,18 @@ export default function SignIn() {
         setLoading(true);
 
         try {
-            const response = await authClient.login.$post({
-                json: { email, password },
-            });
+            const response = await authClient.login(email, password);
 
-            const data = (await response.json()) as {
-                token?: string;
-                error?: string;
-            };
-
-            if (!response.ok || !data.token) {
+            if (!response.ok || !response.token) {
                 Alert.alert(
                     "Sign In Failed",
-                    data.error || "Unable to sign in",
+                    response.error || "Unable to sign in",
                 );
                 return;
             }
+            console.log(response.token);
 
-            await AsyncStorage.setItem("token", data.token);
+            await AsyncStorage.setItem("token", response.token);
             await getCurrentUser();
             Alert.alert("Success", "Signed in! Redirecting...", [
                 {

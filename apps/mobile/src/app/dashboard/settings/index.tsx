@@ -9,12 +9,12 @@ import {
     View,
 } from "react-native";
 import { getAuthHeaders } from "../../../lib/authHeaders";
-import { usersClient } from "../../../lib/client";
 import { API_URL } from "../../../lib/env";
 import { useRouter } from "expo-router";
 import { PrimaryButton } from "../../../components/ui/PrimaryButton";
 import { SecondaryButton } from "../../../components/ui/SecondaryButton";
 import { TertiaryButton } from "../../../components/ui/TertiaryButton";
+import { authClient } from "../../../lib/client";
 
 export default function Settings() {
     const { user, logout } = useAuth();
@@ -54,18 +54,12 @@ export default function Settings() {
 
         setIsSaving(true);
         try {
-            const headers = await getAuthHeaders();
-            const response = await usersClient.time.$put(
-                {
-                    json: {
-                        startTime,
-                        endTime,
-                        minDuration: minDurationNumber,
-                        timeBuffer: timeBufferNumber,
-                    },
-                },
-                { headers },
-            );
+            const response = await authClient.updateSettings({
+                startTime,
+                endTime,
+                minDuration: minDurationNumber,
+                timeBuffer: timeBufferNumber,
+            });
 
             if (!response.ok) {
                 Alert.alert("Save failed", "Could not update settings.");

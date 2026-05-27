@@ -4,8 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "./useAuth";
 import { useAreas } from "./useAreas";
 import { usePlans } from "./usePlans";
-import { calendarsClient, plansClient, subareasClient } from "../lib/client";
-import { getAuthHeaders } from "../lib/authHeaders";
+import { plansClient, subareasClient } from "../lib/client";
 import {
     calcGlobalWeightedTime,
     calcNestedWeightedTime,
@@ -312,43 +311,27 @@ export function useCalendarEngine() {
                     return;
                 }
 
-                await plansClient.$delete(
-                    {},
-                    { headers: await getAuthHeaders() },
-                );
+                await plansClient.deletePlan();
             } else {
-                await plansClient.$delete(
-                    {},
-                    { headers: await getAuthHeaders() },
-                );
+                await plansClient.deletePlan();
             }
 
             for (const data of rescheduledData) {
-                await subareasClient[":id"].$put(
-                    {
-                        json: {
-                            id: data.id,
-                            name: data.subarea,
-                            weight: data.weight,
-                            allocatedMinutes: data.allocated,
-                        },
-                        param: { id: data.id },
-                    },
-                    { headers: await getAuthHeaders() },
-                );
+                await subareasClient.updateSubarea(data.id, {
+                    name: data.subarea,
+                    weight: data.weight,
+                    allocatedMinutes: data.allocated,
+                });
             }
 
-            await plansClient.$post(
-                {
-                    json: finalSchedule.map((item) => ({
-                        subarea_id: String(item.subareaId),
-                        user_id: String(user.id),
-                        start_time: item.start,
-                        end_time: item.end,
-                        minutes: item.minutes,
-                    })),
-                },
-                { headers: await getAuthHeaders() },
+            await plansClient.updatePlan(
+                finalSchedule.map((item) => ({
+                    subarea_id: String(item.subareaId),
+                    user_id: String(user.id),
+                    start_time: item.start,
+                    end_time: item.end,
+                    minutes: item.minutes,
+                })),
             );
 
             queryClient.invalidateQueries({ queryKey: ["plan"] });
@@ -377,25 +360,11 @@ export function useCalendarEngine() {
         setError(null);
 
         try {
-            const response = await calendarsClient.sync.$get(
-                {},
-                { headers: await getAuthHeaders() },
+            Alert.alert(
+                "Not Available",
+                "Calendar sync is not available in the current version",
             );
-            const data = await response.json();
-
-            if (!data.ok) {
-                setCalendar([]);
-                const errorMsg = data.error ?? "Unable to load calendar data";
-                setError(errorMsg);
-                Alert.alert("Error", errorMsg);
-                return;
-            }
-
-            const gaps = data.freeTime as FreeGap[];
-            setFreeGaps(gaps);
-            setMinutes(gaps.reduce((acc, gap) => acc + gap.durationMinutes, 0));
-            setCalendar(data.calendarData ?? []);
-            Alert.alert("Success", "Calendar data loaded successfully!");
+            setIsLoading(false);
         } catch (loadError) {
             setCalendar([]);
             const errorMsg =
@@ -404,7 +373,6 @@ export function useCalendarEngine() {
                     : "Unable to load calendar data";
             setError(errorMsg);
             Alert.alert("Error", errorMsg);
-        } finally {
             setIsLoading(false);
         }
     };
@@ -421,14 +389,11 @@ export function useCalendarEngine() {
         const hydrateSchedule = async () => {
             setIsScheduleLoading(true);
             try {
-                const headers = await getAuthHeaders();
                 const transformedData = await Promise.all(
                     areasData.data.map(async (area: any) => {
-                        const response = await subareasClient[":id"].$get(
-                            { param: { id: area.id } },
-                            { headers },
+                        const subareaData = await subareasClient.getSubareaByArea(
+                            area.id,
                         );
-                        const subareaData: any = await response.json();
                         return {
                             areaId: area.id,
                             areaName: area.name,

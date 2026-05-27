@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { subareasClient } from "../../lib/client";
-import { getAuthHeaders } from "../../lib/authHeaders";
 import { useAreas } from "../../hooks/useAreas";
 import { Text, View } from "react-native";
 import { AreaSection, type AreaSectionItem } from "./AreaSection";
@@ -35,18 +34,11 @@ export const AreaDisplay = ({
         const fetchSubareas = async () => {
             setIsSubareasLoading(true);
             try {
-                const headers = await getAuthHeaders();
                 const transformedData = await Promise.all(
                     areasData.data.map(async (area: any) => {
-                        const response = await subareasClient[":id"].$get(
-                            {
-                                param: { id: area.id },
-                            },
-                            {
-                                headers,
-                            },
+                        const subareaData = await subareasClient.getSubareaByArea(
+                            area.id,
                         );
-                        const subareaData: any = await response.json();
 
                         return {
                             areaId: area.id,

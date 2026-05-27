@@ -48,12 +48,6 @@ export const fetchCurrentUser = async () => {
 type AuthContextType = {
     user: User | null;
     isAuthenticated: boolean;
-    login: (email: string, password: string) => Promise<void>;
-    signup: (
-        username: string,
-        email: string,
-        password: string,
-    ) => Promise<void>;
     logout: () => Promise<void>;
     getCurrentUser: () => Promise<User | null>;
     isAuthLoading: boolean;
@@ -95,51 +89,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         checkAuth();
     }, []);
 
-    const login = async (email: string, password: string) => {
-        const response = await authClient.login.$post({
-            json: { email, password },
-        });
-
-        if (response.ok) {
-            const data = (await response.json()) as { token?: string };
-            if (!data.token) {
-                throw new Error("Login failed: token missing");
-            }
-            await AsyncStorage.setItem("token", data.token);
-            const currentUser = await getCurrentUser();
-            if (!currentUser) {
-                throw new Error("Login succeeded, but loading the user failed");
-            }
-        } else {
-            throw new Error("Login failed");
-        }
-    };
-
-    const signup = async (
-        username: string,
-        email: string,
-        password: string,
-    ) => {
-        const response = await authClient.register.$post({
-            json: { username, email, password },
-        });
-        if (response.ok) {
-            const data = (await response.json()) as { token?: string };
-            if (!data.token) {
-                throw new Error("Signup failed: token missing");
-            }
-            await AsyncStorage.setItem("token", data.token);
-            const currentUser = await getCurrentUser();
-            if (!currentUser) {
-                throw new Error(
-                    "Signup succeeded, but loading the user failed",
-                );
-            }
-        } else {
-            throw new Error("Signup failed");
-        }
-    };
-
     const logout = async () => {
         Alert.alert("Logout", "Are you sure you want to log out?", [
             {
@@ -162,8 +111,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             value={{
                 user,
                 isAuthenticated: !!user,
-                login,
-                signup,
                 logout,
                 getCurrentUser,
                 isAuthLoading,
