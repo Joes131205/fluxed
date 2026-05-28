@@ -13,13 +13,13 @@ type PlanItem = {
     subareaName: string;
     subareaWeight: number | null;
     areaName: string;
-    subareaColor?: string;
-    areaColor?: string;
+    subareaColor: string;
+    areaColor: string;
 };
 
 export const PlanSection = () => {
     const { data: plansData, isLoading: isPlansLoading } = usePlans();
-
+    console.log(plansData);
     const [length, setLength] = useState(0);
     const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
@@ -189,7 +189,7 @@ export const PlanSection = () => {
                                     className={cardStyle}
                                     style={{
                                         borderColor: isCompleted
-                                            ? hexToRgba("#00FF00", 0.4)
+                                            ? hexToRgba("#00FF00", 0.7)
                                             : isNow
                                               ? hexToRgba(item.areaColor, 1)
                                               : isPassed
@@ -205,7 +205,8 @@ export const PlanSection = () => {
                                             <Text
                                                 className={`text-xs font-black uppercase tracking-widest mb-2 ${textSubColor}`}
                                             >
-                                                {item.areaName}
+                                                {item.areaName ||
+                                                    "Not defined?"}
                                             </Text>
                                             <Text
                                                 className={`text-sm leading-6 ${textMainColor}`}
@@ -215,7 +216,8 @@ export const PlanSection = () => {
                                                 }}
                                                 numberOfLines={2}
                                             >
-                                                {item.subareaName}
+                                                {item.subareaName ||
+                                                    "Not defined?"}
                                             </Text>
                                         </View>
 
@@ -279,7 +281,7 @@ export const PlanSection = () => {
                                                         borderColor: isCompleted
                                                             ? hexToRgba(
                                                                   "#00FF00",
-                                                                  0.2,
+                                                                  0.7,
                                                               )
                                                             : isNow
                                                               ? hexToRgba(
@@ -306,8 +308,9 @@ export const PlanSection = () => {
                                                         className="w-full text-xs text-center font-black uppercase tracking-widest"
                                                         style={{
                                                             color: isCompleted
-                                                                ? getContrastTextColor(
-                                                                      item.subareaColor,
+                                                                ? hexToRgba(
+                                                                      "#FFFFFF",
+                                                                      0.9,
                                                                   )
                                                                 : isDisabled
                                                                   ? hexToRgba(
@@ -315,8 +318,9 @@ export const PlanSection = () => {
                                                                         0.4,
                                                                     )
                                                                   : isNow
-                                                                    ? getContrastTextColor(
-                                                                          item.subareaColor,
+                                                                    ? hexToRgba(
+                                                                          "#FFFFFF",
+                                                                          0.9,
                                                                       )
                                                                     : hexToRgba(
                                                                           "#FFFFFF",

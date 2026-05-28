@@ -2,7 +2,7 @@ import { Platform } from "react-native";
 
 const localDevApiUrl =
     Platform.select({
-        android: "http://10.0.2.2:3000",
+        android: "http://192.168.18.3:3000",
         ios: "http://localhost:3000",
         default: "http://localhost:3000",
     }) || "http://localhost:3000";

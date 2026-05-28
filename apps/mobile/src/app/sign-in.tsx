@@ -34,11 +34,13 @@ export default function SignIn() {
         }
 
         setLoading(true);
+        console.log(API_URL);
 
         try {
             const response = await authClient.login.$post({
                 json: { email, password },
             });
+            console.log(response);
 
             const data = (await response.json()) as {
                 token?: string;
