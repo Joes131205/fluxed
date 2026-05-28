@@ -1,1 +1,0 @@
-ALTER TABLE "users" ADD COLUMN "time_buffer" integer DEFAULT 5;

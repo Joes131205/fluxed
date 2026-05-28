@@ -15,14 +15,9 @@ export const fetchCurrentUser = async () => {
     }
 
     try {
-        const response = await fetch(`${API_URL}/auth/me`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        console.log("fetchCurrentUser status:", response.status);
+        const response = await authClient.getMe(token);
+        console.log(response);
+        console.log("fetchCurrentUser status:", response.ok);
 
         if (!response.ok) {
             const body = await response.text();
@@ -30,15 +25,9 @@ export const fetchCurrentUser = async () => {
             return null;
         }
 
-        const data = (await response.json()) as {
-            ok?: boolean;
-            user?: User;
-            error?: string;
-        };
+        console.log("fetchCurrentUser data:", response.user);
 
-        console.log("fetchCurrentUser data:", data);
-
-        return data.user ?? null;
+        return response.user ?? null;
     } catch (error) {
         console.error("fetchCurrentUser error:", error);
         return null;

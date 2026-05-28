@@ -49,7 +49,9 @@ export default function SignIn() {
             console.log(response.token);
 
             await AsyncStorage.setItem("token", response.token);
+            console.log("saved token");
             await getCurrentUser();
+            console.log("got current user");
             Alert.alert("Success", "Signed in! Redirecting...", [
                 {
                     text: "OK",

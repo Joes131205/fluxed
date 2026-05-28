@@ -23,7 +23,7 @@ export const AreaDisplay = ({
             return;
         }
 
-        if (!areasData?.ok || !areasData.data) {
+        if (areasData.length === 0) {
             setAreas([]);
             setIsSubareasLoading(false);
             return;
@@ -35,10 +35,9 @@ export const AreaDisplay = ({
             setIsSubareasLoading(true);
             try {
                 const transformedData = await Promise.all(
-                    areasData.data.map(async (area: any) => {
-                        const subareaData = await subareasClient.getSubareaByArea(
-                            area.id,
-                        );
+                    areasData.map(async (area: any) => {
+                        const subareaData =
+                            await subareasClient.getSubareaByArea(area.id);
 
                         return {
                             areaId: area.id,

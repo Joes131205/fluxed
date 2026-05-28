@@ -1,4 +1,4 @@
 {
   "is_task_list_visible": true,
-  "active_task": "auth#start:dev"
+  "active_task": "auth#db:generate"
 }

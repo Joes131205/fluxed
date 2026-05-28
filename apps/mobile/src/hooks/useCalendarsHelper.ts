@@ -378,7 +378,11 @@ export function useCalendarEngine() {
     };
 
     useEffect(() => {
-        if (!areasData?.ok || !areasData.data) {
+        const areasPayload = Array.isArray(areasData)
+            ? (areasData as any[])
+            : areasData?.data;
+
+        if (!areasPayload || areasPayload.length === 0) {
             setSchedule([]);
             setIsScheduleLoading(false);
             return;
@@ -390,22 +394,25 @@ export function useCalendarEngine() {
             setIsScheduleLoading(true);
             try {
                 const transformedData = await Promise.all(
-                    areasData.data.map(async (area: any) => {
+                    areasPayload.map(async (area: any) => {
                         const subareaData = await subareasClient.getSubareaByArea(
                             area.id,
                         );
+
+                        const subareaList = Array.isArray(subareaData)
+                            ? subareaData
+                            : subareaData?.data || [];
+
                         return {
                             areaId: area.id,
                             areaName: area.name,
                             weight: area.weight || 1,
-                            subareas: (subareaData.data || []).map(
-                                (subarea: any) => ({
-                                    subareaId: subarea.id,
-                                    subareaName: subarea.name,
-                                    weight: subarea.weight || 1,
-                                    color: subarea.color,
-                                }),
-                            ),
+                            subareas: (subareaList || []).map((subarea: any) => ({
+                                subareaId: subarea.id,
+                                subareaName: subarea.name,
+                                weight: subarea.weight || 1,
+                                color: subarea.color,
+                            })),
                             color: area.color,
                         };
                     }),

@@ -1,1 +1,0 @@
-ALTER TABLE "areas" ADD COLUMN "color" varchar(7) DEFAULT '#00cdfd' NOT NULL;

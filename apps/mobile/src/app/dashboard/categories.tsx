@@ -47,20 +47,6 @@ const getTextColorBasedOnRGB = (r: number, g: number, b: number) => {
     return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
 };
 
-const getTextColorFromHex = (hex: string) => {
-    const normalized = parseColor(hex);
-
-    if (!normalized) {
-        return "#ffffff";
-    }
-
-    const r = Number.parseInt(normalized.slice(1, 3), 16);
-    const g = Number.parseInt(normalized.slice(3, 5), 16);
-    const b = Number.parseInt(normalized.slice(5, 7), 16);
-
-    return getTextColorBasedOnRGB(r, g, b);
-};
-
 export default function Categories() {
     const [section, setSection] = useState<Section>("areas");
 
@@ -79,10 +65,7 @@ export default function Categories() {
     const { mutateAsync: createSubarea, isPending: isSubareaPending } =
         useCreateSubarea();
 
-    const areas = useMemo(
-        () => (areasData?.ok ? areasData.data : []) as AreaRecord[],
-        [areasData],
-    );
+    const areas = useMemo(() => (areasData || []) as AreaRecord[], [areasData]);
 
     const handleCreateArea = async () => {
         const name = areaName.trim();

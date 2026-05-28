@@ -6,7 +6,7 @@ export const usePlans = () => {
         queryKey: ["plan"],
         queryFn: async () => {
             const response = await plansClient.getPlan();
-            return response.data;
+            return response;
         },
     });
 };

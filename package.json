@@ -10,10 +10,7 @@
     "type": "module",
     "workspaces": [
         "apps/mobile",
-        "apps/web",
-        "apps/server",
-        "apps/nestjs/apps/*",
-        "packages/*"
+        "apps/server/apps/*"
     ],
     "scripts": {
         "build": "turbo build",
@@ -22,7 +19,7 @@
         "db:generate": "turbo run db:generate",
         "db:migrate": "turbo run db:migrate",
         "db:studio": "turbo run db:studio",
-        "dev": "turbo run dev --filter=./apps/mobile & turbo run start:dev --filter='./apps/nestjs/apps/*' & wait"
+        "dev": "bun run db:generate && turbo run dev --filter=\"./apps/mobile\" --filter=\"./apps/server/apps/*\""
     },
     "overrides": {
         "axios": "~1.13.6"

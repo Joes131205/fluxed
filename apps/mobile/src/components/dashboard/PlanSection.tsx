@@ -19,7 +19,7 @@ type PlanItem = {
 
 export const PlanSection = () => {
     const { data: plansData, isLoading: isPlansLoading } = usePlans();
-
+    console.log(plansData);
     const [length, setLength] = useState(0);
     const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
@@ -205,7 +205,8 @@ export const PlanSection = () => {
                                             <Text
                                                 className={`text-xs font-black uppercase tracking-widest mb-2 ${textSubColor}`}
                                             >
-                                                {item.areaName}
+                                                {item.areaName ||
+                                                    "Not defined?"}
                                             </Text>
                                             <Text
                                                 className={`text-sm leading-6 ${textMainColor}`}
@@ -215,7 +216,8 @@ export const PlanSection = () => {
                                                 }}
                                                 numberOfLines={2}
                                             >
-                                                {item.subareaName}
+                                                {item.subareaName ||
+                                                    "Not defined?"}
                                             </Text>
                                         </View>
 

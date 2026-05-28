@@ -1,1 +1,0 @@
-ALTER TABLE "subareas" ADD COLUMN "allocated_minutes" integer DEFAULT 0;
