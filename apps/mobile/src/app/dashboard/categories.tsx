@@ -316,32 +316,15 @@ export default function Categories() {
                                             onPress={() =>
                                                 setSelectedAreaId(area.id)
                                             }
-                                            className={`rounded-xl px-4 py-3 border ${
-                                                isSelected
-                                                    ? "border-transparent"
-                                                    : "bg-black border-white/20"
-                                            }`}
+                                            className={`px-4 py-3 border`}
                                             style={{
-                                                backgroundColor: isSelected
+                                                borderColor: isSelected
                                                     ? areaColor
-                                                    : "black",
+                                                    : "white",
                                             }}
                                         >
                                             <Text
-                                                className={`text-xs font-bold uppercase tracking-widest ${
-                                                    isSelected
-                                                        ? ""
-                                                        : "text-white/60"
-                                                }`}
-                                                style={
-                                                    isSelected
-                                                        ? {
-                                                              color: getTextColorFromHex(
-                                                                  areaColor,
-                                                              ),
-                                                          }
-                                                        : undefined
-                                                }
+                                                className={`text-xs font-bold uppercase tracking-widest text-white`}
                                             >
                                                 {area.name}
                                             </Text>
