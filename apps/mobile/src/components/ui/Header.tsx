@@ -17,12 +17,19 @@ export const Header = () => {
                 </View>
 
                 <View>
-                    <Text className="text-primary font-bold text-base">FLUXED</Text>
-                    <Text className="text-[10px] text-muted-foreground uppercase font-mono">Planner</Text>
+                    <Text className="text-primary font-bold text-base">
+                        FLUXED
+                    </Text>
+                    <Text className="text-[10px] text-muted-foreground uppercase font-mono">
+                        Planner
+                    </Text>
                 </View>
             </View>
 
-            <Pressable onPress={() => router.push("/dashboard/settings")} className="p-2">
+            <Pressable
+                onPress={() => router.push("/dashboard/settings")}
+                className="p-2"
+            >
                 <Ionicons name="settings-outline" size={22} color="#3a6b3a" />
             </Pressable>
         </View>
