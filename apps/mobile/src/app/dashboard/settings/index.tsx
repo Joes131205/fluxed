@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { PrimaryButton } from "../../../components/ui/PrimaryButton";
 import { SecondaryButton } from "../../../components/ui/SecondaryButton";
 import { TertiaryButton } from "../../../components/ui/TertiaryButton";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Settings() {
     const { user, logout } = useAuth();
@@ -38,17 +39,17 @@ export default function Settings() {
         const timeBufferNumber = Number(timeBuffer);
 
         if (!startTime || !endTime) {
-            Alert.alert("Missing fields", "Start and end time are required.");
+            Alert.alert("Syntax Error", "Start and end time are required.");
             return;
         }
 
         if (Number.isNaN(minDurationNumber) || Number.isNaN(timeBufferNumber)) {
-            Alert.alert("Invalid values", "Durations must be valid numbers.");
+            Alert.alert("Type Error", "Durations must be valid numbers.");
             return;
         }
 
         if (minDurationNumber < 0 || timeBufferNumber < 0) {
-            Alert.alert("Invalid values", "Durations cannot be negative.");
+            Alert.alert("Logic Error", "Durations cannot be negative.");
             return;
         }
 
@@ -68,14 +69,14 @@ export default function Settings() {
             );
 
             if (!response.ok) {
-                Alert.alert("Save failed", "Could not update settings.");
+                Alert.alert("System Error", "Could not update settings.");
                 return;
             }
 
-            Alert.alert("Saved", "Your settings were updated.");
+            Alert.alert("System", "Settings successfully overwritten.");
         } catch (error) {
             Alert.alert(
-                "Save failed",
+                "System Error",
                 error instanceof Error ? error.message : "Unexpected error",
             );
         } finally {
@@ -88,7 +89,7 @@ export default function Settings() {
             await Linking.openURL(`${API_URL}/auth/google/start`);
         } catch (error) {
             Alert.alert(
-                "Unable to open link",
+                "Connection Error",
                 error instanceof Error ? error.message : "Unexpected error",
             );
         }
@@ -97,107 +98,100 @@ export default function Settings() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
+            contentContainerClassName="flex flex-col gap-6 py-8 px-4"
         >
-            <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
-                <Text
-                    className="text-2xl text-white uppercase"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
+            <View className="flex flex-col mb-2">
+                <Text className="text-2xl font-bold text-primary tracking-tight mb-1">
                     Settings
                 </Text>
-
-                <Text className="mt-3 text-xs text-white/70 font-mono uppercase tracking-widest leading-5">
-                    Tweak your settings here
+                <View className="h-[2px] w-24 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
+                <Text className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-5">
+                    Configure your parameters
                 </Text>
             </View>
 
-            <View className="rounded-2xl border border-white/10 bg-black p-6 flex flex-col">
-                <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-6">
-                    Time Parameters
-                </Text>
-
-                <View className="flex-row gap-4 mb-5">
-                    <View className="flex-1 flex flex-col gap-2">
-                        <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
+            <View className="border-2 border-primary bg-background relative p-5 pt-8 mb-2">
+                <View className="flex-row gap-3 mb-4">
+                    <View className="flex-1 border border-muted bg-card">
+                        <Text className="text-[10px] font-black uppercase tracking-widest text-primary/70 px-3 pt-3">
                             Start (HH:MM)
                         </Text>
                         <TextInput
-                            className="rounded-xl border border-white/20 bg-[#0A0A0A] text-white px-4 py-4 font-mono text-center"
+                            className="text-white px-3 py-3 font-mono text-lg outline-none"
                             value={startTime}
                             onChangeText={setStartTime}
                             autoCapitalize="none"
                             autoCorrect={false}
                             placeholder="09:00"
                             placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                            selectionColor="#ffffff"
+                            selectionColor="#00ff41"
                         />
                     </View>
 
-                    <View className="flex-1 flex flex-col gap-2">
-                        <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
+                    <View className="flex-1 border border-muted bg-card">
+                        <Text className="text-[10px] font-black uppercase tracking-widest text-primary/70 px-3 pt-3">
                             End (HH:MM)
                         </Text>
                         <TextInput
-                            className="rounded-xl border border-white/20 bg-[#0A0A0A] text-white px-4 py-4 font-mono text-center"
+                            className="text-white px-3 py-3 font-mono text-lg outline-none"
                             value={endTime}
                             onChangeText={setEndTime}
                             autoCapitalize="none"
                             autoCorrect={false}
                             placeholder="17:00"
                             placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                            selectionColor="#ffffff"
+                            selectionColor="#00ff41"
                         />
                     </View>
                 </View>
 
-                <View className="flex-row gap-4 mb-6">
-                    <View className="flex-1 flex flex-col gap-2">
+                <View className="flex-row gap-3 mb-6">
+                    <View className="flex-1 border border-muted bg-card">
                         <Text
-                            className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1"
+                            className="text-[10px] font-black uppercase tracking-widest text-primary/70 px-3 pt-3"
                             numberOfLines={1}
                         >
                             Min Task (Min)
                         </Text>
                         <TextInput
-                            className="rounded-xl border border-white/20 bg-[#0A0A0A] text-white px-4 py-4 font-mono text-center"
+                            className="text-white px-3 py-3 font-mono text-lg outline-none"
                             value={minDuration}
                             onChangeText={setMinDuration}
                             keyboardType="number-pad"
                             placeholder="30"
                             placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                            selectionColor="#ffffff"
+                            selectionColor="#00ff41"
                         />
                     </View>
 
-                    <View className="flex-1 flex flex-col gap-2">
+                    <View className="flex-1 border border-muted bg-card">
                         <Text
-                            className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1"
+                            className="text-[10px] font-black uppercase tracking-widest text-primary/70 px-3 pt-3"
                             numberOfLines={1}
                         >
                             Buffer (Min)
                         </Text>
                         <TextInput
-                            className="rounded-xl border border-white/20 bg-[#0A0A0A] text-white px-4 py-4 font-mono text-center"
+                            className="text-white px-3 py-3 font-mono text-lg outline-none"
                             value={timeBuffer}
                             onChangeText={setTimeBuffer}
                             keyboardType="number-pad"
                             placeholder="15"
                             placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                            selectionColor="#ffffff"
+                            selectionColor="#00ff41"
                         />
                     </View>
                 </View>
 
-                <View className="border-t border-dashed border-white/10 pt-6 mb-6">
+                <View className="border-t border-dashed border-primary/30 pt-5 mb-5">
                     <View className="flex-row items-center justify-between mb-4">
-                        <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
+                        <Text className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground">
                             Google Integration
                         </Text>
                         <Text
-                            className={`text-[10px] font-black uppercase tracking-widest ${user?.googleId ? "text-green-400" : "text-white/30"}`}
+                            className={`text-[10px] font-black font-mono uppercase tracking-widest ${user?.googleId ? "text-primary" : "text-muted-foreground/50"}`}
                         >
-                            {user?.googleId ? "Linked" : "Not Linked"}
+                            {user?.googleId ? "[ LINKED ]" : "[ NOT LINKED ]"}
                         </Text>
                     </View>
 
@@ -209,20 +203,22 @@ export default function Settings() {
                     )}
                 </View>
 
-                <PrimaryButton
-                    label="Save"
-                    onPress={handleSave}
-                    loading={isSaving}
-                    disabled={isSaving}
-                />
+                <View className="pt-2">
+                    <PrimaryButton
+                        label={isSaving ? "Saving..." : "Save Settings"}
+                        onPress={handleSave}
+                        loading={isSaving}
+                        disabled={isSaving}
+                    />
+                </View>
             </View>
 
-            <View className="flex flex-col gap-4">
-                <Text className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">
-                    Others
+            <View className="border border-muted bg-card p-5 mt-2">
+                <Text className="text-[10px] font-black uppercase tracking-widest text-primary/50 mb-4">
+                    System Actions
                 </Text>
 
-                <View className="flex-row gap-4 mb-2">
+                <View className="flex-row gap-3 mb-2">
                     <View className="flex-1">
                         <SecondaryButton
                             label="Edit Areas"
@@ -242,11 +238,13 @@ export default function Settings() {
                     </View>
                 </View>
 
-                <TertiaryButton
-                    label="Log Out"
-                    onPress={logout}
-                    variant="danger"
-                />
+                <View className="mt-4 border-t border-muted/50 pt-4">
+                    <TertiaryButton
+                        label="LogOut"
+                        onPress={logout}
+                        variant="danger"
+                    />
+                </View>
             </View>
         </ScrollView>
     );

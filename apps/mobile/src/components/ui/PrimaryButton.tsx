@@ -1,7 +1,7 @@
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-type PrimaryButtonProps = {
+type ButtonProps = {
     label: string;
     onPress: () => void | Promise<void>;
     loading?: boolean;
@@ -13,7 +13,7 @@ export function PrimaryButton({
     onPress,
     disabled,
     ...props
-}: PrimaryButtonProps) {
+}: ButtonProps) {
     return (
         <Pressable
             onPress={onPress}
@@ -22,17 +22,17 @@ export function PrimaryButton({
             {...props}
         >
             {({ pressed }) => {
-                // 1. The Surface Elevation Fix
+                // Saat ditekan, tombol menyala hijau neon ala CRT
                 const bgColor = disabled
-                    ? "bg-transparent" // Fades into background when unusable
+                    ? "bg-transparent"
                     : pressed
-                      ? "bg-white" // Flashes bright when tapped
-                      : "bg-[#1A1A1A]"; // <-- The new, visible resting state
+                      ? "bg-primary"
+                      : "bg-white/10";
 
                 const borderColor = disabled
-                    ? "border-white/10"
+                    ? "border-white/10 border-dashed"
                     : pressed
-                      ? "border-white"
+                      ? "border-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
                       : "border-white/20";
 
                 const textColor = disabled
@@ -43,10 +43,10 @@ export function PrimaryButton({
 
                 return (
                     <View
-                        className={`rounded-xl border py-4 flex items-center justify-center transition-colors ${bgColor} ${borderColor}`}
+                        className={`border py-4 flex items-center justify-center transition-colors ${bgColor} ${borderColor}`}
                     >
                         <Text
-                            className={`uppercase tracking-widest text-sm font-bold ${textColor}`}
+                            className={`uppercase tracking-widest text-sm font-bold font-mono ${textColor}`}
                         >
                             {label}
                         </Text>
@@ -56,3 +56,52 @@ export function PrimaryButton({
         </Pressable>
     );
 }
+
+export const SecondaryButton = ({
+    label,
+    onPress,
+    loading = false,
+    disabled = false,
+}: ButtonProps) => {
+    return (
+        <Pressable
+            onPress={onPress}
+            disabled={disabled || loading}
+            className="w-full mt-2"
+        >
+            {({ pressed }) => {
+                const bgColor = disabled
+                    ? "bg-transparent"
+                    : pressed
+                      ? "bg-white/10"
+                      : "bg-transparent";
+                const borderColor = disabled
+                    ? "border-white/10 border-dashed"
+                    : pressed
+                      ? "border-white/80"
+                      : "border-white/30";
+                const textColor = disabled
+                    ? "text-white/30"
+                    : pressed
+                      ? "text-white"
+                      : "text-white/70";
+
+                return (
+                    <View
+                        className={`w-full py-4 border flex items-center justify-center transition-colors ${bgColor} ${borderColor}`}
+                    >
+                        {loading ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                        ) : (
+                            <Text
+                                className={`uppercase tracking-widest text-sm font-bold font-mono ${textColor}`}
+                            >
+                                {label}
+                            </Text>
+                        )}
+                    </View>
+                );
+            }}
+        </Pressable>
+    );
+};

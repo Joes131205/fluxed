@@ -1,15 +1,12 @@
 import React, { useMemo, useState } from "react";
-import {
-    Alert,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { useAreas, useCreateArea } from "../../hooks/useAreas";
 import { useCreateSubarea } from "../../hooks/useSubareas";
 import { ColorField } from "../../components/ui/ColorField";
+import { TextPrimaryInput } from "../../components/ui/TextPrimaryInput";
+import { PrimaryButton } from "../../components/ui/PrimaryButton";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
 type Section = "areas" | "subareas";
 
 type AreaRecord = {
@@ -19,46 +16,19 @@ type AreaRecord = {
     color?: string;
 };
 
-const DEFAULT_AREA_COLOR = "#00cdfd";
+const DEFAULT_AREA_COLOR = "#00ff41";
 
 const parseWeight = (value: string) => {
     const next = Number.parseInt(value, 10);
-
-    if (Number.isNaN(next)) {
-        return 1;
-    }
-
+    if (Number.isNaN(next)) return 1;
     return Math.min(5, Math.max(1, next));
 };
 
 const parseColor = (value: string) => {
     const raw = value.trim().replace(/^#+/, "").slice(0, 6);
     const normalized = `#${raw}`;
-
-    if (!/^#[0-9a-fA-F]{6}$/.test(normalized)) {
-        return null;
-    }
-
+    if (!/^#[0-9a-fA-F]{6}$/.test(normalized)) return null;
     return normalized.toLowerCase();
-};
-
-const getTextColorBasedOnRGB = (r: number, g: number, b: number) => {
-    // based on W3C
-    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
-};
-
-const getTextColorFromHex = (hex: string) => {
-    const normalized = parseColor(hex);
-
-    if (!normalized) {
-        return "#ffffff";
-    }
-
-    const r = Number.parseInt(normalized.slice(1, 3), 16);
-    const g = Number.parseInt(normalized.slice(3, 5), 16);
-    const b = Number.parseInt(normalized.slice(5, 7), 16);
-
-    return getTextColorBasedOnRGB(r, g, b);
 };
 
 export default function Categories() {
@@ -90,15 +60,12 @@ export default function Categories() {
         const color = parseColor(areaColor);
 
         if (!name) {
-            Alert.alert("Error", "Area name is required.");
+            Alert.alert("Error", "Area Name is required.");
             return;
         }
 
         if (!color) {
-            Alert.alert(
-                "Error",
-                "Color must be a valid hex value like #00cdfd.",
-            );
+            Alert.alert("Error", "Invalid hex color format.");
             return;
         }
 
@@ -107,9 +74,9 @@ export default function Categories() {
             setAreaName("");
             setAreaWeight("1");
             setAreaColor(DEFAULT_AREA_COLOR);
-            Alert.alert("Success", "Area created.");
+            Alert.alert("Success", "Area created successfully.");
         } catch {
-            Alert.alert("Error", "Could not create area. Try again.");
+            Alert.alert("System Error", "Initialization failed.");
         }
     };
 
@@ -119,12 +86,12 @@ export default function Categories() {
         const color = parseColor(subareaColor);
 
         if (!selectedAreaId) {
-            Alert.alert("Error", "Pick an area first.");
+            Alert.alert("Error", "Area is required.");
             return;
         }
 
         if (!name) {
-            Alert.alert("Error", "Subarea name is required.");
+            Alert.alert("Error", "Subarea Name is required.");
             return;
         }
 
@@ -138,9 +105,9 @@ export default function Categories() {
             setSubareaName("");
             setSubareaWeight("1");
             setSubareaColor(DEFAULT_AREA_COLOR);
-            Alert.alert("Success", "Subarea created.");
+            Alert.alert("Success", "Subarea created successfully.");
         } catch {
-            Alert.alert("Error", "Could not create subarea. Try again.");
+            Alert.alert("System Error", "Initialization failed.");
         }
     };
 
@@ -149,104 +116,81 @@ export default function Categories() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
+            contentContainerClassName="flex flex-col gap-6 py-8 px-4"
         >
-            <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
-                <Text
-                    className="text-2xl text-white uppercase"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
+            <View className="flex flex-col mb-2">
+                <Text className="text-2xl font-bold text-primary tracking-tight mb-1">
                     Category
                 </Text>
-
-                <Text className="mt-3 text-xs text-white/70 font-mono uppercase tracking-widest leading-5">
-                    Create your area / subarea of life here.
+                <Text className="text-xs text-white/40 font-mono">
+                    Choose where your new category belongs.
                 </Text>
             </View>
 
-            <View className="mb-6 flex-row border-2 border-white/30">
+            <View className="flex-row items-center border border-muted p-4 bg-card mb-2">
                 <Pressable
-                    className={`flex-1 py-4 flex-row justify-center items-center ${
-                        section === "areas" ? "bg-white" : "bg-black"
-                    }`}
-                    onPress={() => {
-                        setSection("areas");
-                    }}
+                    className="flex-1"
+                    onPress={() => setSection("areas")}
                 >
-                    <Text
-                        className={`font-black uppercase tracking-widest text-xs ${
-                            section === "areas" ? "text-black" : "text-white/50"
-                        }`}
+                    <View
+                        className={`border px-3 py-2 ${section === "areas" ? "border-primary bg-primary/10" : "border-muted-foreground/30 bg-background"}`}
                     >
-                        Areas
-                    </Text>
+                        <Text
+                            className={`font-mono text-xs ${section === "areas" ? "text-primary" : "text-muted-foreground/80"} text-center`}
+                        >
+                            Area
+                        </Text>
+                    </View>
                 </Pressable>
 
+                <View className="px-3">
+                    <Ionicons
+                        name="caret-forward"
+                        size={16}
+                        color={section === "subareas" ? "#00ff41" : "#3a6b3a"}
+                    />
+                </View>
+
                 <Pressable
-                    className={`flex-1 py-4 flex-row justify-center items-center ${
-                        section === "subareas" ? "bg-white" : "bg-black"
-                    }`}
-                    onPress={() => {
-                        setSection("subareas");
-                    }}
+                    className="flex-1"
+                    onPress={() => setSection("subareas")}
                 >
-                    <Text
-                        className={`font-black uppercase tracking-widest text-xs ${
-                            section === "subareas"
-                                ? "text-black"
-                                : "text-white/50"
-                        }`}
+                    <View
+                        className={`border px-3 py-2 ${section === "subareas" ? "border-primary bg-primary/10" : "border-muted-foreground/30 bg-background"}`}
                     >
-                        Subareas
-                    </Text>
+                        <Text
+                            className={`font-mono text-xs ${section === "subareas" ? "text-primary" : "text-muted-foreground/80"} text-center`}
+                        >
+                            Subarea
+                        </Text>
+                    </View>
                 </Pressable>
             </View>
 
-            {section === "areas" ? (
-                <View className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-6 flex flex-col gap-6 mt-4">
-                    <View className="border-b border-dashed border-white/20 pb-4">
-                        <Text className="text-xl font-bold text-white tracking-tight">
-                            Create Area
-                        </Text>
-                    </View>
+            <View className="border-2 border-primary bg-background relative pt-6 pb-4 px-4">
+                {section === "areas" ? (
+                    <View className="flex flex-col gap-2">
+                        <TextPrimaryInput
+                            label="Area Name"
+                            value={areaName}
+                            onChangeText={setAreaName}
+                            placeholder="e.g. CORE_SYSTEM"
+                            editable={!isSubmitting}
+                        />
 
-                    <View className="flex flex-col gap-5">
-                        <View className="flex flex-col gap-2">
-                            <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
-                                Name
+                        <TextPrimaryInput
+                            label="Weight (1-5)"
+                            value={areaWeight}
+                            onChangeText={setAreaWeight}
+                            keyboardType="number-pad"
+                            placeholder="e.g. 5"
+                            editable={!isSubmitting}
+                        />
+
+                        <View className="mb-6">
+                            <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                                Color Hex
                             </Text>
-                            <TextInput
-                                value={areaName}
-                                onChangeText={setAreaName}
-                                placeholder="e.g. School"
-                                placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                                className="rounded-xl border border-white/20 bg-black text-white px-4 py-4 text-base"
-                                editable={!isSubmitting}
-                                selectionColor="#ffffff"
-                            />
-                        </View>
-
-                        <View className="flex flex-col gap-2">
-                            <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
-                                Weight (1-5)
-                            </Text>
-                            <TextInput
-                                value={areaWeight}
-                                onChangeText={setAreaWeight}
-                                keyboardType="number-pad"
-                                placeholder="e.g. 3"
-                                placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                                className="rounded-xl border border-white/20 bg-black text-white px-4 py-4 text-base"
-                                editable={!isSubmitting}
-                                selectionColor="#ffffff"
-                            />
-                        </View>
-
-                        <View className="flex flex-col gap-2">
-                            <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
-                                Color
-                            </Text>
-
                             <ColorField
                                 label="Color"
                                 value={areaColor}
@@ -255,163 +199,100 @@ export default function Categories() {
                             />
                         </View>
 
-                        <Pressable
-                            onPress={handleCreateArea}
-                            disabled={isSubmitting || isAreaPending}
-                            className="w-full mt-2"
-                        >
-                            {({ pressed }) => (
-                                <View
-                                    className={`rounded-xl border border-white/20 py-4 flex items-center justify-center transition-colors ${
-                                        pressed ? "bg-white" : "bg-black"
-                                    }`}
-                                >
-                                    <Text
-                                        className={`text-sm font-bold uppercase tracking-widest ${
-                                            pressed
-                                                ? "text-black"
-                                                : "text-white"
-                                        }`}
-                                    >
-                                        {isAreaPending
-                                            ? "Creating..."
-                                            : "Create Area"}
-                                    </Text>
+                        <View className="border-t border-dashed border-muted-foreground/30 pt-4 mt-2">
+                            <PrimaryButton
+                                label={
+                                    isAreaPending
+                                        ? "Creating..."
+                                        : "Create Area"
+                                }
+                                onPress={handleCreateArea}
+                                disabled={isSubmitting || isAreaPending}
+                            />
+                        </View>
+                    </View>
+                ) : (
+                    <View className="flex flex-col gap-2">
+                        <View className="mb-6">
+                            <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                                Area
+                            </Text>
+                            {isAreasLoading ? (
+                                <Text className="text-primary font-mono text-xs">
+                                    Fetching area...
+                                </Text>
+                            ) : areas.length === 0 ? (
+                                <Text className="text-red-500 font-mono text-xs">
+                                    Area Empty!
+                                </Text>
+                            ) : (
+                                <View className="flex-row flex-wrap gap-2 p-2 border border-muted bg-card">
+                                    {areas.map((area) => {
+                                        const isSelected =
+                                            selectedAreaId === area.id;
+                                        return (
+                                            <Pressable
+                                                key={area.id}
+                                                onPress={() =>
+                                                    setSelectedAreaId(area.id)
+                                                }
+                                                className={`px-3 py-2 border ${isSelected ? "border-primary bg-primary" : "border-muted-foreground/50 bg-background"}`}
+                                            >
+                                                <Text
+                                                    className={`text-xs font-bold uppercase font-mono ${isSelected ? "text-background" : "text-muted-foreground"}`}
+                                                >
+                                                    {area.name}
+                                                </Text>
+                                            </Pressable>
+                                        );
+                                    })}
                                 </View>
                             )}
-                        </Pressable>
-                    </View>
-                </View>
-            ) : (
-                <View className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-6 flex flex-col gap-6 mt-4">
-                    <View className="border-b border-dashed border-white/20 pb-4">
-                        <Text className="text-xl font-bold text-white tracking-tight">
-                            Create Subarea
-                        </Text>
-                    </View>
-
-                    {isAreasLoading ? (
-                        <Text className="text-sm font-semibold text-white/50 px-1">
-                            Loading areas...
-                        </Text>
-                    ) : areas.length === 0 ? (
-                        <Text className="text-sm font-semibold text-white/50 px-1">
-                            Create at least one area before creating subareas.
-                        </Text>
-                    ) : (
-                        <View className="flex flex-col gap-3">
-                            <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
-                                Parent Area
-                            </Text>
-                            <View className="flex-row flex-wrap gap-2">
-                                {areas.map((area) => {
-                                    const isSelected =
-                                        selectedAreaId === area.id;
-                                    const areaColor =
-                                        area.color ?? DEFAULT_AREA_COLOR;
-
-                                    return (
-                                        <Pressable
-                                            key={area.id}
-                                            onPress={() =>
-                                                setSelectedAreaId(area.id)
-                                            }
-                                            className={`px-4 py-3 border`}
-                                            style={{
-                                                borderColor: isSelected
-                                                    ? areaColor
-                                                    : "white",
-                                            }}
-                                        >
-                                            <Text
-                                                className={`text-xs font-bold uppercase tracking-widest text-white`}
-                                            >
-                                                {area.name}
-                                            </Text>
-                                        </Pressable>
-                                    );
-                                })}
-                            </View>
                         </View>
-                    )}
 
-                    <View className="flex flex-col gap-2">
-                        <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
-                            Subarea Name
-                        </Text>
-                        <TextInput
+                        <TextPrimaryInput
+                            label="Subarea Name"
                             value={subareaName}
                             onChangeText={setSubareaName}
-                            placeholder="e.g. History"
-                            placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                            className="rounded-xl border border-white/20 bg-black text-white px-4 py-4 text-base"
+                            placeholder="e.g. UI_DESIGN"
                             editable={!isSubmitting}
-                            selectionColor="#ffffff"
                         />
-                    </View>
 
-                    <View className="flex flex-col gap-2">
-                        <Text className="text-[10px] font-black uppercase tracking-widest text-white/50 ml-1">
-                            Weight (1-5)
-                        </Text>
-                        <TextInput
+                        <TextPrimaryInput
+                            label="Weight (1-5)"
                             value={subareaWeight}
                             onChangeText={setSubareaWeight}
                             keyboardType="number-pad"
                             placeholder="e.g. 3"
-                            placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                            className="rounded-xl border border-white/20 bg-black text-white px-4 py-4 text-base"
-                            editable={!isSubmitting}
-                            selectionColor="#ffffff"
-                        />
-                    </View>
-
-                    <View className="flex flex-col gap-2">
-                        <ColorField
-                            label="Color"
-                            value={subareaColor}
-                            onChange={setSubareaColor}
                             editable={!isSubmitting}
                         />
-                    </View>
 
-                    <Pressable
-                        onPress={handleCreateSubarea}
-                        disabled={isSubmitting || areas.length === 0}
-                        className="w-full mt-2"
-                    >
-                        {({ pressed }) => {
-                            const isDisabled =
-                                isSubmitting || areas.length === 0;
-                            return (
-                                <View
-                                    className={`rounded-xl border py-4 flex items-center justify-center transition-colors ${
-                                        isDisabled
-                                            ? "bg-black border-white/10"
-                                            : pressed
-                                              ? "bg-white border-white"
-                                              : "bg-black border-white/20"
-                                    }`}
-                                >
-                                    <Text
-                                        className={`text-sm font-bold uppercase tracking-widest ${
-                                            isDisabled
-                                                ? "text-white/30"
-                                                : pressed
-                                                  ? "text-black"
-                                                  : "text-white"
-                                        }`}
-                                    >
-                                        {isSubareaPending
-                                            ? "Creating..."
-                                            : "Create Subarea"}
-                                    </Text>
-                                </View>
-                            );
-                        }}
-                    </Pressable>
-                </View>
-            )}
+                        <View className="mb-6">
+                            <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                                Color Hex
+                            </Text>
+                            <ColorField
+                                label="Color"
+                                value={subareaColor}
+                                onChange={setSubareaColor}
+                                editable={!isSubmitting}
+                            />
+                        </View>
+
+                        <View className="border-t border-dashed border-muted-foreground/30 pt-4 mt-2">
+                            <PrimaryButton
+                                label={
+                                    isSubareaPending
+                                        ? "Creating..."
+                                        : "Create Subarea"
+                                }
+                                onPress={handleCreateSubarea}
+                                disabled={isSubmitting || areas.length === 0}
+                            />
+                        </View>
+                    </View>
+                )}
+            </View>
         </ScrollView>
     );
 }

@@ -2,6 +2,7 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { usePlans } from "../../hooks/usePlans";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 type PlanItem = {
     id: string;
@@ -19,7 +20,6 @@ type PlanItem = {
 
 export const PlanSection = () => {
     const { data: plansData, isLoading: isPlansLoading } = usePlans();
-    console.log(plansData);
     const [length, setLength] = useState(0);
     const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
@@ -35,7 +35,7 @@ export const PlanSection = () => {
             ? ((plansData as { data: PlanItem[] }).data ?? [])
             : [];
 
-    const DEFAULT_COLOR = "#00cdfd";
+    const DEFAULT_COLOR = "#00ff41";
 
     const hexToRgba = (hex?: string, alpha = 1) => {
         const fallback = DEFAULT_COLOR.replace(/^#+/, "").slice(0, 6);
@@ -46,18 +46,6 @@ export const PlanSection = () => {
         const g = (num >> 8) & 255;
         const b = num & 255;
         return `rgba(${r},${g},${b},${alpha})`;
-    };
-
-    const getContrastTextColor = (hex?: string) => {
-        const fallback = DEFAULT_COLOR.replace(/^#+/, "").slice(0, 6);
-        const candidate = (hex ?? "").trim().replace(/^#+/, "").slice(0, 6);
-        const raw = /^[0-9a-fA-F]{6}$/.test(candidate) ? candidate : fallback;
-        const num = parseInt(raw, 16);
-        const r = (num >> 16) & 255;
-        const g = (num >> 8) & 255;
-        const b = num & 255;
-        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        return luminance > 150 ? "#0b0b0b" : "#ffffff";
     };
 
     const formatDateTime = (value: string) => {
@@ -95,173 +83,189 @@ export const PlanSection = () => {
     }, []);
 
     return (
-        <View className="flex flex-col gap-5">
-            <Text
-                className="text-xl text-white tracking-widest font-bold"
-                style={{ fontFamily: "PressStart2P_400Regular" }}
-            >
-                Your Plan Timeline
-            </Text>
-            <View className="mb-6">
-                <View className="flex-row justify-between items-center mb-2">
-                    <Text className="text-white font-bold text-sm uppercase tracking-widest">
-                        Progress
+        <View className="flex flex-col gap-5 pb-10">
+            <View className="border-b border-muted pb-2 mb-2">
+                <Text className="text-sm text-primary uppercase tracking-widest font-bold">
+                    Schedule
+                </Text>
+            </View>
+
+            <View className="mb-4">
+                <View className="flex-row justify-between items-end mb-2">
+                    <Text className="text-white/50 font-bold text-[10px] uppercase tracking-widest">
+                        Timeline Progress
                     </Text>
-                    <Text className="text-white/60 text-xs font-mono">
-                        {progress.length} / {length}
+                    <Text className="text-primary text-xs font-mono font-bold">
+                        [{progress.length}/{length}]
                     </Text>
                 </View>
-                <View className="w-full h-4 bg-white/10 border border-white/30 overflow-hidden">
+                <View className="w-full h-4 bg-background border border-white p-[2px]">
                     <View
-                        className="h-full bg-white transition-all duration-500"
+                        className="h-full bg-primary transition-all duration-500 shadow-[0_0_8px_rgba(0,255,65,0.8)]"
                         style={{
                             width: `${length > 0 ? (progress.length / length) * 100 : 0}%`,
                         }}
                     />
                 </View>
-                <Text className="text-white/40 text-xs mt-2 uppercase tracking-widest font-mono">
-                    {length > 0
-                        ? Math.round((progress.length / length) * 100)
-                        : 0}
-                    %
-                </Text>
             </View>
+
             {isPlansLoading && (
-                <View className="py-10">
-                    <Text
-                        className="mt-4 text-center text-sm text-white uppercase tracking-widest"
-                        style={{ fontFamily: "PressStart2P_400Regular" }}
-                    >
-                        Fetching...
+                <View className="py-10 border border-primary/30 items-center justify-center">
+                    <ActivityIndicator size="small" color="#00ff41" />
+                    <Text className="mt-4 text-center text-xs text-primary uppercase tracking-widest font-mono">
+                        Fetching Schedule...
                     </Text>
                 </View>
             )}
 
             {!isPlansLoading && planItems.length === 0 && (
-                <View className="py-10 border-2 border-dashed border-white/30 items-center justify-center">
-                    <Text
-                        className="text-center text-lg text-white mb-2"
-                        style={{ fontFamily: "PressStart2P_400Regular" }}
-                    >
-                        Empty State
+                <View className="py-10 border-2 border-dashed border-muted-foreground/50 items-center justify-center bg-card">
+                    <Ionicons
+                        name="terminal-outline"
+                        size={32}
+                        color="#3a6b3a"
+                    />
+                    <Text className="text-center text-sm text-muted-foreground mt-4 font-bold tracking-widest uppercase">
+                        Timeline Empty
                     </Text>
-                    <Text className="text-white/60 font-bold uppercase text-xs tracking-widest">
-                        Reschedule to generate plan
+                    <Text className="text-primary/60 font-mono text-xs mt-2">
+                        When you are ready, reschedule!
                     </Text>
                 </View>
             )}
 
             {!isPlansLoading && planItems.length > 0 && (
-                <View className="flex flex-col gap-4">
+                <View className="flex flex-col gap-2">
                     {planItems.map((item, idx) => {
                         const isCompleted = progress.includes(item.id);
                         const startTime = new Date(item.startTime);
                         const endTime = new Date(item.endTime);
                         const isNow = now >= startTime && now <= endTime;
                         const isPassed = now >= endTime;
+                        const hasNotStarted = !isNow && !isPassed;
 
-                        let cardStyle = "p-5 border-2 flex-col ";
-                        let textMainColor = "";
-                        let textSubColor = "";
+                        let cardStyle = "p-4 border ";
+                        let textMainColor = "text-white";
+                        let textSubColor = "text-white/50";
+                        let glowEffect = "";
 
                         if (isCompleted) {
-                            cardStyle += "shadow-lg";
-                            textMainColor = "text-white";
-                            textSubColor = "text-white/60";
+                            cardStyle += "border-white/10 bg-white/5";
+                            textMainColor = "text-white/30 line-through";
+                            textSubColor = "text-white/20 line-through";
                         } else if (isNow) {
-                            cardStyle += "shadow-lg";
-                            textMainColor = "text-white";
-                            textSubColor = "text-white/60";
+                            cardStyle += "border-primary bg-primary/10";
+                            glowEffect = "shadow-[0_0_12px_rgba(0,255,65,0.2)]";
+                            textMainColor = "text-primary";
+                            textSubColor = "text-primary/80";
                         } else if (isPassed) {
-                            cardStyle += "bg-transparent border-dashed";
+                            cardStyle +=
+                                "bg-transparent border-dashed border-white/20";
                             textMainColor = "text-white/40";
                             textSubColor = "text-white/30";
                         } else {
-                            cardStyle += "bg-transparent";
-                            textMainColor = "text-white";
-                            textSubColor = "text-white/60";
+                            cardStyle += "bg-card border-white/20";
+                            textMainColor = "text-white/90";
+                            textSubColor = "text-white/50";
                         }
 
                         return (
-                            <View key={idx}>
+                            <View key={idx} className="flex-row">
+                                <View className="w-8 items-center justify-start mr-2 pt-4">
+                                    <View
+                                        className={`w-3 h-3 rounded-full border ${isCompleted ? "bg-primary/40 border-primary/40" : isNow ? "bg-primary border-primary shadow-[0_0_8px_rgba(0,255,65,1)]" : "bg-transparent border-primary/50"}`}
+                                    />
+                                    {idx !== planItems.length - 1 && (
+                                        <View className="w-[1px] flex-1 bg-primary/30 my-2" />
+                                    )}
+                                </View>
+
                                 <View
                                     key={item.sessionId}
-                                    className={cardStyle}
-                                    style={{
-                                        borderColor: isCompleted
-                                            ? hexToRgba("#00FF00", 0.7)
-                                            : isNow
-                                              ? hexToRgba(item.areaColor, 1)
-                                              : isPassed
-                                                ? "rgba(255,255,255,0.3)"
-                                                : hexToRgba(
-                                                      item.areaColor,
-                                                      0.4,
-                                                  ),
-                                    }}
+                                    className={`flex-1 flex-col ${cardStyle} ${glowEffect}`}
                                 >
                                     <View className="flex-row justify-between items-start gap-4 mb-4">
                                         <View className="flex-1">
                                             <Text
-                                                className={`text-xs font-black uppercase tracking-widest mb-2 ${textSubColor}`}
+                                                className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${textSubColor}`}
                                             >
-                                                {item.areaName ||
-                                                    "Not defined?"}
+                                                Area:{" "}
+                                                {item.areaName || "UNKNOWN"}
                                             </Text>
                                             <Text
-                                                className={`text-sm leading-6 ${textMainColor}`}
-                                                style={{
-                                                    fontFamily:
-                                                        "PressStart2P_400Regular",
-                                                }}
+                                                className={`text-sm font-bold uppercase ${textMainColor}`}
                                                 numberOfLines={2}
                                             >
                                                 {item.subareaName ||
-                                                    "Not defined?"}
+                                                    "UNDEFINED_TASK"}
                                             </Text>
                                         </View>
 
                                         <View
-                                            className="items-end border-l-2 border-current pl-4"
+                                            className="items-end border-l-2 pl-3"
                                             style={{
-                                                borderColor: hexToRgba(
-                                                    item.subareaColor ??
-                                                        item.areaColor,
-                                                ),
+                                                borderColor:
+                                                    isPassed || isCompleted
+                                                        ? hexToRgba(
+                                                              item.areaColor,
+                                                              0.3,
+                                                          )
+                                                        : hexToRgba(
+                                                              item.areaColor,
+                                                              1,
+                                                          ),
                                             }}
                                         >
                                             <Text
-                                                className={`font-mono text-sm font-black ${textMainColor}`}
+                                                className={`font-mono text-xs font-bold ${textMainColor}`}
                                             >
                                                 {formatDateTime(item.startTime)}
                                             </Text>
                                             <Text
-                                                className={`font-mono text-xs font-bold mt-1 ${textSubColor}`}
+                                                className={`font-mono text-[10px] mt-1 ${textSubColor}`}
                                             >
                                                 {formatDateTime(item.endTime)}
                                             </Text>
                                             <Text
-                                                className={`text-[10px] font-black uppercase mt-2 tracking-widest ${textMainColor}`}
+                                                className={`text-[9px] uppercase mt-2 tracking-widest ${textSubColor}`}
                                             >
                                                 {item.minutes} MIN
                                             </Text>
                                         </View>
                                     </View>
-                                    <View className="items-center justify-center">
+
+                                    <View className="items-start border-t border-primary/20 pt-3 mt-1">
                                         {(() => {
-                                            const hasNotStarted =
-                                                !isNow && !isPassed;
                                             const isDisabled =
                                                 !isCompleted &&
                                                 (hasNotStarted || isPassed);
-
                                             let buttonText = "Check In";
-                                            if (isCompleted)
+                                            let btnStyle =
+                                                "border-white/20 bg-transparent";
+                                            let btnText = "text-white/60";
+
+                                            if (isCompleted) {
                                                 buttonText = "Completed";
-                                            else if (isPassed)
+                                                btnStyle =
+                                                    "border-transparent bg-transparent";
+                                                btnText = "text-white/30";
+                                            } else if (isPassed) {
                                                 buttonText = "Passed";
-                                            else if (hasNotStarted)
-                                                buttonText = "Not Started";
+                                                btnStyle =
+                                                    "border-transparent bg-transparent";
+                                                btnText = "text-white/40";
+                                            } else if (hasNotStarted) {
+                                                buttonText = "Standby";
+                                                btnStyle =
+                                                    "border-transparent bg-transparent";
+                                                btnText = "text-white/40";
+                                            } else if (isNow) {
+                                                // Tombol eksekusi menyala hijau HANYA saat waktunya tiba
+                                                btnStyle =
+                                                    "border-primary bg-primary";
+                                                btnText =
+                                                    "text-black font-black";
+                                            }
 
                                             return (
                                                 <Pressable
@@ -272,61 +276,10 @@ export const PlanSection = () => {
                                                         )
                                                     }
                                                     disabled={isDisabled}
-                                                    className={`w-full px-3 py-4 border-2 ${
-                                                        isDisabled
-                                                            ? "opacity-50"
-                                                            : ""
-                                                    }`}
-                                                    style={{
-                                                        borderColor: isCompleted
-                                                            ? hexToRgba(
-                                                                  "#00FF00",
-                                                                  0.7,
-                                                              )
-                                                            : isNow
-                                                              ? hexToRgba(
-                                                                    item.subareaColor,
-                                                                    1,
-                                                                )
-                                                              : "rgba(255,255,255,0.6)",
-                                                        backgroundColor:
-                                                            isCompleted
-                                                                ? hexToRgba(
-                                                                      "#00FF00",
-                                                                      0.15,
-                                                                  )
-                                                                : !isDisabled &&
-                                                                    isNow
-                                                                  ? hexToRgba(
-                                                                        item.subareaColor,
-                                                                        0.1,
-                                                                    )
-                                                                  : "transparent",
-                                                    }}
+                                                    className={`px-3 py-2 border ${btnStyle} ${isDisabled && !isCompleted && !isPassed && !hasNotStarted ? "opacity-50" : ""}`}
                                                 >
                                                     <Text
-                                                        className="w-full text-xs text-center font-black uppercase tracking-widest"
-                                                        style={{
-                                                            color: isCompleted
-                                                                ? hexToRgba(
-                                                                      "#FFFFFF",
-                                                                      0.9,
-                                                                  )
-                                                                : isDisabled
-                                                                  ? hexToRgba(
-                                                                        "#FFFFFF",
-                                                                        0.4,
-                                                                    )
-                                                                  : isNow
-                                                                    ? hexToRgba(
-                                                                          "#FFFFFF",
-                                                                          0.9,
-                                                                      )
-                                                                    : hexToRgba(
-                                                                          "#FFFFFF",
-                                                                          0.4,
-                                                                      ),
-                                                        }}
+                                                        className={`text-[10px] text-center font-mono uppercase tracking-widest ${btnText}`}
                                                     >
                                                         {buttonText}
                                                     </Text>
@@ -335,13 +288,6 @@ export const PlanSection = () => {
                                         })()}
                                     </View>
                                 </View>
-                                {idx !== planItems.length - 1 ? (
-                                    <Text className="text-center w-full mt-3 text-white/30">
-                                        |
-                                    </Text>
-                                ) : (
-                                    ""
-                                )}
                             </View>
                         );
                     })}

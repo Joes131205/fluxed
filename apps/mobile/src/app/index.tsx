@@ -17,7 +17,6 @@ export default function App() {
             className="flex-1 bg-background"
             contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
         >
-            {/* TODO: Logo */}
             <Text>Fluxed</Text>
 
             <View>

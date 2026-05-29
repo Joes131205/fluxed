@@ -86,29 +86,24 @@ export const AreaDisplay = ({
         isLoadingOverride ?? (isAreaLoading || isSubareasLoading);
 
     return (
-        <View className="flex flex-col gap-4 mt-2">
-            <View className="border-b-2 border-dashed border-white/30 pb-4 mb-2">
-                <Text
-                    className="text-xl text-white uppercase"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
-                    Areas
-                </Text>
-            </View>
+        <View className="flex flex-col border border-muted bg-card p-5 mt-2">
+            <Text className="text-sm font-bold text-primary uppercase tracking-widest mb-4">
+                Configured Areas
+            </Text>
 
             <View className="flex flex-col gap-4">
                 {areas.length > 0 ? (
                     areas.map((a) => <AreaSection key={a.areaId} area={a} />)
                 ) : shouldShowLoading ? (
-                    <View className="border-2 border-white/20 p-5 border-dashed">
-                        <Text className="font-mono text-white/70 uppercase text-xs">
-                            Fetching...
+                    <View className="border border-white/10 bg-background p-4">
+                        <Text className="font-mono text-primary/70 uppercase text-xs text-center">
+                            Fetching Data...
                         </Text>
                     </View>
                 ) : (
-                    <View className="border-2 border-white/20 p-5 border-dashed">
-                        <Text className="font-mono text-white/50 uppercase text-xs mb-4">
-                            No Areas!
+                    <View className="border border-white/10 bg-background p-4">
+                        <Text className="font-mono text-muted-foreground uppercase text-xs text-center">
+                            No Areas Found
                         </Text>
                     </View>
                 )}

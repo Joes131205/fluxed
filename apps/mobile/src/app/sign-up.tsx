@@ -1,36 +1,36 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import {
-    Text,
-    View,
-    Pressable,
-    Alert,
-    Linking,
-    ScrollView,
-} from "react-native";
+import { useState, useEffect } from "react";
+import { Text, View, Pressable, Alert, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authClient } from "../lib/client";
 import { API_URL } from "../lib/env";
 import { useAuth } from "../hooks/useAuth";
+import * as WebBrowser from "expo-web-browser";
 import { PrimaryButton } from "../components/ui/PrimaryButton";
 import { GoogleAuthButton } from "../components/ui/GoogleAuthButton";
 import { TextPrimaryInput } from "../components/ui/TextPrimaryInput";
 
+WebBrowser.maybeCompleteAuthSession();
+
 export default function SignUp() {
     const { user, getCurrentUser } = useAuth();
-
     const router = useRouter();
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    if (user) {
-        router.replace("/dashboard");
-    }
+
+    useEffect(() => {
+        if (user) {
+            router.replace("/dashboard");
+        }
+    }, [router, user]);
+
     const handleSignUp = async () => {
         if (!username || !email || !password || !confirmPassword) {
-            Alert.alert("Error", "Please fill in all fields");
+            Alert.alert("Input Required", "Please fill in all fields");
             return;
         }
         if (password !== confirmPassword) {
@@ -60,24 +60,46 @@ export default function SignUp() {
 
             await AsyncStorage.setItem("token", data.token);
             await getCurrentUser();
-            Alert.alert("Success", "Account created! Redirecting...", [
-                {
-                    text: "OK",
-                    onPress: () => router.push("/dashboard"),
-                },
-            ]);
+            router.push("/dashboard");
         } catch (error) {
             Alert.alert(
-                "Error",
+                "Connection Error",
                 error instanceof Error ? error.message : "Network error",
             );
         } finally {
             setLoading(false);
         }
     };
+
     const handleGoogleSignIn = async () => {
         try {
-            await Linking.openURL(`${API_URL}/auth/google/start`);
+            const startUrl = `${API_URL}/auth/google/start?state=mobile`;
+            const redirectUrl = "fluxed://auth-success";
+
+            const result = await WebBrowser.openAuthSessionAsync(
+                startUrl,
+                redirectUrl,
+            );
+
+            if (result.type !== "success" || !result.url) return;
+
+            const queryString = result.url.split("?")[1] ?? "";
+            const params = new URLSearchParams(queryString);
+            const token = params.get("token");
+            const error = params.get("error");
+
+            if (error) {
+                Alert.alert("Google Sign In Failed", error);
+                return;
+            }
+
+            if (!token) {
+                Alert.alert("Google Sign In Failed", "Missing auth token.");
+                return;
+            }
+
+            await AsyncStorage.setItem("token", token);
+            router.replace("/dashboard");
         } catch (error) {
             Alert.alert(
                 "Google Sign In Failed",
@@ -87,19 +109,22 @@ export default function SignUp() {
             );
         }
     };
+
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName="px-5 pt-10 pb-32"
+            contentContainerClassName="px-6 pt-16 pb-32"
         >
-            <View className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
-                <Text className="text-3xl font-bold mb-6">Create Account</Text>
+            <View className="border-2 border-primary bg-background relative p-5 pt-8">
+                <Text className="font-mono text-primary text-xl font-bold mb-6">
+                    Create Account
+                </Text>
 
                 <TextPrimaryInput
                     label="Username"
                     value={username}
                     onChangeText={setUsername}
-                    placeholder="Username"
+                    placeholder="Enter Username..."
                     autoCapitalize="none"
                     autoCorrect={false}
                     editable={!loading}
@@ -109,7 +134,7 @@ export default function SignUp() {
                     label="Email"
                     value={email}
                     onChangeText={setEmail}
-                    placeholder="Email"
+                    placeholder="Enter Email..."
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -120,7 +145,7 @@ export default function SignUp() {
                     label="Password"
                     value={password}
                     onChangeText={setPassword}
-                    placeholder="Password"
+                    placeholder="Enter Password..."
                     secureTextEntry
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -132,7 +157,7 @@ export default function SignUp() {
                     label="Confirm Password"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
-                    placeholder="Confirm Password"
+                    placeholder="Confirm Password..."
                     secureTextEntry
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -140,32 +165,37 @@ export default function SignUp() {
                     editable={!loading}
                 />
 
-                <PrimaryButton
-                    label="Sign Up"
-                    onPress={handleSignUp}
-                    loading={loading}
-                />
-
-                <View className="my-2 w-full flex-row items-center gap-3">
-                    <View className="h-px flex-1 bg-gray-300" />
-                    <Text className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                        or
-                    </Text>
-                    <View className="h-px flex-1 bg-gray-300" />
+                <View className="mt-2">
+                    <PrimaryButton
+                        label="Register"
+                        onPress={handleSignUp}
+                        loading={loading}
+                    />
                 </View>
+
+                <View className="flex-row items-center my-6">
+                    <View className="flex-1 h-[1px] border-b border-dashed border-muted-foreground/30" />
+                    <Text className="px-4 text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+                        OR
+                    </Text>
+                    <View className="flex-1 h-[1px] border-b border-dashed border-muted-foreground/30" />
+                </View>
+
                 <GoogleAuthButton
                     onPress={handleGoogleSignIn}
                     loading={loading}
                 />
-                <Pressable
-                    onPress={() => router.push("/sign-in")}
-                    disabled={loading}
-                >
-                    <Text className="text-white text-sm mt-4">
-                        Already have an account? Sign In
-                    </Text>
-                </Pressable>
             </View>
+
+            <Pressable
+                onPress={() => router.push("/sign-in")}
+                disabled={loading}
+                className="mt-8 items-start"
+            >
+                <Text className="text-muted-foreground font-mono uppercase tracking-widest text-xs underline decoration-muted-foreground underline-offset-4 hover:text-primary">
+                    Already Have an Account? Sign In
+                </Text>
+            </Pressable>
         </ScrollView>
     );
 }

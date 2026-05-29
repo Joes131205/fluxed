@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAuthHeaders } from "../lib/authHeaders";
-import { subareasClient } from "../lib/client";
+import { subareasClient, areasClient } from "../lib/client";
 
 export const useSubareas = (areaId: string) => {
     return useQuery({
@@ -27,14 +27,35 @@ export const useAllSubareas = () => {
         queryKey: ["subareas"],
         queryFn: async () => {
             const headers = await getAuthHeaders();
-            const response = await subareasClient.$get(
+            const areasResponse = await (areasClient as any).$get(
                 {},
-                {
-                    headers,
-                },
+                { headers },
             );
+            const areasJson = areasResponse ? await areasResponse.json() : null;
+            const areasList = areasJson?.ok ? (areasJson.data as any[]) : [];
 
-            return response.json();
+            const allSubareas: any[] = [];
+
+            for (const a of areasList) {
+                try {
+                    const r = await subareasClient[":id"].$get(
+                        { param: { id: a.id } },
+                        { headers },
+                    );
+                    const j = await r.json();
+                    if (j?.ok && Array.isArray(j.data)) {
+                        allSubareas.push(
+                            ...j.data.map((s: any) => ({
+                                ...s,
+                                area_id: a.id,
+                                areaName: a.name,
+                            })),
+                        );
+                    }
+                } catch (err) {}
+            }
+
+            return { ok: true, data: allSubareas };
         },
     });
 };
@@ -58,6 +79,44 @@ export const useCreateSubarea = () => {
             queryClient.invalidateQueries({
                 queryKey: ["subareas"],
             });
+        },
+    });
+};
+
+export const useUpdateSubarea = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, subarea }: { id: string; subarea: any }) => {
+            const headers = await getAuthHeaders();
+            const response = await subareasClient[":id"].$put(
+                { param: { id }, json: subarea },
+                { headers },
+            );
+
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["subareas"] });
+        },
+    });
+};
+
+export const useDeleteSubarea = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const headers = await getAuthHeaders();
+            const response = await subareasClient[":id"].$delete(
+                { param: { id } },
+                { headers },
+            );
+
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["subareas"] });
         },
     });
 };

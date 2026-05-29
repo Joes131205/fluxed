@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { AreaDisplay } from "../../components/calendar/AreaDisplay";
 import { useCalendarEngine } from "../../hooks/useCalendarsHelper";
 import { BusyBlocks } from "../../components/reschedule/BusyBlocks";
@@ -58,17 +58,14 @@ export default function Reschedule() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
+            contentContainerClassName="flex flex-col gap-6 py-8 px-4"
         >
-            <View className="flex flex-col pb-6 mb-6 border-b-2 border-dashed border-white/30">
-                <Text
-                    className="text-2xl text-white uppercase"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
+            <View className="flex flex-col mb-2">
+                <Text className="text-2xl font-bold text-primary tracking-tight mb-1">
                     Reschedule
                 </Text>
-
-                <Text className="mt-3 text-xs text-white/70 font-mono uppercase tracking-widest leading-5">
+                <View className="h-[2px] w-24 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
+                <Text className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-5">
                     Derailed? Don't worry. You can reschedule your day here.
                 </Text>
             </View>

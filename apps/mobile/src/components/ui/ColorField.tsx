@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
 const DEFAULT_COLOR = "#00cdfd";
@@ -40,33 +41,43 @@ export function ColorField({
     onChange,
     editable,
 }: ColorFieldProps) {
+    const [isFocused, setIsFocused] = useState(false);
     const resolvedColor = parseColor(value) ?? DEFAULT_COLOR;
-
     const displayValue = value.replace(/^#+/, "");
 
     return (
         <View className="flex flex-col gap-3">
             <View className="flex-row items-center gap-3">
                 <View
-                    className="h-14 w-14 rounded-xl border-2 border-white/10"
+                    className="h-14 w-14 border-2 border-white/20"
                     style={{ backgroundColor: resolvedColor }}
                 />
 
-                <View className="flex-1 flex-row items-center rounded-xl border border-white/20 bg-black px-4 py-4">
-                    <Text className="text-white/40 font-mono text-base mr-1">
+                <View
+                    className={`flex-1 flex-row items-center border-2 px-4 py-4 transition-colors ${
+                        isFocused
+                            ? "border-primary bg-primary/5 shadow-[0_0_8px_rgba(0,255,65,0.2)]"
+                            : "border-white/30 bg-black"
+                    }`}
+                >
+                    <Text
+                        className={`font-mono text-base mr-1 ${isFocused ? "text-primary" : "text-white/40"}`}
+                    >
                         #
                     </Text>
                     <TextInput
                         value={displayValue}
                         onChangeText={(text) => onChange(`#${text}`)}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
                         placeholder="00CDFD"
                         placeholderTextColor="rgba(255, 255, 255, 0.2)"
                         autoCapitalize="none"
                         autoCorrect={false}
                         editable={editable}
                         maxLength={6}
-                        selectionColor="#ffffff"
-                        className="flex-1 text-white font-mono text-base"
+                        selectionColor="#00ff41"
+                        className="flex-1 text-white font-mono text-base outline-none"
                     />
                 </View>
             </View>
@@ -78,10 +89,10 @@ export function ColorField({
                     return (
                         <Pressable
                             key={swatch}
-                            className={`h-10 w-10 rounded-lg border-2 ${
+                            className={`h-10 w-10 border-2 transition-colors ${
                                 isSelected
-                                    ? "border-white"
-                                    : "border-transparent"
+                                    ? "border-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
+                                    : "border-white/10"
                             }`}
                             disabled={!editable}
                             style={{
@@ -94,13 +105,15 @@ export function ColorField({
                 })}
             </View>
 
-            <Text className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-1 ml-1">
-                Select a swatch or enter 6-digit hex
-            </Text>
-            <Text className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-1 ml-1">
-                I would not suggest picking the color that blends in the
-                background
-            </Text>
+            <View className="mt-2">
+                <Text className="text-[10px] text-white/50 font-bold uppercase tracking-widest ml-1">
+                    Select a swatch or enter 6-digit hex
+                </Text>
+                <Text className="text-[10px] text-red-400/80 font-bold uppercase tracking-widest mt-1 ml-1">
+                    I would suggest not choosing a color that blends in the
+                    background
+                </Text>
+            </View>
         </View>
     );
 }

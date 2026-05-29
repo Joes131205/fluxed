@@ -5,38 +5,25 @@ import { PlanSection } from "../../components/dashboard/PlanSection";
 
 export default function Dashboard() {
     const { user } = useAuth();
-    const router = useRouter();
-
-    const now = new Date();
-    const weekday = now.toLocaleDateString([], {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
 
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName=" flex flex-col gap-5 py-10 px-4"
+            contentContainerClassName="flex flex-col gap-6 py-8 px-4"
         >
-            <View className="w-full text-center">
-                <Text className="text-center text-[2px] font-semibold text-slate-400">
-                    {weekday}
-                </Text>
-
-                <View className="mt-5 flex flex-col gap-2">
-                    <Text
-                        className="text-center text-3xl font-black tracking-tight text-white"
-                        style={{ fontFamily: "PressStart2P_400Regular" }}
-                    >
-                        Hey, {user?.username ?? "User"}!
-                    </Text>
-                    <Text className="text-center text-base leading-6 text-slate-300">
-                        You got this :)
-                    </Text>
+            <View className="border border-primary bg-card p-4 shadow-[0_0_8px_rgba(0,255,65,0.15)] relative">
+                <View className="flex-row justify-between items-start">
+                    <View className="flex-col gap-1">
+                        <Text className="text-primary text-2xl font-bold tracking-tight">
+                            {user?.username ?? "Username"}
+                        </Text>
+                        <Text className="text-white text-xs font-medium font-mono">
+                            You got this! :D
+                        </Text>
+                    </View>
                 </View>
             </View>
+
             <PlanSection />
         </ScrollView>
     );

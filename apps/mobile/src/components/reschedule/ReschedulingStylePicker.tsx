@@ -1,99 +1,59 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { PrimaryButton } from "../ui/PrimaryButton";
 
-type ReschedulingStylePickerProps = {
-    algorithmTypes: Array<{
-        type: string;
-        description: string;
-    }>;
-    onAlgorithmChange: (idx: number) => void;
-    onReschedule: () => void;
-    currentAlgorithm: string;
-    description: string;
-};
-
 export function ReschedulingStylePicker({
     algorithmTypes,
     onAlgorithmChange,
     onReschedule,
     currentAlgorithm,
     description,
-}: ReschedulingStylePickerProps) {
+}: any) {
     return (
-        <View className="flex flex-col gap-4">
-            <View className="border-b-2 border-dashed border-white/30 pb-4">
-                <Text
-                    className="text-xl text-white uppercase"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
-                    Rescheduling Style
+        <View className="flex flex-col border border-muted bg-card p-5">
+            <Text className="text-sm font-bold text-primary uppercase tracking-widest mb-4">
+                Algorithm Mode
+            </Text>
+
+            <View className="flex-row gap-3 mb-4">
+                {algorithmTypes.map((item: any, idx: number) => {
+                    const isActive =
+                        currentAlgorithm.toLowerCase() ===
+                        item.type.toLowerCase();
+                    return (
+                        <Pressable
+                            key={idx}
+                            onPress={() => onAlgorithmChange(idx)}
+                            className="flex-1"
+                        >
+                            <View
+                                className={`py-3 border-2 items-center transition-colors ${
+                                    isActive
+                                        ? "bg-primary/10 border-primary shadow-[0_0_8px_rgba(0,255,65,0.2)]"
+                                        : "bg-background border-muted"
+                                }`}
+                            >
+                                <Text
+                                    className={`uppercase tracking-widest text-xs font-bold font-mono ${
+                                        isActive
+                                            ? "text-primary"
+                                            : "text-muted-foreground"
+                                    }`}
+                                >
+                                    {item.type}
+                                </Text>
+                            </View>
+                        </Pressable>
+                    );
+                })}
+            </View>
+
+            <View className="border-l-2 border-primary/50 pl-3 mb-6 bg-background py-3 pr-3">
+                <Text className="text-white/70 font-mono text-xs leading-5">
+                    {description}
                 </Text>
             </View>
-            <View className="mb-8">
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 12,
-                        paddingBottom: 8,
-                    }}
-                >
-                    {algorithmTypes.map((item, idx) => {
-                        const isActive =
-                            currentAlgorithm.toLowerCase() ===
-                            item.type.toLowerCase();
 
-                        return (
-                            <Pressable
-                                key={idx}
-                                onPress={() => onAlgorithmChange(idx)}
-                            >
-                                {({ pressed }) => (
-                                    <View
-                                        className={`
-                                px-5 py-3 border-2 
-                                ${
-                                    isActive
-                                        ? "bg-white border-white"
-                                        : "bg-black border-white/30 border-dashed"
-                                }
-                                ${pressed && !isActive ? "bg-white/10" : ""}
-                            `}
-                                    >
-                                        <Text
-                                            className={`uppercase tracking-widest text-xs font-black ${
-                                                isActive
-                                                    ? "text-black"
-                                                    : "text-white/50"
-                                            }`}
-                                        >
-                                            {item.type}
-                                        </Text>
-                                    </View>
-                                )}
-                            </Pressable>
-                        );
-                    })}
-                </ScrollView>
-
-                <View className="mt-4 border-2 border-white/30 p-5">
-                    <Text
-                        className="text-lg text-white uppercase mb-4"
-                        style={{ fontFamily: "PressStart2P_400Regular" }}
-                    >
-                        {currentAlgorithm}
-                    </Text>
-
-                    <View className="flex-row">
-                        <Text className="flex-1 text-white/80 font-mono text-sm leading-6">
-                            {description}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-            <PrimaryButton label={"Reschedule"} onPress={onReschedule} />
+            <PrimaryButton label="Reschedule" onPress={onReschedule} />
         </View>
     );
 }

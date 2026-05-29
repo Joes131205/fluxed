@@ -14,99 +14,77 @@ type OutputTimelineProps = {
     onSaveToDatabase: () => void;
     formatTime: (isoDate: string) => string;
 };
-
 export function OutputTimeline({
     finalSchedule,
     isGeneratedOnce,
     isLoading,
     onSaveToDatabase,
     formatTime,
-}: OutputTimelineProps) {
+}: any) {
     return (
-        <View className="flex flex-col gap-3">
-            <View className="border-b-2 border-dashed border-white/30 pb-4 mb-2">
-                <Text
-                    className="text-xl text-white uppercase"
-                    style={{ fontFamily: "PressStart2P_400Regular" }}
-                >
-                    Proposed Timeline
-                </Text>
-            </View>
+        <View className="flex flex-col border border-primary/50 bg-card p-5 mt-2">
+            <Text className="text-sm font-bold text-primary uppercase tracking-widest mb-4 border-b border-primary/20 pb-2">
+                Proposed Timeline
+            </Text>
+
             {finalSchedule.length > 0 ? (
-                <View className="mb-10 mt-4">
+                <View className="mb-6">
                     <View className="flex flex-col gap-3">
-                        {finalSchedule.map((slot, idx) => (
-                            <View key={`${slot.subareaId}-${idx}`}>
-                                <View className="flex-row items-center justify-between border-2 border-dashed border-white/30 bg-black p-5">
+                        {finalSchedule.map((slot: any, idx: number) => (
+                            <View
+                                key={`${slot.subareaId}-${idx}`}
+                                className="flex-row"
+                            >
+                                <View className="w-1 bg-primary/40 mr-3" />
+                                <View className="flex-1 flex-row items-center justify-between border border-muted bg-background p-4">
                                     <View className="flex-1 pr-4">
-                                        <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                                        <Text className="mb-1 text-[10px] font-black uppercase tracking-widest text-primary/70">
                                             {slot.area}
                                         </Text>
                                         <Text
-                                            className="text-sm leading-6 text-white"
-                                            style={{
-                                                fontFamily:
-                                                    "PressStart2P_400Regular",
-                                            }}
+                                            className="text-sm font-bold text-white uppercase"
                                             numberOfLines={2}
                                         >
                                             {slot.subarea}
                                         </Text>
                                     </View>
 
-                                    <View className="border-l-2 border-white/10 pl-4 items-end">
-                                        <Text className="font-mono text-sm font-black text-white">
+                                    <View className="items-end">
+                                        <Text className="font-mono text-sm font-bold text-primary">
                                             {formatTime(slot.start)}
                                         </Text>
-                                        <Text className="mt-1 font-mono text-xs font-bold text-white/50">
+                                        <Text className="mt-1 font-mono text-[10px] font-bold text-muted-foreground">
                                             {formatTime(slot.end)}
                                         </Text>
                                     </View>
                                 </View>
-                                {idx !== finalSchedule.length - 1 ? (
-                                    <Text className="text-center w-full mt-3 text-white/30">
-                                        |
-                                    </Text>
-                                ) : (
-                                    ""
-                                )}
                             </View>
                         ))}
                     </View>
 
-                    <View className="mt-6">
+                    <View className="mt-6 border-t border-muted pt-4">
                         <PrimaryButton
                             onPress={onSaveToDatabase}
-                            label={isLoading ? "Processing..." : "Confirm Plan"}
+                            label={isLoading ? "PROCESSING..." : "CONFIRM PLAN"}
                             loading={isLoading}
                         />
                     </View>
                 </View>
             ) : isGeneratedOnce ? (
-                <View className="border-2 border-dashed border-white/20 p-5 mt-4">
-                    <Text className="mt-2 text-2xl font-bold text-foreground text-center">
-                        Wowzers 💀
+                <View className="border border-red-500/30 bg-red-500/5 p-5 mt-2">
+                    <Text className="text-lg font-bold text-red-400 mb-2 font-mono uppercase tracking-widest">
+                        Generation Failed
                     </Text>
-                    <Text className="mt-2 text-2xl font-bold text-foreground text-center">
-                        Nothing generated
-                    </Text>
-                    <Text className="mt-2 text-base text-muted-foreground text-center">
-                        No valid slots were available for your current
-                        timeframe.
-                    </Text>
-                    <Text className="mt-1 text-sm text-muted-foreground text-center">
-                        Maybe because the allocated events are too close to your
-                        sleep window or you set the minimum task duration too
-                        big or no areas and subareas?
+                    <Text className="text-xs text-red-300/80 font-mono leading-5">
+                        No valid slots available for the current timeframe.
+                        Ensure minimum duration parameters and sleep windows do
+                        not overlap with required task weightings.
                     </Text>
                 </View>
             ) : (
-                <View className="border-2 border-dashed border-white/20 p-5 mt-4">
-                    <Text className="mt-2 text-2xl font-bold text-foreground text-center">
-                        Nothing yet!
-                    </Text>
-                    <Text className="mt-2 text-sm font-bold text-muted-foreground text-center">
-                        Take your time, and reschedule it if needed!
+                <View className="border border-white/10 bg-background p-6 items-center">
+                    <Text className="text-sm font-bold text-muted-foreground font-mono uppercase tracking-widest">
+                        Standing By
                     </Text>
                 </View>
             )}

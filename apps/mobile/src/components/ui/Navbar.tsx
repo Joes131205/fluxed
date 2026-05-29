@@ -10,28 +10,22 @@ export const Navbar = () => {
 
     const navItems = [
         {
-            label: "Home",
+            label: "HOME",
             to: "/dashboard",
-            activeIcon: "home" as IconName,
-            inactiveIcon: "home-outline" as IconName,
+            activeIcon: "terminal" as IconName,
+            inactiveIcon: "terminal-outline" as IconName,
         },
         {
-            label: "Reschedule",
+            label: "RESCHEDULE",
             to: "/dashboard/reschedule",
-            activeIcon: "shuffle" as IconName,
-            inactiveIcon: "shuffle-outline" as IconName,
+            activeIcon: "time" as IconName,
+            inactiveIcon: "time-outline" as IconName,
         },
         {
-            label: "Categories",
+            label: "CATEGORIES",
             to: "/dashboard/categories",
-            activeIcon: "grid" as IconName,
-            inactiveIcon: "grid-outline" as IconName,
-        },
-        {
-            label: "Settings",
-            to: "/dashboard/settings",
-            activeIcon: "settings" as IconName,
-            inactiveIcon: "settings-outline" as IconName,
+            activeIcon: "shapes" as IconName,
+            inactiveIcon: "shapes-outline" as IconName,
         },
     ];
 
@@ -42,7 +36,7 @@ export const Navbar = () => {
     }
 
     return (
-        <View className="border-t border-dashed border-white/20 bg-[#0A0A0A] pt-2 pb-8 px-4 flex-row items-center justify-between">
+        <View className="border-t border-border bg-card flex-row items-center justify-between pb-6 pt-2 px-2">
             {navItems.map((item) => {
                 const isActive = pathname === item.to;
 
@@ -50,27 +44,25 @@ export const Navbar = () => {
                     <Pressable
                         key={item.to}
                         onPress={() => router.push(item.to)}
-                        className={`flex-1 items-center justify-center py-3 rounded-xl transition-colors ${
-                            isActive ? "bg-white/10" : "bg-transparent"
-                        }`}
+                        className="flex-1 items-center justify-center py-2 relative"
                     >
+                        {isActive && (
+                            <View className="absolute top-0 w-10 h-[2px] bg-primary shadow-[0_0_8px_rgba(0,255,65,0.8)]" />
+                        )}
+
                         <Ionicons
                             name={
                                 isActive ? item.activeIcon : item.inactiveIcon
                             }
                             size={22}
-                            color={
-                                isActive
-                                    ? "#ffffff"
-                                    : "rgba(255, 255, 255, 0.4)"
-                            }
+                            color={isActive ? "#00ff41" : "#3a6b3a"}
                         />
                         <Text
                             numberOfLines={1}
                             className={`w-full text-center text-[10px] uppercase tracking-widest mt-1.5 ${
                                 isActive
-                                    ? "font-black text-white"
-                                    : "font-bold text-white/40"
+                                    ? "text-primary font-bold"
+                                    : "text-muted-foreground font-medium"
                             }`}
                         >
                             {item.label}

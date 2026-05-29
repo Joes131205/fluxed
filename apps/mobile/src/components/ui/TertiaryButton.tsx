@@ -33,10 +33,10 @@ export const TertiaryButton = ({
         },
         success: {
             bg: "bg-transparent",
-            pressedBg: "bg-green-500/10",
-            text: "text-green-500/70",
-            pressedText: "text-green-400",
-            indicator: "#22c55e",
+            pressedBg: "bg-primary/10",
+            text: "text-primary/70",
+            pressedText: "text-primary",
+            indicator: "#00ff41",
         },
     };
 
@@ -62,7 +62,7 @@ export const TertiaryButton = ({
 
                 return (
                     <View
-                        className={`w-full py-3 rounded-xl flex items-center justify-center transition-colors ${currentBg}`}
+                        className={`w-full py-3 flex items-center justify-center transition-colors ${currentBg}`}
                     >
                         {loading ? (
                             <ActivityIndicator
@@ -71,9 +71,9 @@ export const TertiaryButton = ({
                             />
                         ) : (
                             <Text
-                                className={`uppercase tracking-widest text-xs font-bold ${currentText}`}
+                                className={`uppercase tracking-widest text-xs font-bold font-mono ${currentText}`}
                             >
-                                {label}
+                                [{label}]
                             </Text>
                         )}
                     </View>

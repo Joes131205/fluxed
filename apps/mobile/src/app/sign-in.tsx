@@ -15,7 +15,6 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function SignIn() {
     const { user, getCurrentUser } = useAuth();
-
     const router = useRouter();
 
     const [email, setEmail] = useState("");
@@ -27,20 +26,19 @@ export default function SignIn() {
             router.replace("/dashboard");
         }
     }, [router, user]);
+
     const handleSignIn = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "Please fill in all fields");
+            Alert.alert("Input Required", "Please fill in all fields");
             return;
         }
 
         setLoading(true);
-        console.log(API_URL);
 
         try {
             const response = await authClient.login.$post({
                 json: { email, password },
             });
-            console.log(response);
 
             const data = (await response.json()) as {
                 token?: string;
@@ -57,12 +55,7 @@ export default function SignIn() {
 
             await AsyncStorage.setItem("token", data.token);
             await getCurrentUser();
-            Alert.alert("Success", "Signed in! Redirecting...", [
-                {
-                    text: "OK",
-                    onPress: () => router.push("/dashboard"),
-                },
-            ]);
+            router.push("/dashboard");
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const apiError = (error.response.data as { error?: string })
@@ -70,9 +63,8 @@ export default function SignIn() {
                 Alert.alert("Sign In Failed", apiError || "Unknown error");
                 return;
             }
-            console.log(error);
             Alert.alert(
-                "Error",
+                "Connection Error",
                 error instanceof Error ? error.message : "Network error",
             );
         } finally {
@@ -90,9 +82,7 @@ export default function SignIn() {
                 redirectUrl,
             );
 
-            if (result.type !== "success" || !result.url) {
-                return;
-            }
+            if (result.type !== "success" || !result.url) return;
 
             const queryString = result.url.split("?")[1] ?? "";
             const params = new URLSearchParams(queryString);
@@ -124,15 +114,18 @@ export default function SignIn() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName="px-5 pt-10 pb-32"
+            contentContainerClassName="px-6 pt-16 pb-32"
         >
-            <View className="flex flex-col items-center justify-center flex-1 gap-4 px-6">
-                <Text className="text-3xl font-bold mb-6">Log In</Text>
+            <View className="border-2 border-primary bg-background relative p-5 pt-8">
+                <Text className="font-mono text-primary text-xl font-bold mb-6">
+                    Sign In
+                </Text>
+
                 <TextPrimaryInput
                     label="Email"
                     value={email}
                     onChangeText={setEmail}
-                    placeholder="Email"
+                    placeholder="Enter Email..."
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -143,7 +136,7 @@ export default function SignIn() {
                     label="Password"
                     value={password}
                     onChangeText={setPassword}
-                    placeholder="Password"
+                    placeholder="Enter Password..."
                     secureTextEntry
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -151,34 +144,37 @@ export default function SignIn() {
                     editable={!loading}
                 />
 
-                <PrimaryButton
-                    label="Sign In"
-                    onPress={handleSignIn}
-                    loading={loading}
-                />
+                <View className="mt-2">
+                    <PrimaryButton
+                        label="Login"
+                        onPress={handleSignIn}
+                        loading={loading}
+                    />
+                </View>
 
-                <View className="my-2 w-full flex-row items-center gap-3">
-                    <View className="h-px flex-1 bg-gray-300" />
-                    <Text className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                        or
+                <View className="flex-row items-center my-6">
+                    <View className="flex-1 h-[1px] border-b border-dashed border-muted-foreground/30" />
+                    <Text className="px-4 text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+                        OR
                     </Text>
-                    <View className="h-px flex-1 bg-gray-300" />
+                    <View className="flex-1 h-[1px] border-b border-dashed border-muted-foreground/30" />
                 </View>
 
                 <GoogleAuthButton
                     onPress={handleGoogleSignIn}
                     loading={loading}
                 />
-
-                <Pressable
-                    onPress={() => router.push("/sign-up")}
-                    disabled={loading}
-                >
-                    <Text className="text-white text-sm mt-4">
-                        Don't have an account? Sign Up
-                    </Text>
-                </Pressable>
             </View>
+
+            <Pressable
+                onPress={() => router.push("/sign-up")}
+                disabled={loading}
+                className="mt-8 items-start"
+            >
+                <Text className="text-muted-foreground font-mono uppercase tracking-widest text-xs underline decoration-muted-foreground underline-offset-4 hover:text-primary">
+                    Don't Have an Account? Sign Up
+                </Text>
+            </Pressable>
         </ScrollView>
     );
 }
