@@ -40,10 +40,8 @@ function RootLayoutContent() {
     }
 
     return (
-        <View className="flex-1">
-            <View className="flex-1">
-                <Header />
-
+        <View className="flex-1 bg-background">
+            <View className="flex-1 pt-2">
                 <Slot />
             </View>
             <Navbar />

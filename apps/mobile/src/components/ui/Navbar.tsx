@@ -27,6 +27,12 @@ export const Navbar = () => {
             activeIcon: "shapes" as IconName,
             inactiveIcon: "shapes-outline" as IconName,
         },
+        {
+            label: "SETTINGS",
+            to: "/dashboard/settings",
+            activeIcon: "cog" as IconName,
+            inactiveIcon: "cog-outline" as IconName,
+        },
     ];
 
     const hiddenLinks = ["/sign-in", "/sign-up", "/"];

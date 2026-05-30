@@ -27,9 +27,7 @@ export const GoogleAuthButton = ({
 
                 const borderColor = disabled
                     ? "border-white/10 border-dashed"
-                    : pressed
-                      ? "border-white"
-                      : "border-white/30";
+                    : "border-white/70";
 
                 const textColor = disabled
                     ? "text-white/30"
@@ -47,7 +45,6 @@ export const GoogleAuthButton = ({
                             <Text
                                 className={`uppercase tracking-widest text-xs font-bold font-mono ${textColor}`}
                             >
-                                <Text className="font-black">[ G ] </Text>
                                 CONTINUE WITH GOOGLE
                             </Text>
                         )}

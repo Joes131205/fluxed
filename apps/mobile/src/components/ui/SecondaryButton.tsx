@@ -28,9 +28,7 @@ export const SecondaryButton = ({
                       : "bg-transparent";
                 const borderColor = disabled
                     ? "border-white/10 border-dashed"
-                    : pressed
-                      ? "border-white/80"
-                      : "border-white/30";
+                    : "border-white/70";
                 const textColor = disabled
                     ? "text-white/30"
                     : pressed

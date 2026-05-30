@@ -3,6 +3,7 @@ import {
     Text,
     TextInput,
     View,
+    Pressable,
     type KeyboardTypeOptions,
     type TextInputProps,
 } from "react-native";
@@ -32,8 +33,8 @@ export const TextPrimaryInput = ({
     textContentType,
     autoCorrect,
 }: TextPrimaryInputProps) => {
-    // Menambahkan state fokus untuk efek menyala ala CRT
     const [isFocused, setIsFocused] = useState(false);
+    const [hidden, setHidden] = useState<boolean>(!!secureTextEntry);
 
     return (
         <View className="w-full mb-6">
@@ -55,7 +56,7 @@ export const TextPrimaryInput = ({
                     onChangeText={onChangeText}
                     placeholder={placeholder}
                     keyboardType={keyboardType}
-                    secureTextEntry={secureTextEntry}
+                    secureTextEntry={hidden}
                     editable={editable}
                     autoCapitalize={autoCapitalize}
                     textContentType={textContentType}
@@ -67,6 +68,16 @@ export const TextPrimaryInput = ({
                     selectionColor="#00ff41"
                 />
             </View>
+
+            {secureTextEntry ? (
+                <View className="w-full mt-2 flex-row justify-end">
+                    <Pressable onPress={() => setHidden((s) => !s)}>
+                        <Text className="text-xs font-mono text-primary/80">
+                            {hidden ? "Show" : "Hide"}
+                        </Text>
+                    </Pressable>
+                </View>
+            ) : null}
         </View>
     );
 };

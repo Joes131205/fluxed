@@ -203,7 +203,7 @@ export default function SubareaSetting() {
                                             onPress={() => {
                                                 Alert.alert(
                                                     "Warning",
-                                                    "Are you sure you want to delete this subarea",
+                                                    "Are you sure you want to delete this subarea?",
                                                     [
                                                         {
                                                             text: "Cancel",

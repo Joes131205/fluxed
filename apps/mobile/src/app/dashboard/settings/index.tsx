@@ -182,7 +182,14 @@ export default function Settings() {
                         />
                     </View>
                 </View>
-
+                <View className="pt-2">
+                    <PrimaryButton
+                        label={isSaving ? "Saving..." : "Save Settings"}
+                        onPress={handleSave}
+                        loading={isSaving}
+                        disabled={isSaving}
+                    />
+                </View>
                 <View className="border-t border-dashed border-primary/30 pt-5 mb-5">
                     <View className="flex-row items-center justify-between mb-4">
                         <Text className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground">
@@ -202,20 +209,11 @@ export default function Settings() {
                         />
                     )}
                 </View>
-
-                <View className="pt-2">
-                    <PrimaryButton
-                        label={isSaving ? "Saving..." : "Save Settings"}
-                        onPress={handleSave}
-                        loading={isSaving}
-                        disabled={isSaving}
-                    />
-                </View>
             </View>
 
             <View className="border border-muted bg-card p-5 mt-2">
                 <Text className="text-[10px] font-black uppercase tracking-widest text-primary/50 mb-4">
-                    System Actions
+                    Others
                 </Text>
 
                 <View className="flex-row gap-3 mb-2">

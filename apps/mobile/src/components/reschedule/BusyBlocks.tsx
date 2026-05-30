@@ -55,7 +55,7 @@ export function BusyBlocks({
                             />
                         </View>
                     </View>
-                    <PrimaryButton label="[+] Add Block" onPress={onAddEvent} />
+                    <PrimaryButton label="Add Block" onPress={onAddEvent} />
                 </View>
             )}
 

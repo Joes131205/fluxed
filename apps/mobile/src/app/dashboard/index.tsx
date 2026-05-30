@@ -15,7 +15,7 @@ export default function Dashboard() {
                 <View className="flex-row justify-between items-start">
                     <View className="flex-col gap-1">
                         <Text className="text-primary text-2xl font-bold tracking-tight">
-                            {user?.username ?? "Username"}
+                            Hello, {user?.username ?? "Username"}!
                         </Text>
                         <Text className="text-white text-xs font-medium font-mono">
                             You got this! :D
