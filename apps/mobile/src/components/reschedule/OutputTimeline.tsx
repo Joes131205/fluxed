@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { PrimaryButton } from "../ui/PrimaryButton";
+import { SecondaryButton } from "../ui/SecondaryButton";
 
 type OutputTimelineProps = {
     finalSchedule: Array<{
@@ -9,18 +10,22 @@ type OutputTimelineProps = {
         start: string;
         end: string;
     }>;
+    isGoogleLinked: boolean;
     isGeneratedOnce: boolean;
     isLoading: boolean;
     onSaveToDatabase: () => void;
+    onSaveToGCal: () => void;
     formatTime: (isoDate: string) => string;
 };
 export function OutputTimeline({
     finalSchedule,
+    isGoogleLinked,
     isGeneratedOnce,
     isLoading,
     onSaveToDatabase,
+    onSaveToGCal,
     formatTime,
-}: any) {
+}: OutputTimelineProps) {
     return (
         <View className="flex flex-col border border-primary/50 bg-card p-5 mt-2">
             <Text className="text-sm font-bold text-primary uppercase tracking-widest mb-4 border-b border-primary/20 pb-2">
@@ -65,9 +70,20 @@ export function OutputTimeline({
                     <View className="mt-6 border-t border-muted pt-4">
                         <PrimaryButton
                             onPress={onSaveToDatabase}
-                            label={isLoading ? "PROCESSING..." : "CONFIRM PLAN"}
+                            label={isLoading ? "Processing..." : "Confirm Plan"}
                             loading={isLoading}
                         />
+                        {isGoogleLinked && (
+                            <SecondaryButton
+                                onPress={onSaveToGCal}
+                                label={
+                                    isLoading
+                                        ? "Processing..."
+                                        : "Save to Google Calendar"
+                                }
+                                loading={isLoading}
+                            />
+                        )}
                     </View>
                 </View>
             ) : isGeneratedOnce ? (

@@ -368,6 +368,38 @@ export function useCalendarEngine() {
         }
     };
 
+    const saveToGCal = async (schedule: any) => {
+        setIsLoading(true);
+        try {
+            const payload = finalSchedule.map((item) => ({
+                subarea_id: String(item.subareaId),
+                area_name: item.area,
+                subarea_name: item.subarea,
+                user_id: String(user?.id),
+                start_time: item.start,
+                end_time: item.end,
+                minutes: item.minutes,
+            }));
+
+            const response = await plansClient.gcal.$post(
+                { json: payload },
+                { headers: await getAuthHeaders() },
+            );
+            if (!response.ok) {
+                throw new Error("Failed to sync with Google Calendar");
+            }
+            Alert.alert(
+                "Success!",
+                "Schedule put to the Google Calendar! Check it out!",
+            );
+        } catch (error) {
+            setError("Unable to save schedule to Google Calendar");
+            Alert.alert("Error", "Error!");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const getData = async () => {
         if (!user?.googleId) {
             return;
@@ -488,6 +520,7 @@ export function useCalendarEngine() {
             removeManualEvent,
             runReschedule,
             saveToDatabase,
+            saveToGCal,
             getData,
         },
     };

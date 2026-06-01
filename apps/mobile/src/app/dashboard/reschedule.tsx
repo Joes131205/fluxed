@@ -99,9 +99,11 @@ export default function Reschedule() {
 
             <OutputTimeline
                 finalSchedule={finalSchedule}
+                isGoogleLinked={isGoogleConnected}
                 isGeneratedOnce={isGeneratedOnce}
                 isLoading={isLoading}
                 onSaveToDatabase={actions.saveToDatabase}
+                onSaveToGCal={actions.saveToGCal}
                 formatTime={formatTime}
             />
         </ScrollView>

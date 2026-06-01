@@ -62,6 +62,8 @@ export const subareaSchema = z.object({
 export const plannedSessionSchema = z.array(
     z.object({
         subarea_id: z.string(),
+        area_name: z.string().optional(),
+        subarea_name: z.string().optional(),
         user_id: z.string(),
         start_time: z.coerce.date(),
         end_time: z.coerce.date(),

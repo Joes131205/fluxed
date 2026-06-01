@@ -9,4 +9,4 @@ const localDevApiUrl =
 
 export const API_URL =
     process.env.EXPO_PUBLIC_API_URL ||
-    (__DEV__ ? localDevApiUrl : "https://fluxed-server.vercel.app");
+    (__DEV__ ? localDevApiUrl : "https://fluxed-wheat.vercel.app");
