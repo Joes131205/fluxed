@@ -385,9 +385,6 @@ export function useCalendarEngine() {
                 { json: payload },
                 { headers: await getAuthHeaders() },
             );
-            if (!response.ok) {
-                throw new Error("Failed to sync with Google Calendar");
-            }
             Alert.alert(
                 "Success!",
                 "Schedule put to the Google Calendar! Check it out!",
