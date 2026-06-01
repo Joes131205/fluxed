@@ -103,7 +103,7 @@ export default function Reschedule() {
                 isGeneratedOnce={isGeneratedOnce}
                 isLoading={isLoading}
                 onSaveToDatabase={actions.saveToDatabase}
-                onSaveToGCal={actions.saveToGCal}
+                onSaveToGCal={() => actions.saveToGCal(finalSchedule)}
                 formatTime={formatTime}
             />
         </ScrollView>

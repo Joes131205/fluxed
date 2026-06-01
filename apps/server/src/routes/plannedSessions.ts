@@ -38,23 +38,28 @@ const app = new Hono<{ Variables: AppType }>()
             return c.json({ ok: true, data }, 201);
         },
     )
-    .post("/gcal", zValidator("json", plannedSessionSchema), async (c) => {
-        const userId = c.get("userId");
-        const schedule = c.req.valid("json");
-        const user = await getUserById(userId);
+    .post(
+        "/gcal",
+        zValidator("json", plannedSessionSchema),
+        authCheck,
+        async (c) => {
+            const userId = c.get("userId");
+            const schedule = c.req.valid("json");
+            const user = await getUserById(userId);
 
-        if (!user || !user.googleRefreshToken) {
-            return c.json({ ok: false, message: "Unauthorized" }, 403);
-        }
+            if (!user || !user.googleRefreshToken) {
+                return c.json({ ok: false, message: "Unauthorized" }, 403);
+            }
 
-        const { googleRefreshToken } = user;
+            const { googleRefreshToken } = user;
 
-        const accessToken = await refreshGoogleToken(googleRefreshToken);
-        const calId = await getCalendarId(accessToken);
+            const accessToken = await refreshGoogleToken(googleRefreshToken);
+            const calId = await getCalendarId(accessToken);
 
-        await deleteCalendarEvents(accessToken, calId);
-        await insertCalendarEvents(accessToken, calId, schedule);
-    })
+            await deleteCalendarEvents(accessToken, calId);
+            await insertCalendarEvents(accessToken, calId, schedule);
+        },
+    )
     .delete("/", authCheck, async (c) => {
         const userId = c.get("userId");
 
