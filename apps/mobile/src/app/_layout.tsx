@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "../hooks/useAuth";
 import { Text, View } from "react-native";
 import { useEffect } from "react";
-import { Header } from "../components/ui/Header";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +32,7 @@ function RootLayoutContent() {
         return (
             <View className="flex-1 items-center justify-center bg-background flex flex-col gap-5">
                 <Text className="text-center font-bold text-xl text-white">
-                    Loading user...
+                    Loading data...
                 </Text>
             </View>
         );

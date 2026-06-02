@@ -2,6 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { areaSchema } from "../../../packages/shared/src/inputs";
 import { authCheck } from "../middlewares/authMiddleware";
+import { withRouteError } from "../utils/withRouteError";
 import {
     createArea,
     deleteArea,
@@ -14,13 +15,13 @@ type AppType = {
 };
 
 const app = new Hono<{ Variables: AppType }>()
-    .get("/", authCheck, async (c) => {
+    .get("/", withRouteError, authCheck, async (c) => {
         const userId = c.get("userId");
         const data = await getAreas(userId);
         console.log(data);
         return c.json({ ok: true, data }, 200);
     })
-    .post("/", zValidator("json", areaSchema), authCheck, async (c) => {
+    .post("/", withRouteError, zValidator("json", areaSchema), authCheck, async (c) => {
         const input = c.req.valid("json");
         const userId = c.get("userId");
         const data = await createArea({
@@ -29,7 +30,7 @@ const app = new Hono<{ Variables: AppType }>()
         });
         return c.json({ ok: true, data }, 201);
     })
-    .put("/:id", zValidator("json", areaSchema), authCheck, async (c) => {
+    .put("/:id", withRouteError, zValidator("json", areaSchema), authCheck, async (c) => {
         const input = c.req.valid("json");
         const userId = c.get("userId");
         const id = c.req.param("id");
@@ -39,7 +40,7 @@ const app = new Hono<{ Variables: AppType }>()
         });
         return c.json({ ok: true, data }, 200);
     })
-    .delete("/:id", authCheck, async (c) => {
+    .delete("/:id", withRouteError, authCheck, async (c) => {
         const id = c.req.param("id");
         await deleteArea(id);
         return c.json({ ok: true }, 200);

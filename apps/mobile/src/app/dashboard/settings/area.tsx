@@ -6,7 +6,7 @@ import {
     useDeleteArea,
 } from "../../../hooks/useAreas";
 import { useRouter } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import { TextPrimaryInput } from "../../../components/ui/TextPrimaryInput";
 import { PrimaryButton } from "../../../components/ui/PrimaryButton";
 import { ColorField } from "../../../components/ui/ColorField";
@@ -43,7 +43,7 @@ export default function AreaSetting() {
                 <Text className="text-2xl font-bold text-primary tracking-tight mb-1">
                     Area Settings
                 </Text>
-                <View className="h-[2px] w-32 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
+                <View className="h-0.5 w-32 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
                 <Text className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-5">
                     Modify existing areas
                 </Text>

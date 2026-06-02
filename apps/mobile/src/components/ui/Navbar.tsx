@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { usePathname, useRouter } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
@@ -53,7 +53,7 @@ export const Navbar = () => {
                         className="flex-1 items-center justify-center py-2 relative"
                     >
                         {isActive && (
-                            <View className="absolute top-0 w-10 h-[2px] bg-primary shadow-[0_0_8px_rgba(0,255,65,0.8)]" />
+                            <View className="absolute top-0 w-10 h-0.5 bg-primary shadow-[0_0_8px_rgba(0,255,65,0.8)]" />
                         )}
 
                         <Ionicons

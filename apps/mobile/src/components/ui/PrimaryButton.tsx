@@ -12,12 +12,13 @@ export function PrimaryButton({
     label,
     onPress,
     disabled,
+    loading,
     ...props
 }: ButtonProps) {
     return (
         <Pressable
             onPress={onPress}
-            disabled={disabled}
+            disabled={disabled || loading}
             className="w-full mt-2"
             {...props}
         >
@@ -44,11 +45,15 @@ export function PrimaryButton({
                     <View
                         className={`border py-4 flex items-center justify-center transition-colors ${bgColor} ${borderColor}`}
                     >
-                        <Text
-                            className={`uppercase tracking-widest text-sm font-bold font-mono ${textColor}`}
-                        >
-                            {label}
-                        </Text>
+                        {loading ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                        ) : (
+                            <Text
+                                className={`uppercase tracking-widest text-sm font-bold font-mono ${textColor}`}
+                            >
+                                {label}
+                            </Text>
+                        )}
                     </View>
                 );
             }}

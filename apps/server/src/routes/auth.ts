@@ -20,53 +20,70 @@ import {
     jwtSecret,
 } from "../env";
 import { authCheck } from "../middlewares/authMiddleware";
+import { withRouteError } from "../utils/withRouteError";
 
 type AppType = {
     userId: string;
 };
 
 const app = new Hono<{ Variables: AppType }>()
-    .post("/register", zValidator("json", signUpSchema), async (c) => {
-        const input = c.req.valid("json");
-        const hashedPassword = await hashPassword(input.password);
-        const user = await createUser({ ...input, password: hashedPassword });
-        if (!user) {
-            return c.json({ ok: false, error: "Email already exists" }, 409);
-        }
-        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
+    .post(
+        "/register",
+        withRouteError,
+        zValidator("json", signUpSchema),
+        async (c) => {
+            const input = c.req.valid("json");
+            const hashedPassword = await hashPassword(input.password);
+            const user = await createUser({
+                ...input,
+                password: hashedPassword,
+            });
+            if (!user) {
+                return c.json(
+                    { ok: false, error: "Email already exists" },
+                    409,
+                );
+            }
+            const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
 
-        return c.json(
-            {
-                ok: true,
-                user,
-                token,
-            },
-            201,
-        );
-    })
-    .post("/login", zValidator("json", logInSchema), async (c) => {
-        const input = c.req.valid("json");
+            return c.json(
+                {
+                    ok: true,
+                    user,
+                    token,
+                },
+                201,
+            );
+        },
+    )
+    .post(
+        "/login",
+        withRouteError,
+        zValidator("json", logInSchema),
+        async (c) => {
+            const input = c.req.valid("json");
 
-        const user = await getUserByEmail(input.email);
+            const user = await getUserByEmail(input.email);
 
-        if (
-            !user ||
-            !(await checkPasswordHash(input.password, user.password!))
-        ) {
-            return c.json({ ok: false, error: "Invalid credentials" }, 401);
-        }
+            if (
+                !user ||
+                !(await checkPasswordHash(input.password, user.password!))
+            ) {
+                return c.json({ ok: false, error: "Invalid credentials" }, 401);
+            }
 
-        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
+            const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
 
-        return c.json(
-            {
-                ok: true,
-                token,
-            },
-            200,
-        );
-    })
-    .get("/me", authCheck, async (c) => {
+            return c.json(
+                {
+                    ok: true,
+                    token,
+                },
+                200,
+            );
+        },
+    )
+    .get("/me", withRouteError, authCheck, async (c) => {
         const userId = c.get("userId");
         const user = await getUserById(userId);
 
@@ -82,7 +99,7 @@ const app = new Hono<{ Variables: AppType }>()
             200,
         );
     })
-    .get("/google/start", async (c) => {
+    .get("/google/start", withRouteError, async (c) => {
         const state = c.req.query("state") ?? "web";
 
         const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
@@ -95,8 +112,7 @@ const app = new Hono<{ Variables: AppType }>()
         authUrl.searchParams.set("state", state);
         return c.redirect(authUrl.toString());
     })
-    .get("/google/callback", async (c) => {
-        console.log("getting token...");
+    .get("/google/callback", withRouteError, async (c) => {
         const oauthError = c.req.query("error");
         const oauthErrorDescription = c.req.query("error_description");
         if (oauthError) {
@@ -116,146 +132,135 @@ const app = new Hono<{ Variables: AppType }>()
             return c.json({ ok: false, error: "Not Authorized" }, 403);
         }
 
-        try {
-            const tokenResponse = await axios.post(
-                "https://oauth2.googleapis.com/token",
-                new URLSearchParams({
-                    code,
-                    client_id: googleClientId,
-                    client_secret: googleClientSecret,
-                    redirect_uri: googleRedirectURI,
-                    grant_type: "authorization_code",
-                }).toString(),
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    validateStatus: () => true,
+        const tokenResponse = await axios.post(
+            "https://oauth2.googleapis.com/token",
+            new URLSearchParams({
+                code,
+                client_id: googleClientId,
+                client_secret: googleClientSecret,
+                redirect_uri: googleRedirectURI,
+                grant_type: "authorization_code",
+            }).toString(),
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
                 },
-            );
-            const tokens = tokenResponse.data as {
-                access_token?: string;
-                refresh_token?: string;
-                error?: string;
-                error_description?: string;
-            };
+                validateStatus: () => true,
+            },
+        );
+        const tokens = tokenResponse.data as {
+            access_token?: string;
+            refresh_token?: string;
+            error?: string;
+            error_description?: string;
+        };
 
-            if (
-                tokenResponse.status >= 400 ||
-                tokens.error ||
-                !tokens.access_token
-            ) {
-                console.error("Google token exchange failed", {
-                    status: tokenResponse.status,
-                    error: tokens.error,
-                    error_description: tokens.error_description,
-                });
+        if (
+            tokenResponse.status >= 400 ||
+            tokens.error ||
+            !tokens.access_token
+        ) {
+            console.error("Google token exchange failed", {
+                status: tokenResponse.status,
+                error: tokens.error,
+                error_description: tokens.error_description,
+            });
 
-                return c.json(
-                    {
-                        ok: false,
-                        error:
-                            tokens.error_description ||
-                            "Unable to complete Google OAuth token exchange",
-                        details: tokens.error,
-                    },
-                    400,
-                );
-            }
-
-            const { access_token, refresh_token } = tokens;
-
-            const userProfileResponse = await axios.get(
-                "https://www.googleapis.com/oauth2/v3/userinfo",
-                {
-                    headers: {
-                        Authorization: `Bearer ${access_token}`,
-                    },
-                    validateStatus: () => true,
-                },
-            );
-
-            if (userProfileResponse.status >= 400) {
-                console.error("Google profile fetch failed", {
-                    status: userProfileResponse.status,
-                    body: userProfileResponse.data,
-                });
-
-                return c.json(
-                    {
-                        ok: false,
-                        error: "Unable to fetch Google profile",
-                    },
-                    400,
-                );
-            }
-
-            const userProfile = userProfileResponse.data as {
-                email?: string;
-                name?: string;
-                sub?: string;
-            };
-
-            const { email, name, sub: googleId } = userProfile;
-
-            if (!email || !name || !googleId) {
-                return c.json(
-                    {
-                        ok: false,
-                        error: "Incomplete Google profile data",
-                    },
-                    400,
-                );
-            }
-
-            let user = await getUserByEmail(email);
-
-            if (!user) {
-                user = await createUser({
-                    email,
-                    username: name,
-                    googleRefreshToken: refresh_token,
-                    googleId,
-                });
-            } else {
-                user = await updateUser(user.id, {
-                    googleRefreshToken: refresh_token,
-                    googleId,
-                    email: user.email,
-                    username: user.username,
-                });
-            }
-
-            console.log(user);
-
-            if (!user) {
-                return c.json(
-                    {
-                        ok: false,
-                        error: "Unable to create or update user",
-                    },
-                    500,
-                );
-            }
-
-            const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
-            console.log(token);
-            console.log("Redirecting..." + state);
-            return c.redirect(
-                state === "mobile"
-                    ? `${mobileAuthSuccessURI}?token=${token}`
-                    : `http://localhost:3001/auth-success?token=${token}`,
-            );
-        } catch (error) {
-            console.error("Google callback failed", error);
             return c.json(
                 {
                     ok: false,
-                    error: "Google callback failed",
+                    error:
+                        tokens.error_description ||
+                        "Unable to complete Google OAuth token exchange",
+                    details: tokens.error,
+                },
+                400,
+            );
+        }
+
+        const { access_token, refresh_token } = tokens;
+
+        const userProfileResponse = await axios.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+                validateStatus: () => true,
+            },
+        );
+
+        if (userProfileResponse.status >= 400) {
+            console.error("Google profile fetch failed", {
+                status: userProfileResponse.status,
+                body: userProfileResponse.data,
+            });
+
+            return c.json(
+                {
+                    ok: false,
+                    error: "Unable to fetch Google profile",
+                },
+                400,
+            );
+        }
+
+        const userProfile = userProfileResponse.data as {
+            email?: string;
+            name?: string;
+            sub?: string;
+        };
+
+        const { email, name, sub: googleId } = userProfile;
+
+        if (!email || !name || !googleId) {
+            return c.json(
+                {
+                    ok: false,
+                    error: "Incomplete Google profile data",
+                },
+                400,
+            );
+        }
+
+        let user = await getUserByEmail(email);
+
+        if (!user) {
+            user = await createUser({
+                email,
+                username: name,
+                googleRefreshToken: refresh_token,
+                googleId,
+            });
+        } else {
+            user = await updateUser(user.id, {
+                googleRefreshToken: refresh_token,
+                googleId,
+                email: user.email,
+                username: user.username,
+            });
+        }
+
+        console.log(user);
+
+        if (!user) {
+            return c.json(
+                {
+                    ok: false,
+                    error: "Unable to create or update user",
                 },
                 500,
             );
         }
+
+        const token = makeJWT(user.id, 60 * 60 * 24 * 30, jwtSecret);
+        console.log(token);
+        console.log("Redirecting..." + state);
+        return c.redirect(
+            state === "mobile"
+                ? `${mobileAuthSuccessURI}?token=${token}`
+                : `http://localhost:3001/auth-success?token=${token}`,
+        );
     });
 
 export default app;

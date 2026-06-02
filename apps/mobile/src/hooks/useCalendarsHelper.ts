@@ -368,7 +368,30 @@ export function useCalendarEngine() {
         }
     };
 
-    const saveToGCal = async (schedule: any) => {
+    const saveToGCal = async () => {
+        const shouldSync = await new Promise<boolean>((resolve) => {
+            Alert.alert(
+                "Regenerate Google Calendar?",
+                "Saving this schedule will replace your existing Google Calendar if any.",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel",
+                        onPress: () => resolve(false),
+                    },
+                    {
+                        text: "Replace",
+                        style: "destructive",
+                        onPress: () => resolve(true),
+                    },
+                ],
+            );
+        });
+
+        if (!shouldSync) {
+            return;
+        }
+
         setIsLoading(true);
         try {
             const payload = finalSchedule.map((item) => ({
@@ -385,6 +408,12 @@ export function useCalendarEngine() {
                 { json: payload },
                 { headers: await getAuthHeaders() },
             );
+            if (!response.ok) {
+                Alert.alert(
+                    "Error",
+                    "Failed to save the schedule to Google Calendar!",
+                );
+            }
             Alert.alert(
                 "Success!",
                 "Schedule put to the Google Calendar! Check it out!",

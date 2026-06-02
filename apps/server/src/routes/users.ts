@@ -6,33 +6,46 @@ import { updateTime, updateUser } from "../../../packages/db/src/queries/users";
 import z from "zod";
 import { validateJWT } from "../utils/jwt";
 import { userSchema } from "../../../packages/shared/src/inputs";
+import { withRouteError } from "../utils/withRouteError";
 
 type AppType = {
     userId: string;
 };
 
 const app = new Hono<{ Variables: AppType }>()
-    .put("/time", zValidator("json", timeSchema), authCheck, async (c) => {
-        const userId = c.get("userId");
-        const time = c.req.valid("json");
+    .put(
+        "/time",
+        withRouteError,
+        zValidator("json", timeSchema),
+        authCheck,
+        async (c) => {
+            const userId = c.get("userId");
+            const time = c.req.valid("json");
 
-        await updateTime(userId, time);
+            await updateTime(userId, time);
 
-        return c.json({ ok: true, message: "Updated" }, 200);
-    })
-    .put("/", zValidator("json", userSchema), authCheck, async (c) => {
-        const input = c.req.valid("json");
-        const userId = c.get("userId");
-        const updated = await updateUser(userId, input);
-        if (!updated) return c.json({ ok: false, error: "Not found" }, 404);
+            return c.json({ ok: true, message: "Updated" }, 200);
+        },
+    )
+    .put(
+        "/",
+        withRouteError,
+        zValidator("json", userSchema),
+        authCheck,
+        async (c) => {
+            const input = c.req.valid("json");
+            const userId = c.get("userId");
+            const updated = await updateUser(userId, input);
+            if (!updated) return c.json({ ok: false, error: "Not found" }, 404);
 
-        return c.json(
-            {
-                ok: true,
-            },
-            200,
-        );
-    });
+            return c.json(
+                {
+                    ok: true,
+                },
+                200,
+            );
+        },
+    );
 
 export type CalendarRoute = typeof app;
 

@@ -64,7 +64,7 @@ export default function Reschedule() {
                 <Text className="text-2xl font-bold text-primary tracking-tight mb-1">
                     Reschedule
                 </Text>
-                <View className="h-[2px] w-24 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
+                <View className="h-0.5 w-24 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
                 <Text className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-5">
                     Derailed? Don't worry. You can reschedule your day here.
                 </Text>
@@ -103,7 +103,7 @@ export default function Reschedule() {
                 isGeneratedOnce={isGeneratedOnce}
                 isLoading={isLoading}
                 onSaveToDatabase={actions.saveToDatabase}
-                onSaveToGCal={() => actions.saveToGCal(finalSchedule)}
+                onSaveToGCal={actions.saveToGCal}
                 formatTime={formatTime}
             />
         </ScrollView>

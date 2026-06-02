@@ -14,13 +14,14 @@ import {
     insertCalendarEvents,
 } from "../utils/gcal";
 import { refreshGoogleToken } from "../utils/google";
+import { withRouteError } from "../utils/withRouteError";
 
 type AppType = {
     userId: string;
 };
 
 const app = new Hono<{ Variables: AppType }>()
-    .get("/", authCheck, async (c) => {
+    .get("/", withRouteError, authCheck, async (c) => {
         const userId = c.get("userId");
 
         const data = await getPlan(userId);
@@ -29,6 +30,7 @@ const app = new Hono<{ Variables: AppType }>()
     })
     .post(
         "/",
+        withRouteError,
         zValidator("json", plannedSessionSchema),
         authCheck,
         async (c) => {
@@ -40,6 +42,7 @@ const app = new Hono<{ Variables: AppType }>()
     )
     .post(
         "/gcal",
+        withRouteError,
         zValidator("json", plannedSessionSchema),
         authCheck,
         async (c) => {
@@ -58,9 +61,11 @@ const app = new Hono<{ Variables: AppType }>()
 
             await deleteCalendarEvents(accessToken, calId);
             await insertCalendarEvents(accessToken, calId, schedule);
+
+            return c.json({ ok: true, message: "Synced!" }, 200);
         },
     )
-    .delete("/", authCheck, async (c) => {
+    .delete("/", withRouteError, authCheck, async (c) => {
         const userId = c.get("userId");
 
         await deletePlan(userId);

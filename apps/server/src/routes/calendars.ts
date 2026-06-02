@@ -4,6 +4,7 @@ import { authCheck } from "../middlewares/authMiddleware";
 import { getUserById } from "../../../packages/db/src/queries/users";
 import { googleClientId, googleClientSecret } from "../env";
 import { getTimeline } from "../utils/calendar";
+import { withRouteError } from "../utils/withRouteError";
 
 type AppType = {
     userId: string;
@@ -11,6 +12,7 @@ type AppType = {
 
 const app = new Hono<{ Variables: AppType }>().get(
     "/sync",
+    withRouteError,
     authCheck,
     async (c) => {
         const userId = c.get("userId");
@@ -52,7 +54,9 @@ const app = new Hono<{ Variables: AppType }>().get(
             return isEditable && isSelected;
         });
 
-        const calendarIds = calendarList.map((item: any) => ({ id: item.id }));
+        const calendarIds = calendarList.map((item: any) => ({
+            id: item.id,
+        }));
 
         const response = await axios.post(
             "https://www.googleapis.com/calendar/v3/freeBusy",

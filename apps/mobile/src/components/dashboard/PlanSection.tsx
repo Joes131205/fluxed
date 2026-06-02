@@ -2,7 +2,7 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { usePlans } from "../../hooks/usePlans";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 
 type PlanItem = {
     id: string;
@@ -20,9 +20,9 @@ type PlanItem = {
 
 export const PlanSection = () => {
     const { data: plansData, isLoading: isPlansLoading } = usePlans();
-    const [length, setLength] = useState(0);
     const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
+    const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
 
     const planItems: PlanItem[] =
         plansData &&
@@ -36,6 +36,7 @@ export const PlanSection = () => {
             : [];
 
     const DEFAULT_COLOR = "#00ff41";
+    const length = planItems.length;
 
     const hexToRgba = (hex?: string, alpha = 1) => {
         const fallback = DEFAULT_COLOR.replace(/^#+/, "").slice(0, 6);
@@ -57,25 +58,44 @@ export const PlanSection = () => {
     };
 
     const toggleEventCompletion = (id: string) => {
-        if (progress.includes(id)) {
-            setProgress(progress.filter((item) => item !== id));
-        } else {
-            setProgress((prev) => [...prev, id]);
-        }
+        setProgress((current) =>
+            current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id],
+        );
     };
 
     useEffect(() => {
         const loadProgress = async () => {
-            setLength(planItems.length);
-            const data = await AsyncStorage.getItem("progress");
-            if (!data) {
-                return;
+            try {
+                const data = await AsyncStorage.getItem("progress");
+                if (!data) {
+                    return;
+                }
+
+                const decoded = JSON.parse(data);
+                if (Array.isArray(decoded)) {
+                    setProgress(decoded);
+                }
+            } catch {
+                setProgress([]);
+            } finally {
+                setHasLoadedProgress(true);
             }
-            const decoded = JSON.parse(data);
-            setProgress(decoded);
         };
+
         loadProgress();
-    }, [planItems.length]);
+    }, []);
+
+    useEffect(() => {
+        if (!hasLoadedProgress) {
+            return;
+        }
+
+        AsyncStorage.setItem("progress", JSON.stringify(progress)).catch(
+            () => undefined,
+        );
+    }, [hasLoadedProgress, progress]);
 
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 60000);
@@ -99,7 +119,7 @@ export const PlanSection = () => {
                         [{progress.length}/{length}]
                     </Text>
                 </View>
-                <View className="w-full h-4 bg-background border border-white p-[2px]">
+                <View className="w-full h-4 bg-background border border-accent p-0.5">
                     <View
                         className="h-full bg-primary transition-all duration-500 shadow-[0_0_8px_rgba(0,255,65,0.8)]"
                         style={{
@@ -169,19 +189,42 @@ export const PlanSection = () => {
                             textSubColor = "text-white/50";
                         }
 
+                        let buttonText = "Check In";
+                        let btnStyle = "border-white/20 bg-transparent";
+                        let btnText = "text-white/60";
+                        const isDisabled =
+                            !isCompleted && (hasNotStarted || isPassed);
+
+                        if (isCompleted) {
+                            buttonText = "Completed";
+                            btnStyle = "border-transparent bg-transparent";
+                            btnText = "text-white/30";
+                        } else if (isPassed) {
+                            buttonText = "Passed";
+                            btnStyle = "border-transparent bg-transparent";
+                            btnText = "text-white/40";
+                        } else if (hasNotStarted) {
+                            buttonText = "Standby";
+                            btnStyle = "border-transparent bg-transparent";
+                            btnText = "text-white/40";
+                        } else if (isNow) {
+                            // Tombol eksekusi menyala hijau HANYA saat waktunya tiba
+                            btnStyle = "border-primary bg-primary";
+                            btnText = "text-black font-black";
+                        }
+
                         return (
-                            <View key={idx} className="flex-row">
+                            <View key={item.id} className="flex-row">
                                 <View className="w-8 items-center justify-start mr-2 pt-4">
                                     <View
                                         className={`w-3 h-3 rounded-full border ${isCompleted ? "bg-primary/40 border-primary/40" : isNow ? "bg-primary border-primary shadow-[0_0_8px_rgba(0,255,65,1)]" : "bg-transparent border-primary/50"}`}
                                     />
                                     {idx !== planItems.length - 1 && (
-                                        <View className="w-[1px] flex-1 bg-primary/30 my-2" />
+                                        <View className="w-px flex-1 bg-primary/30 my-2" />
                                     )}
                                 </View>
 
                                 <View
-                                    key={item.sessionId}
                                     className={`flex-1 flex-col ${cardStyle} ${glowEffect}`}
                                 >
                                     <View className="flex-row justify-between items-start gap-4 mb-4">
@@ -235,57 +278,20 @@ export const PlanSection = () => {
                                     </View>
 
                                     <View className="items-start border-t border-primary/20 pt-3 mt-1">
-                                        {(() => {
-                                            const isDisabled =
-                                                !isCompleted &&
-                                                (hasNotStarted || isPassed);
-                                            let buttonText = "Check In";
-                                            let btnStyle =
-                                                "border-white/20 bg-transparent";
-                                            let btnText = "text-white/60";
-
-                                            if (isCompleted) {
-                                                buttonText = "Completed";
-                                                btnStyle =
-                                                    "border-transparent bg-transparent";
-                                                btnText = "text-white/30";
-                                            } else if (isPassed) {
-                                                buttonText = "Passed";
-                                                btnStyle =
-                                                    "border-transparent bg-transparent";
-                                                btnText = "text-white/40";
-                                            } else if (hasNotStarted) {
-                                                buttonText = "Standby";
-                                                btnStyle =
-                                                    "border-transparent bg-transparent";
-                                                btnText = "text-white/40";
-                                            } else if (isNow) {
-                                                // Tombol eksekusi menyala hijau HANYA saat waktunya tiba
-                                                btnStyle =
-                                                    "border-primary bg-primary";
-                                                btnText =
-                                                    "text-black font-black";
+                                        <Pressable
+                                            onPress={() =>
+                                                !isDisabled &&
+                                                toggleEventCompletion(item.id)
                                             }
-
-                                            return (
-                                                <Pressable
-                                                    onPress={() =>
-                                                        !isDisabled &&
-                                                        toggleEventCompletion(
-                                                            item.id,
-                                                        )
-                                                    }
-                                                    disabled={isDisabled}
-                                                    className={`px-3 py-2 border ${btnStyle} ${isDisabled && !isCompleted && !isPassed && !hasNotStarted ? "opacity-50" : ""}`}
-                                                >
-                                                    <Text
-                                                        className={`text-[10px] text-center font-mono uppercase tracking-widest ${btnText}`}
-                                                    >
-                                                        {buttonText}
-                                                    </Text>
-                                                </Pressable>
-                                            );
-                                        })()}
+                                            disabled={isDisabled}
+                                            className={`px-3 py-2 border ${btnStyle} ${isDisabled ? "opacity-50" : ""}`}
+                                        >
+                                            <Text
+                                                className={`text-[10px] text-center font-mono uppercase tracking-widest ${btnText}`}
+                                            >
+                                                {buttonText}
+                                            </Text>
+                                        </Pressable>
                                     </View>
                                 </View>
                             </View>
