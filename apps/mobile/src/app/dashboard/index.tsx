@@ -1,6 +1,5 @@
-import { Text, View, Pressable, ScrollView } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
-import { useRouter } from "expo-router";
 import { PlanSection } from "../../components/dashboard/PlanSection";
 
 export default function Dashboard() {

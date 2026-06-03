@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { AreaDisplay } from "../../components/calendar/AreaDisplay";
 import { useCalendarEngine } from "../../hooks/useCalendarsHelper";
@@ -29,18 +29,12 @@ export default function Reschedule() {
         finalSchedule,
         isLoading,
         isScheduleLoading,
-        error,
         user,
         schedule,
         actions,
     } = useCalendarEngine();
 
     const isGoogleConnected = !!user?.googleId;
-
-    const calendarBlocks = useMemo(
-        () => calendar.reduce((acc, item) => acc + item.busy.length, 0),
-        [calendar],
-    );
 
     const formatTime = (isoDate: string) => {
         return new Date(isoDate).toLocaleTimeString([], {

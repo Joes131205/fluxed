@@ -18,7 +18,6 @@ export default function AuthSuccess() {
             "Auth success - received token:",
             value?.substring(0, 50) + "...",
         );
-        console.log("Auth success - received error:", errorValue);
         const completeAuth = async () => {
             if (errorValue) {
                 Alert.alert("Google Sign In Failed", errorValue);
@@ -38,11 +37,7 @@ export default function AuthSuccess() {
                     "Token saved and verified:",
                     savedToken?.substring(0, 50) + "...",
                 );
-                await new Promise((resolve) => setTimeout(resolve, 500));
-                console.log("About to load current user");
                 await getCurrentUser();
-                console.log("User loaded successfully");
-                await new Promise((resolve) => setTimeout(resolve, 2000));
 
                 Alert.alert("Success", "Successfully logged in using Google!");
                 router.replace("/dashboard");

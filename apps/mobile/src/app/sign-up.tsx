@@ -174,11 +174,11 @@ export default function SignUp() {
                 </View>
 
                 <View className="flex-row items-center my-6">
-                    <View className="flex-1 h-[1px] border-b border-dashed border-muted-foreground/30" />
+                    <View className="flex-1 h-px border-b border-dashed border-muted-foreground/30" />
                     <Text className="px-4 text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
                         OR
                     </Text>
-                    <View className="flex-1 h-[1px] border-b border-dashed border-muted-foreground/30" />
+                    <View className="flex-1 h-px border-b border-dashed border-muted-foreground/30" />
                 </View>
 
                 <GoogleAuthButton
