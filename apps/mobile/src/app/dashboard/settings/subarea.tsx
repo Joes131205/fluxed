@@ -106,8 +106,8 @@ export default function SubareaSetting() {
                     `Area: ${subarea.areaName ?? subarea.area_id.substring(0, 6)}`,
                     `Weight: ${subarea.weight ?? 1}`,
                 ]}
-                editLabel="OVERWRITE"
-                cancelLabel="CANCEL"
+                editLabel="Overwrite"
+                cancelLabel="Cancel"
                 itemLabel="Subarea Name"
             />
         </ScrollView>

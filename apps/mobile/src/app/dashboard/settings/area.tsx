@@ -103,8 +103,8 @@ export default function AreaSetting() {
                     );
                 }}
                 renderItemDetails={(area) => [`Weight: ${area.weight ?? 1}`]}
-                editLabel="OVERWRITE"
-                cancelLabel="ABORT"
+                editLabel="Overwrite"
+                cancelLabel="Cancel"
                 itemLabel="Area Name"
             />
         </ScrollView>

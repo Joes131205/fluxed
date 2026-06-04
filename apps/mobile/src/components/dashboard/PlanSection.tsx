@@ -119,7 +119,7 @@ export const PlanSection = () => {
                         [{progress.length}/{length}]
                     </Text>
                 </View>
-                <View className="w-full h-4 bg-background border border-accent p-0.5">
+                <View className="w-full h-4 bg-background border border-primary p-0.5">
                     <View
                         className="h-full bg-primary transition-all duration-500 shadow-[0_0_8px_rgba(0,255,65,0.8)]"
                         style={{

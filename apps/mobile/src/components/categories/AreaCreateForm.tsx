@@ -52,7 +52,7 @@ export function AreaCreateForm() {
                     label="Area Name"
                     value={areaName}
                     onChangeText={setAreaName}
-                    placeholder="e.g. CORE_SYSTEM"
+                    placeholder="e.g. Academic"
                     editable={!isAreaPending}
                 />
 

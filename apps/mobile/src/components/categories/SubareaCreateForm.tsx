@@ -98,7 +98,7 @@ export function SubareaCreateForm() {
                     label="Subarea Name"
                     value={subareaName}
                     onChangeText={setSubareaName}
-                    placeholder="e.g. UI_DESIGN"
+                    placeholder="e.g. Homework"
                     editable={!isSubareaPending}
                 />
 

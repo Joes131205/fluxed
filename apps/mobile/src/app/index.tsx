@@ -2,14 +2,17 @@ import { useRouter } from "expo-router";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { useAuth } from "../hooks/useAuth";
 import { PrimaryButton } from "../components/ui/PrimaryButton";
+import { useEffect } from "react";
 
 export default function App() {
     const router = useRouter();
     const { user } = useAuth();
 
-    if (user?.id) {
-        router.replace("/dashboard");
-    }
+    useEffect(() => {
+        if (user?.id) {
+            router.replace("/dashboard");
+        }
+    }, [user]);
 
     return (
         <ScrollView
@@ -56,7 +59,7 @@ export default function App() {
                 </View>
 
                 <PrimaryButton
-                    label="GET STARTED"
+                    label="Get Started"
                     onPress={() => router.push("/sign-up")}
                 />
             </View>
