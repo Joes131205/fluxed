@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { AreaDisplay } from "../../components/calendar/AreaDisplay";
+import { AreaDisplay } from "../../components/reschedule/AreaDisplay";
 import { useCalendarEngine } from "../../hooks/useCalendarsHelper";
 import { BusyBlocks } from "../../components/reschedule/BusyBlocks";
 import { ReschedulingStylePicker } from "../../components/reschedule/ReschedulingStylePicker";
 import { OutputTimeline } from "../../components/reschedule/OutputTimeline";
+import { AreaSectionItem } from "../../components/reschedule/AreaSection";
 
 export default function Reschedule() {
     const algorithmType = [
@@ -32,6 +33,8 @@ export default function Reschedule() {
         user,
         schedule,
         actions,
+        toggleAreaExclude,
+        toggleSubareaExclude,
     } = useCalendarEngine();
 
     const isGoogleConnected = !!user?.googleId;
@@ -81,14 +84,16 @@ export default function Reschedule() {
             <ReschedulingStylePicker
                 algorithmTypes={algorithmType}
                 onAlgorithmChange={setAlgorithmIdx}
-                onReschedule={() => actions.runReschedule(type)}
+                onReschedule={() => actions.runReschedule(type, schedule)}
                 description={description}
                 currentAlgorithm={type}
             />
 
             <AreaDisplay
-                areasDataOverride={schedule}
+                areasDataOverride={schedule as AreaSectionItem[]}
                 isLoadingOverride={isScheduleLoading}
+                onToggleExclude={toggleAreaExclude}
+                onToggleSubareaExclude={toggleSubareaExclude}
             />
 
             <OutputTimeline

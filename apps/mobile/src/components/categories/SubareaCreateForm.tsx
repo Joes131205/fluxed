@@ -12,6 +12,7 @@ import type { AreaRecord } from "./categories.types";
 export function SubareaCreateForm() {
     const [subareaName, setSubareaName] = useState("");
     const [subareaWeight, setSubareaWeight] = useState("1");
+    const [subareaDescription, setSubareaDescription] = useState("");
     const [selectedAreaId, setSelectedAreaId] = useState("");
     const [subareaColor, setSubareaColor] = useState(DEFAULT_CATEGORY_COLOR);
 
@@ -101,7 +102,13 @@ export function SubareaCreateForm() {
                     placeholder="e.g. Homework"
                     editable={!isSubareaPending}
                 />
-
+                <TextPrimaryInput
+                    label="Description"
+                    value={subareaDescription}
+                    onChangeText={setSubareaDescription}
+                    placeholder="e.g. Solo Project"
+                    editable={!isSubareaPending}
+                />
                 <TextPrimaryInput
                     label="Weight (1-5)"
                     value={subareaWeight}

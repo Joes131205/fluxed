@@ -7,6 +7,7 @@ import {
 } from "../../../hooks/useAreas";
 import { CategoryEntityList } from "../../../components/settings/CategoryEntityList";
 import { PageHeader } from "../../../components/ui/PageHeader";
+import { BackButton } from "../../../components/ui/BackButton";
 
 export default function AreaSetting() {
     const { data: areasData, isLoading: isAreaLoading } = useAreas();
@@ -25,6 +26,7 @@ export default function AreaSetting() {
             className="flex-1 bg-background"
             contentContainerClassName="flex flex-col gap-6 py-8 px-4"
         >
+            <BackButton />
             <PageHeader
                 title="Area Settings"
                 description="Modify existing areas"

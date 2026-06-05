@@ -8,11 +8,15 @@ import { AreaSection, type AreaSectionItem } from "./AreaSection";
 type AreaDisplayProps = {
     areasDataOverride?: AreaSectionItem[];
     isLoadingOverride?: boolean;
+    onToggleExclude: (areaId: string) => void;
+    onToggleSubareaExclude: (areaId: string, subareaId: string) => void;
 };
 
 export const AreaDisplay = ({
     areasDataOverride,
     isLoadingOverride,
+    onToggleExclude,
+    onToggleSubareaExclude,
 }: AreaDisplayProps) => {
     const { data: areasData, isLoading: isAreaLoading } = useAreas();
     const [areas, setAreas] = useState<AreaSectionItem[]>([]);
@@ -51,13 +55,17 @@ export const AreaDisplay = ({
                         return {
                             areaId: area.id,
                             areaName: area.name,
+                            description: area.description,
                             color: area.color,
+                            isExcluded: area.isExcluded,
                             subareas: (subareaData.data || []).map(
                                 (subarea: any) => ({
                                     subareaId: subarea.id,
                                     subareaName: subarea.name,
+                                    description: subarea.description,
                                     weight: subarea.weight || 1,
                                     color: subarea.color,
+                                    isExcluded: subarea.isExcluded,
                                 }),
                             ),
                             weight: area.weight || 1,
@@ -93,7 +101,14 @@ export const AreaDisplay = ({
 
             <View className="flex flex-col gap-4">
                 {areas.length > 0 ? (
-                    areas.map((a) => <AreaSection key={a.areaId} area={a} />)
+                    areas.map((a) => (
+                        <AreaSection
+                            key={a.areaId}
+                            area={a}
+                            onToggleExclude={onToggleExclude}
+                            onToggleSubareaExclude={onToggleSubareaExclude}
+                        />
+                    ))
                 ) : shouldShowLoading ? (
                     <View className="border border-white/10 bg-background p-4">
                         <Text className="font-mono text-primary/70 uppercase text-xs text-center">

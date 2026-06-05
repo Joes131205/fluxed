@@ -28,6 +28,7 @@ export const subareas = pgTable("subareas", {
         })
         .notNull(),
     name: varchar("name", { length: 256 }).notNull(),
+    description: varchar("description", { length: 256 }),
     weight: integer("weight").default(1),
     allocatedMinutes: integer("allocated_minutes").default(0),
     startTime: timestamp("start_time"),

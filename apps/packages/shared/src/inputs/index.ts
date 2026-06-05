@@ -18,6 +18,7 @@ const hexColorSchema = z.string().regex(/^#[0-9a-fA-F]{6}$/, {
 export const areaSchema = z.object({
     id: z.string().optional(),
     name: z.string().nonempty(),
+    description: z.string(),
     weight: z.number().default(0),
     color: hexColorSchema.default("#00cdfd"),
 });
@@ -54,6 +55,7 @@ export const subareaSchema = z.object({
     id: z.string().optional(),
     area_id: z.string().optional(),
     name: z.string().optional(),
+    description: z.string(),
     weight: z.number().default(0).optional(),
     color: hexColorSchema.default("#00cdfd"),
     allocatedMinutes: z.number().optional(),
@@ -64,6 +66,7 @@ export const plannedSessionSchema = z.array(
         subarea_id: z.string(),
         area_name: z.string().optional(),
         subarea_name: z.string().optional(),
+        detail: z.string(),
         user_id: z.string(),
         start_time: z.coerce.date(),
         end_time: z.coerce.date(),

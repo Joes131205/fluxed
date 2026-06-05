@@ -25,10 +25,14 @@ type CalendarItem = {
 type ScheduleItem = {
     areaId: string;
     areaName: string;
+    description?: string;
+    isExcluded: boolean;
     weight: number;
     subareas: {
         subareaId: string;
         subareaName: string;
+        description?: string;
+        isExcluded: boolean;
         weight: number;
     }[];
 };
@@ -171,13 +175,55 @@ export function useCalendarEngine() {
         updateGaps(newBusy);
     };
 
-    const runReschedule = (algo: string) => {
+    const toggleAreaExclude = (areaId: string) => {
+        setSchedule((prev) =>
+            prev.map((area) =>
+                area.areaId === areaId
+                    ? { ...area, isExcluded: !area.isExcluded }
+                    : area,
+            ),
+        );
+    };
+
+    const toggleSubareaExclude = (areaId: string, subareaId: string) => {
+        setSchedule((prev) =>
+            prev.map((area) => {
+                if (area.areaId === areaId) {
+                    return {
+                        ...area,
+                        subareas: area.subareas.map((sub) =>
+                            sub.subareaId === subareaId
+                                ? { ...sub, isExcluded: !sub.isExcluded }
+                                : sub,
+                        ),
+                    };
+                }
+                return area;
+            }),
+        );
+    };
+
+    const runReschedule = (algo: string, activeAreas: any[]) => {
         const [hour = "23", minute = "59"] = (user?.endTime ?? "23:59").split(
             ":",
         );
         const dayDone = new Date();
         dayDone.setHours(Number(hour), Number(minute), 0, 0);
-
+        const cleanSchedule = activeAreas
+            .filter((area) => !area.isExcluded)
+            .map((area) => ({
+                areaId: area.areaId,
+                areaName: area.areaName,
+                weight: area.weight,
+                subareas: area.subareas
+                    .filter((sub: any) => !sub.isExcluded)
+                    .map((sub: any) => ({
+                        subareaId: sub.subareaId,
+                        subareaName: sub.subareaName,
+                        weight: sub.weight,
+                    })),
+            }))
+            .filter((area) => area.subareas.length > 0);
         const usableGaps = freeGaps.filter(
             (gap) => new Date(gap.start) < dayDone,
         );
@@ -190,8 +236,8 @@ export function useCalendarEngine() {
 
         const rescheduled =
             algo === "global"
-                ? calcGlobalWeightedTime(schedule, totalUsableMinutes)
-                : calcNestedWeightedTime(schedule, totalUsableMinutes);
+                ? calcGlobalWeightedTime(cleanSchedule, totalUsableMinutes)
+                : calcNestedWeightedTime(cleanSchedule, totalUsableMinutes);
 
         setRescheduledData(rescheduled);
 
@@ -491,10 +537,14 @@ export function useCalendarEngine() {
                             areaId: area.id,
                             areaName: area.name,
                             weight: area.weight || 1,
+                            description: area.description,
+                            isExcluded: false,
                             subareas: (subareaData.data || []).map(
                                 (subarea: any) => ({
                                     subareaId: subarea.id,
                                     subareaName: subarea.name,
+                                    description: area.description,
+                                    isExcluded: false,
                                     weight: subarea.weight || 1,
                                     color: subarea.color,
                                 }),
@@ -541,6 +591,8 @@ export function useCalendarEngine() {
         user,
         schedule,
         isGeneratedOnce,
+        toggleAreaExclude,
+        toggleSubareaExclude,
         actions: {
             addManualEvent,
             removeManualEvent,

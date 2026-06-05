@@ -1,4 +1,10 @@
-import { integer, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+    integer,
+    pgTable,
+    timestamp,
+    uuid,
+    varchar,
+} from "drizzle-orm/pg-core";
 import { subareas } from "./subareas";
 import { users } from "./users";
 
@@ -19,6 +25,7 @@ export const plannedSessions = pgTable("planned_sessions", {
             onDelete: "cascade",
         })
         .notNull(),
+    detail: varchar("detail", { length: 256 }),
     start_time: timestamp("start_time").notNull(),
     end_time: timestamp("end_time").notNull(),
     minutes: integer("minutes").notNull(),

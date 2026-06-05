@@ -14,6 +14,7 @@ import {
 export function AreaCreateForm() {
     const [areaName, setAreaName] = useState("");
     const [areaWeight, setAreaWeight] = useState("1");
+    const [areaDescription, setAreaDescription] = useState("");
     const [areaColor, setAreaColor] = useState(DEFAULT_CATEGORY_COLOR);
 
     const { mutateAsync: createArea, isPending: isAreaPending } =
@@ -55,7 +56,13 @@ export function AreaCreateForm() {
                     placeholder="e.g. Academic"
                     editable={!isAreaPending}
                 />
-
+                <TextPrimaryInput
+                    label="Description"
+                    value={areaDescription}
+                    onChangeText={setAreaDescription}
+                    placeholder="e.g. College related stuff"
+                    editable={!isAreaPending}
+                />
                 <TextPrimaryInput
                     label="Weight (1-5)"
                     value={areaWeight}
