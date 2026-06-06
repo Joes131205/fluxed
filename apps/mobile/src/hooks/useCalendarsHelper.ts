@@ -158,21 +158,42 @@ export function useCalendarEngine() {
             return;
         }
 
-        const currentBusy = calendar[0]?.busy ?? [];
-        const newBusy = [...currentBusy, { start: startIso, end: endIso }];
+        setCalendar((prev) => {
+            const updated = [...prev];
+            const manualIdx = updated.findIndex((c) => c.id === "offline");
 
-        setCalendar([
-            { id: "offline", name: "Manual Busy Blocks", busy: newBusy },
-        ]);
-        updateGaps(newBusy);
+            if (manualIdx >= 0) {
+                updated[manualIdx].busy.push({ start: startIso, end: endIso });
+            } else {
+                updated.push({
+                    id: "offline",
+                    name: "Manual Overrides",
+                    busy: [{ start: startIso, end: endIso }],
+                });
+            }
+
+            const allBusy = updated.flatMap((c) => c.busy);
+            updateGaps(allBusy);
+
+            return updated;
+        });
     };
 
-    const removeManualEvent = (index: number) => {
-        const currentBusy = calendar[0]?.busy ?? [];
-        const newBusy = currentBusy.filter((_, i) => i !== index);
+    const removeManualEvent = (indexToRemove: number) => {
+        setCalendar((prev) => {
+            const updated = [...prev];
+            const manualIdx = updated.findIndex((c) => c.id === "offline");
 
-        setCalendar([{ id: "offline", name: "Manual", busy: newBusy }]);
-        updateGaps(newBusy);
+            if (manualIdx >= 0) {
+                updated[manualIdx].busy = updated[manualIdx].busy.filter(
+                    (_, i) => i !== indexToRemove,
+                );
+
+                const allBusy = updated.flatMap((c) => c.busy);
+                updateGaps(allBusy);
+            }
+            return updated;
+        });
     };
 
     const toggleAreaExclude = (areaId: string) => {
@@ -203,6 +224,54 @@ export function useCalendarEngine() {
         );
     };
 
+    const addTemporaryTask = (name: string, weight: number) => {
+        const TEMP_AREA_ID = "sys-temp-override";
+        const newSubareaId = `temp-sub-${Date.now()}`;
+
+        setSchedule((prev) => {
+            const existingTempIndex = prev.findIndex(
+                (area) => area.areaId === TEMP_AREA_ID,
+            );
+
+            if (existingTempIndex >= 0) {
+                const updatedSchedule = [...prev];
+                const tempArea = { ...updatedSchedule[existingTempIndex] };
+
+                tempArea.subareas = [
+                    {
+                        subareaId: newSubareaId,
+                        subareaName: name,
+                        weight: weight,
+                        isExcluded: false,
+                    },
+                    ...tempArea.subareas,
+                ];
+
+                updatedSchedule[existingTempIndex] = tempArea;
+                return updatedSchedule;
+            } else {
+                return [
+                    {
+                        areaId: TEMP_AREA_ID,
+                        areaName: "Temporary",
+                        description: "Temporary tasks ",
+                        weight: 5,
+                        isExcluded: false,
+                        subareas: [
+                            {
+                                subareaId: newSubareaId,
+                                subareaName: name,
+                                weight: weight,
+                                isExcluded: false,
+                                color: "#00f0ff",
+                            },
+                        ],
+                    },
+                    ...prev,
+                ];
+            }
+        });
+    };
     const runReschedule = (algo: string, activeAreas: any[]) => {
         const [hour = "23", minute = "59"] = (user?.endTime ?? "23:59").split(
             ":",
@@ -600,6 +669,7 @@ export function useCalendarEngine() {
             saveToDatabase,
             saveToGCal,
             getData,
+            addTemporaryTask,
         },
     };
 }

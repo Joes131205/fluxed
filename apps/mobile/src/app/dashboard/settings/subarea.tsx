@@ -18,6 +18,7 @@ export default function SubareaSetting() {
     const [name, setName] = useState("");
     const [weight, setWeight] = useState("1");
     const [color, setColor] = useState("#00ff41");
+    const [description, setDescription] = useState("");
 
     const subareas = subareasData?.ok ? (subareasData.data as any[]) : [];
 
@@ -43,6 +44,7 @@ export default function SubareaSetting() {
                 name={name}
                 weight={weight}
                 color={color}
+                description={description}
                 onStartEdit={(subarea) => {
                     setEditingId(subarea.id);
                     setName(subarea.name ?? "");
@@ -53,6 +55,7 @@ export default function SubareaSetting() {
                 onNameChange={setName}
                 onWeightChange={setWeight}
                 onColorChange={setColor}
+                onDescriptionChange={setDescription}
                 onOverwrite={async () => {
                     const parsedWeight = parseInt(weight) || 1;
 

@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { AreaDisplay } from "../../components/reschedule/AreaDisplay";
 import { useCalendarEngine } from "../../hooks/useCalendarsHelper";
 import { BusyBlocks } from "../../components/reschedule/BusyBlocks";
 import { ReschedulingStylePicker } from "../../components/reschedule/ReschedulingStylePicker";
 import { OutputTimeline } from "../../components/reschedule/OutputTimeline";
 import { AreaSectionItem } from "../../components/reschedule/AreaSection";
+import { TextPrimaryInput } from "../../components/ui/TextPrimaryInput";
+import { SecondaryButton } from "../../components/ui/SecondaryButton";
 
 export default function Reschedule() {
     const algorithmType = [
@@ -24,6 +26,9 @@ export default function Reschedule() {
 
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
+    const [temporaryTask, setTemporaryTask] = useState("");
+    const [temporaryWeight, setTemporaryWeight] = useState("1");
+
     const {
         calendar,
         isGeneratedOnce,
@@ -50,6 +55,13 @@ export default function Reschedule() {
         actions.addManualEvent(start, end);
         setStart("");
         setEnd("");
+    };
+
+    const handleInjectTask = () => {
+        if (!temporaryTask.trim()) return;
+        actions.addTemporaryTask(temporaryTask.trim(), Number(temporaryWeight));
+        setTemporaryTask("");
+        setTemporaryWeight("1");
     };
 
     return (
@@ -88,7 +100,23 @@ export default function Reschedule() {
                 description={description}
                 currentAlgorithm={type}
             />
-
+            <View className="flex flex-col border border-muted bg-card p-4 mt-2">
+                <Text className="text-xs font-bold text-primary uppercase tracking-widest">
+                    Add Temporary Task
+                </Text>
+                <TextPrimaryInput
+                    placeholder="Enter the task here..."
+                    value={temporaryTask}
+                    onChangeText={setTemporaryTask}
+                />
+                <TextPrimaryInput
+                    value={temporaryWeight}
+                    keyboardType="number-pad"
+                    placeholder="Enter the task weight here..."
+                    onChangeText={setTemporaryWeight}
+                />
+                <SecondaryButton label={"Add"} onPress={handleInjectTask} />
+            </View>
             <AreaDisplay
                 areasDataOverride={schedule as AreaSectionItem[]}
                 isLoadingOverride={isScheduleLoading}

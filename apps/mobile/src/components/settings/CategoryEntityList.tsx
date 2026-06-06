@@ -28,11 +28,13 @@ type CategoryEntityListProps<T extends BaseCategoryItem> = {
     name: string;
     weight: string;
     color: string;
+    description: string;
     onStartEdit: (item: T) => void;
     onCancelEdit: () => void;
     onNameChange: (value: string) => void;
     onWeightChange: (value: string) => void;
     onColorChange: (value: string) => void;
+    onDescriptionChange: (value: string) => void;
     onOverwrite: () => void;
     onDelete: (item: T) => void;
     renderItemDetails: (item: T) => string[];
@@ -50,11 +52,13 @@ export function CategoryEntityList<T extends BaseCategoryItem>({
     name,
     weight,
     color,
+    description,
     onStartEdit,
     onCancelEdit,
     onNameChange,
     onWeightChange,
     onColorChange,
+    onDescriptionChange,
     onOverwrite,
     onDelete,
     renderItemDetails,
@@ -100,6 +104,13 @@ export function CategoryEntityList<T extends BaseCategoryItem>({
                                 onChangeText={onNameChange}
                                 placeholder={itemLabel}
                             />
+                            <TextPrimaryInput
+                                label="Description"
+                                value={description}
+                                onChangeText={onDescriptionChange}
+                                placeholder="Description"
+                            />
+
                             <TextPrimaryInput
                                 label="Weight (1-5)"
                                 value={weight}

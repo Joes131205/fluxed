@@ -17,6 +17,7 @@ export default function AreaSetting() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [name, setName] = useState("");
     const [weight, setWeight] = useState("1");
+    const [description, setDescription] = useState("");
     const [color, setColor] = useState("#00ff41");
 
     const areas = areasData?.ok ? (areasData.data as any[]) : [];
@@ -42,16 +43,19 @@ export default function AreaSetting() {
                 name={name}
                 weight={weight}
                 color={color}
+                description={description}
                 onStartEdit={(area) => {
                     setEditingId(area.id);
                     setName(area.name ?? "");
                     setWeight(String(area.weight ?? 1));
                     setColor(area.color ?? "#00ff41");
+                    setDescription(area.description);
                 }}
                 onCancelEdit={() => setEditingId(null)}
                 onNameChange={setName}
                 onWeightChange={setWeight}
                 onColorChange={setColor}
+                onDescriptionChange={setDescription}
                 onOverwrite={async () => {
                     const parsedWeight = parseInt(weight) || 1;
 

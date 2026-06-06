@@ -34,7 +34,7 @@ export const AreaSection = ({
     const color = area.color ?? "rgba(255,255,255,0.5)";
 
     return (
-        <View className="border-2 border-white/30 bg-black p-4 w-full mb-1">
+        <View className="border-2 border-white/30 bg-black p-4 w-full mb-1 flex flex-col gap-5">
             <Pressable
                 onPress={() => setIsExpanded((prev) => !prev)}
                 className="flex flex-row items-center justify-between w-full"
@@ -83,12 +83,12 @@ export const AreaSection = ({
                     e.stopPropagation();
                     onToggleExclude(area.areaId);
                 }}
-                className="px-2 py-1 border border-white/20 active:bg-white/10"
+                className="px-2 py-2 border border-white/20 active:bg-white/10"
             >
                 <Text
                     className={`font-mono text-xs ${area.isExcluded ? "text-red-500" : "text-[#00b32d]"}`}
                 >
-                    {area.isExcluded ? "[X] EXC" : "[O] INC"}
+                    {area.isExcluded ? "Excluded" : "Included"}
                 </Text>
             </Pressable>
             {isExpanded ? (

@@ -38,9 +38,9 @@ export const SubareaSection = ({
                 return (
                     <View
                         key={subarea.subareaId}
-                        className="border border-white/20 px-3 py-2 min-w-30"
+                        className="border border-white/20 px-3 py-2 min-w-30 flex"
                     >
-                        <View className="flex flex-col gap-3">
+                        <View className="flex flex-col gap-3 items-center justify-center">
                             <Text className="text-xs font-mono text-white/80">
                                 {subarea.subareaName}
                             </Text>
@@ -52,7 +52,6 @@ export const SubareaSection = ({
                                     {subarea.description}
                                 </Text>
                             ) : null}
-
                             <View className="flex flex-row gap-1">
                                 {[...new Array(5)].map((_, i) => {
                                     const isActive = i < subarea.weight;
@@ -68,24 +67,24 @@ export const SubareaSection = ({
                                         />
                                     );
                                 })}
-                                <Pressable
-                                    onPress={() =>
-                                        onToggleSubareaExclude(
-                                            areaId,
-                                            subarea.subareaId,
-                                        )
-                                    }
-                                    className="px-1.5 py-0.5 border border-white/20 active:bg-white/10 ml-2"
-                                >
-                                    <Text
-                                        className={`font-mono text-[10px] ${subarea.isExcluded ? "text-red-500" : "text-[#00b32d]"}`}
-                                    >
-                                        {subarea.isExcluded
-                                            ? "[X] EXC"
-                                            : "[O] INC"}
-                                    </Text>
-                                </Pressable>
                             </View>
+                            <Pressable
+                                onPress={() =>
+                                    onToggleSubareaExclude(
+                                        areaId,
+                                        subarea.subareaId,
+                                    )
+                                }
+                                className="px-2 py-2 border border-white/20 active:bg-white/10 ml-2"
+                            >
+                                <Text
+                                    className={`font-mono text-xs ${subarea.isExcluded ? "text-red-500" : "text-[#00b32d]"}`}
+                                >
+                                    {subarea.isExcluded
+                                        ? "Excluded"
+                                        : "Included"}
+                                </Text>
+                            </Pressable>
                         </View>
                     </View>
                 );
