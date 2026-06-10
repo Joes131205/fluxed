@@ -19,16 +19,16 @@ export const TertiaryButton = ({
     const variantStyles = {
         default: {
             bg: "bg-transparent",
-            pressedBg: "bg-white/5",
-            text: "text-white/50",
-            pressedText: "text-white",
+            pressedBg: "bg-primary/5",
+            text: "text-muted-foreground",
+            pressedText: "text-foreground",
             indicator: "#ffffff",
         },
         danger: {
             bg: "bg-transparent",
-            pressedBg: "bg-red-500/10",
-            text: "text-red-500/70",
-            pressedText: "text-red-400",
+            pressedBg: "bg-destructive/10",
+            text: "text-destructive/70",
+            pressedText: "text-destructive",
             indicator: "#ef4444",
         },
         success: {
@@ -55,7 +55,7 @@ export const TertiaryButton = ({
                       ? style.pressedBg
                       : style.bg;
                 const currentText = disabled
-                    ? "text-white/20"
+                    ? "text-muted-foreground"
                     : pressed
                       ? style.pressedText
                       : style.text;

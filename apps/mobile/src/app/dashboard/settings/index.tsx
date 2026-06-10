@@ -9,6 +9,7 @@ import { SettingsActionsCard } from "../../../components/settings/SettingsAction
 import { SettingsPanel } from "../../../components/settings/SettingsPanel";
 import { SettingsTimeFields } from "../../../components/settings/SettingsTimeFields";
 import { GoogleIntegrationCard } from "../../../components/settings/GoogleIntegrationCard";
+import { ThemeSettingsCard } from "../../../components/settings/ThemeSettingsCard";
 import { PageHeader } from "../../../components/ui/PageHeader";
 
 export default function Settings() {
@@ -109,6 +110,7 @@ export default function Settings() {
                     />
                 </View>
 
+                <ThemeSettingsCard />
                 <GoogleIntegrationCard isLinked={!!user?.googleId} />
             </SettingsPanel>
 

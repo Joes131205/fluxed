@@ -31,7 +31,9 @@ export function SettingsActionsCard({
                     />
                 </View>
             </View>
-
+            <View className="">
+                <Text>Theme:</Text>
+            </View>
             <View className="mt-4 border-t border-muted/50 pt-4">
                 <TertiaryButton
                     label="LogOut"

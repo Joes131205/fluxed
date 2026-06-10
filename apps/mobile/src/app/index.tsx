@@ -48,8 +48,8 @@ export default function App() {
                             <Text
                                 className={`font-mono font-bold text-xs uppercase tracking-widest ${
                                     pressed
-                                        ? "text-[#00f0ff]/50"
-                                        : "text-[#00f0ff]"
+                                        ? "text-accent/50"
+                                        : "text-accent"
                                 }`}
                             >
                                 Sign in.

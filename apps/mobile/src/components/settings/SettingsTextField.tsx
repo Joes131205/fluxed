@@ -26,7 +26,7 @@ export function SettingsTextField({
                 {label}
             </Text>
             <TextInput
-                className="text-white px-3 py-3 font-mono text-lg outline-none"
+                className="text-foreground px-3 py-3 font-mono text-lg outline-none"
                 value={value}
                 onChangeText={onChangeText}
                 autoCapitalize="none"

@@ -27,19 +27,19 @@ export function PrimaryButton({
                     ? "bg-transparent"
                     : pressed
                       ? "bg-primary"
-                      : "bg-white/10";
+                      : "bg-primary/10";
 
                 const borderColor = disabled
-                    ? "border-white/10 border-dashed"
+                    ? "border-primary/10 border-dashed"
                     : pressed
                       ? "border-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
-                      : "border-white/20";
+                      : "border-primary/20";
 
                 const textColor = disabled
-                    ? "text-white/30"
+                    ? "text-muted-foreground"
                     : pressed
-                      ? "text-black"
-                      : "text-white";
+                      ? "text-background"
+                      : "text-foreground";
 
                 return (
                     <View

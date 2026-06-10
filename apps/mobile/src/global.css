@@ -18,17 +18,49 @@ code {
         "Courier New", monospace;
 }
 
-:root {
+@variant light {
+    --background: #f8fafc;
+    --foreground: #0f172a;
+
+    --card: #f1f5f9;
+    --card-foreground: #0f172a;
+
+    --popover: #f8fafc;
+    --popover-foreground: #0f172a;
+
+    --primary: #008c23;
+    --primary-foreground: #f8fafc;
+
+    --secondary: #e2e8f0;
+    --secondary-foreground: #0f172a;
+
+    --muted: #e2e8f0;
+    --muted-foreground: #64748b;
+
+    --accent: #e2e8f0;
+    --accent-foreground: #008c23;
+
+    --destructive: #ef4444;
+    --destructive-foreground: #f8fafc;
+
+    --border: #cbd5e1;
+    --input: #f1f5f9;
+    --ring: rgba(0, 140, 35, 0.4);
+
+    --radius: 0rem;
+}
+
+@variant dark {
     --background: #0d110d;
-    --foreground: #00ff41;
+    --foreground: #008c23;
 
     --card: #191d18;
-    --card-foreground: #00ff41;
+    --card-foreground: #008c23;
 
     --popover: #191d18;
-    --popover-foreground: #00ff41;
+    --popover-foreground: #008c23;
 
-    --primary: #00ff41;
+    --primary: #008c23;
     --primary-foreground: #0d110d;
 
     --secondary: #ffb000;

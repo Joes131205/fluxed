@@ -31,7 +31,7 @@ function RootLayoutContent() {
     if (isAuthLoading) {
         return (
             <View className="flex-1 items-center justify-center bg-background flex flex-col gap-5">
-                <Text className="text-center font-bold text-xl text-white">
+                <Text className="text-center font-bold text-xl text-foreground">
                     Loading data...
                 </Text>
             </View>

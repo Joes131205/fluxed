@@ -59,7 +59,7 @@ export function SubareaCreateForm() {
         <CategoryFormCard>
             <View className="flex flex-col gap-2">
                 <View className="mb-6">
-                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                         Area
                     </Text>
                     {isAreasLoading ? (
@@ -67,7 +67,7 @@ export function SubareaCreateForm() {
                             Fetching area...
                         </Text>
                     ) : areas.length === 0 ? (
-                        <Text className="text-red-500 font-mono text-xs">
+                        <Text className="text-destructive font-mono text-xs">
                             Area Empty!
                         </Text>
                     ) : (
@@ -119,7 +119,7 @@ export function SubareaCreateForm() {
                 />
 
                 <View className="mb-6">
-                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                         Color Hex
                     </Text>
                     <ColorField

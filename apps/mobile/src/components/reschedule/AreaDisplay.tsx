@@ -110,13 +110,13 @@ export const AreaDisplay = ({
                         />
                     ))
                 ) : shouldShowLoading ? (
-                    <View className="border border-white/10 bg-background p-4">
+                    <View className="border border-primary/10 bg-background p-4">
                         <Text className="font-mono text-primary/70 uppercase text-xs text-center">
                             Fetching Data...
                         </Text>
                     </View>
                 ) : (
-                    <View className="border border-white/10 bg-background p-4">
+                    <View className="border border-primary/10 bg-background p-4">
                         <Text className="font-mono text-muted-foreground uppercase text-xs text-center">
                             No Areas Found
                         </Text>

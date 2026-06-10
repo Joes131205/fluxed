@@ -112,7 +112,7 @@ export const PlanSection = () => {
 
             <View className="mb-4">
                 <View className="flex-row justify-between items-end mb-2">
-                    <Text className="text-white/50 font-bold text-[10px] uppercase tracking-widest">
+                    <Text className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest">
                         Timeline Progress
                     </Text>
                     <Text className="text-primary text-xs font-mono font-bold">
@@ -165,14 +165,14 @@ export const PlanSection = () => {
                         const hasNotStarted = !isNow && !isPassed;
 
                         let cardStyle = "p-4 border ";
-                        let textMainColor = "text-white";
-                        let textSubColor = "text-white/50";
+                        let textMainColor = "text-foreground";
+                        let textSubColor = "text-muted-foreground";
                         let glowEffect = "";
 
                         if (isCompleted) {
-                            cardStyle += "border-white/10 bg-white/5";
-                            textMainColor = "text-white/30 line-through";
-                            textSubColor = "text-white/20 line-through";
+                            cardStyle += "border-primary/10 bg-primary/5";
+                            textMainColor = "text-muted-foreground line-through";
+                            textSubColor = "text-muted-foreground line-through";
                         } else if (isNow) {
                             cardStyle += "border-primary bg-primary/10";
                             glowEffect = "shadow-[0_0_12px_rgba(0,255,65,0.2)]";
@@ -180,37 +180,37 @@ export const PlanSection = () => {
                             textSubColor = "text-primary/80";
                         } else if (isPassed) {
                             cardStyle +=
-                                "bg-transparent border-dashed border-white/20";
-                            textMainColor = "text-white/40";
-                            textSubColor = "text-white/30";
+                                "bg-transparent border-dashed border-primary/20";
+                            textMainColor = "text-muted-foreground";
+                            textSubColor = "text-muted-foreground";
                         } else {
-                            cardStyle += "bg-card border-white/20";
+                            cardStyle += "bg-card border-primary/20";
                             textMainColor = "text-white/90";
-                            textSubColor = "text-white/50";
+                            textSubColor = "text-muted-foreground";
                         }
 
                         let buttonText = "Check In";
-                        let btnStyle = "border-white/20 bg-transparent";
-                        let btnText = "text-white/60";
+                        let btnStyle = "border-primary/20 bg-transparent";
+                        let btnText = "text-muted-foreground";
                         const isDisabled =
                             !isCompleted && (hasNotStarted || isPassed);
 
                         if (isCompleted) {
                             buttonText = "Completed";
                             btnStyle = "border-transparent bg-transparent";
-                            btnText = "text-white/30";
+                            btnText = "text-muted-foreground";
                         } else if (isPassed) {
                             buttonText = "Passed";
                             btnStyle = "border-transparent bg-transparent";
-                            btnText = "text-white/40";
+                            btnText = "text-muted-foreground";
                         } else if (hasNotStarted) {
                             buttonText = "Standby";
                             btnStyle = "border-transparent bg-transparent";
-                            btnText = "text-white/40";
+                            btnText = "text-muted-foreground";
                         } else if (isNow) {
                             // Tombol eksekusi menyala hijau HANYA saat waktunya tiba
                             btnStyle = "border-primary bg-primary";
-                            btnText = "text-black font-black";
+                            btnText = "text-background font-black";
                         }
 
                         return (

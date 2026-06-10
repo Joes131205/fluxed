@@ -39,7 +39,7 @@ export const TextPrimaryInput = ({
     return (
         <View className="w-full mb-6">
             <Text
-                className={`mb-2 text-[10px] font-black uppercase tracking-widest ${isFocused ? "text-primary" : "text-white/50"}`}
+                className={`mb-2 text-[10px] font-black uppercase tracking-widest ${isFocused ? "text-primary" : "text-muted-foreground"}`}
             >
                 {label}
             </Text>
@@ -48,7 +48,7 @@ export const TextPrimaryInput = ({
                 className={`flex-row items-center border-2 px-4 py-1 transition-colors ${
                     isFocused
                         ? "border-primary bg-primary/5 shadow-[0_0_8px_rgba(0,255,65,0.2)]"
-                        : "border-white/30 bg-black"
+                        : "border-primary/30 bg-background"
                 }`}
             >
                 <TextInput
@@ -64,7 +64,7 @@ export const TextPrimaryInput = ({
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     placeholderTextColor="rgba(255, 255, 255, 0.2)"
-                    className="flex-1 text-white font-mono text-base outline-none"
+                    className="flex-1 text-foreground font-mono text-base outline-none"
                     selectionColor="#00ff41"
                 />
             </View>

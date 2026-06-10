@@ -24,16 +24,16 @@ export const SecondaryButton = ({
                 const bgColor = disabled
                     ? "bg-transparent"
                     : pressed
-                      ? "bg-white/10"
+                      ? "bg-primary/10"
                       : "bg-transparent";
                 const borderColor = disabled
-                    ? "border-white/10 border-dashed"
-                    : "border-white/70";
+                    ? "border-primary/10 border-dashed"
+                    : "border-primary/70";
                 const textColor = disabled
-                    ? "text-white/30"
+                    ? "text-muted-foreground"
                     : pressed
-                      ? "text-white"
-                      : "text-white/70";
+                      ? "text-foreground"
+                      : "text-muted-foreground";
 
                 return (
                     <View

@@ -48,7 +48,7 @@ export function ReschedulingStylePicker({
             </View>
 
             <View className="border-l-2 border-primary/50 pl-3 mb-6 bg-background py-3 pr-3">
-                <Text className="text-white/70 font-mono text-xs leading-5">
+                <Text className="text-muted-foreground font-mono text-xs leading-5">
                     {description}
                 </Text>
             </View>
