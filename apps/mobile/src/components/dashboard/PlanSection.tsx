@@ -1,6 +1,8 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import { usePlans } from "../../hooks/usePlans";
+import { useAreas } from "../../hooks/useAreas";
+import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -20,9 +22,22 @@ type PlanItem = {
 
 export const PlanSection = () => {
     const { data: plansData, isLoading: isPlansLoading } = usePlans();
+    const { data: areasData, isLoading: isAreasLoading } = useAreas();
+    const router = useRouter();
     const [progress, setProgress] = useState<string[]>([]);
     const [now, setNow] = useState(new Date());
     const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
+
+    const areas =
+        areasData &&
+        typeof areasData === "object" &&
+        areasData !== null &&
+        "ok" in areasData &&
+        (areasData as { ok?: boolean }).ok &&
+        "data" in areasData &&
+        Array.isArray((areasData as { data?: unknown }).data)
+            ? ((areasData as { data: any[] }).data ?? [])
+            : [];
 
     const planItems: PlanItem[] =
         plansData &&
@@ -138,19 +153,42 @@ export const PlanSection = () => {
                 </View>
             )}
 
-            {!isPlansLoading && planItems.length === 0 && (
-                <View className="py-10 border-2 border-dashed border-muted-foreground/50 items-center justify-center bg-card">
-                    <Ionicons
-                        name="terminal-outline"
-                        size={32}
-                        color="#3a6b3a"
-                    />
-                    <Text className="text-center text-sm text-muted-foreground mt-4 font-bold tracking-widest uppercase">
-                        Timeline Empty
-                    </Text>
-                    <Text className="text-primary/60 font-mono text-xs mt-2">
-                        When you are ready, reschedule!
-                    </Text>
+            {!isPlansLoading && !isAreasLoading && planItems.length === 0 && (
+                <View className="mt-4 border border-primary/30 bg-primary/5 p-5 shadow-[0_0_15px_rgba(0,255,65,0.15)] relative overflow-hidden">
+                    <View className="absolute -right-6 -top-6 opacity-5">
+                        <Ionicons name="flash" size={140} color="#00ff41" />
+                    </View>
+                    
+                    <View className="flex-row items-center gap-3 mb-4">
+                        <View className="w-10 h-10 rounded-full bg-primary/20 items-center justify-center border border-primary/40">
+                            <Ionicons name="rocket-outline" size={20} color="#00ff41" />
+                        </View>
+                        <View>
+                            <Text className="text-primary font-bold tracking-widest text-lg uppercase font-mono shadow-[0_0_10px_rgba(0,255,65,0.8)]">
+                                Quick Start
+                            </Text>
+                            <Text className="text-white/60 text-xs font-mono">
+                                Let's get you set up!
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View className="mb-6">
+                        <Text className="text-white/80 text-sm leading-6">
+                            {areas.length === 0 
+                                ? "Your timeline is empty because you haven't defined any areas of focus yet. Start by creating your first category." 
+                                : "You have areas set up, but your timeline is empty. It's time to generate your first schedule and crush your goals."}
+                        </Text>
+                    </View>
+
+                    <Pressable 
+                        onPress={() => router.push(areas.length === 0 ? "/dashboard/categories" : "/dashboard/reschedule")}
+                        className="bg-primary py-3 px-4 border border-primary items-center justify-center shadow-[0_0_10px_rgba(0,255,65,0.4)] active:scale-95 transition-transform"
+                    >
+                        <Text className="text-black font-black uppercase tracking-widest text-xs">
+                            {areas.length === 0 ? "Create Category" : "Generate Schedule"}
+                        </Text>
+                    </Pressable>
                 </View>
             )}
 
