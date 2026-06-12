@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "../hooks/useAuth";
 import { Text, View } from "react-native";
 import { useEffect } from "react";
+import { Onboarding } from "./dashboard/onboarding";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function RootLayoutContent() {
     return (
         <View className="flex-1 bg-background">
             <View className="flex-1 pt-2">
+                <Onboarding />
                 <Slot />
             </View>
             <Navbar />
