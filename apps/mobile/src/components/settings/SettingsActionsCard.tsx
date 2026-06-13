@@ -3,12 +3,14 @@ import { SecondaryButton } from "../ui/SecondaryButton";
 import { TertiaryButton } from "../ui/TertiaryButton";
 
 type SettingsActionsCardProps = {
+    onToggleTheme: () => void;
     onEditAreas: () => void;
     onEditSubareas: () => void;
     onLogout: () => void;
 };
 
 export function SettingsActionsCard({
+    onToggleTheme,
     onEditAreas,
     onEditSubareas,
     onLogout,
@@ -31,7 +33,7 @@ export function SettingsActionsCard({
                     />
                 </View>
             </View>
-
+            <SecondaryButton label="Toggle Theme" onPress={onToggleTheme} />
             <View className="mt-4 border-t border-muted/50 pt-4">
                 <TertiaryButton
                     label="LogOut"

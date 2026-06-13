@@ -18,7 +18,7 @@ export default function AreaSetting() {
     const [name, setName] = useState("");
     const [weight, setWeight] = useState("1");
     const [description, setDescription] = useState("");
-    const [color, setColor] = useState("#00ff41");
+    const [color, setColor] = useState("#008c23");
 
     const areas = areasData?.ok ? (areasData.data as any[]) : [];
 
@@ -48,7 +48,7 @@ export default function AreaSetting() {
                     setEditingId(area.id);
                     setName(area.name ?? "");
                     setWeight(String(area.weight ?? 1));
-                    setColor(area.color ?? "#00ff41");
+                    setColor(area.color ?? "#008c23"); // <-- Diperbarui
                     setDescription(area.description);
                 }}
                 onCancelEdit={() => setEditingId(null)}

@@ -1,12 +1,14 @@
 import { Pressable, Text, View } from "react-native";
 import { usePathname, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useUniwind } from "uniwind";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
 export const Navbar = () => {
     const router = useRouter();
     const pathname = usePathname();
+    const theme = useUniwind();
 
     const navItems = [
         {
@@ -41,6 +43,13 @@ export const Navbar = () => {
         return null;
     }
 
+    const getIconColor = (active: boolean, currentTheme: string) => {
+        if (currentTheme === "dark") {
+            return active ? "#dddddd" : "#afafaf";
+        }
+        return active ? "#111111" : "#737373";
+    };
+
     return (
         <View className="border-t border-border bg-card flex-row items-center justify-between pb-6 pt-2 px-2">
             {navItems.map((item) => {
@@ -53,7 +62,7 @@ export const Navbar = () => {
                         className="flex-1 items-center justify-center py-2 relative"
                     >
                         {isActive && (
-                            <View className="absolute top-0 w-10 h-0.5 bg-primary shadow-[0_0_8px_rgba(0,255,65,0.8)]" />
+                            <View className="absolute top-0 w-10 h-0.5 bg-primary shadow-md shadow-primary/80" />
                         )}
 
                         <Ionicons
@@ -61,7 +70,7 @@ export const Navbar = () => {
                                 isActive ? item.activeIcon : item.inactiveIcon
                             }
                             size={22}
-                            color={isActive ? "#00ff41" : "#3a6b3a"}
+                            color={getIconColor(isActive, theme.theme)}
                         />
                         <Text
                             numberOfLines={1}

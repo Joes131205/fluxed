@@ -22,8 +22,8 @@ export function BusyBlocks({
             </Text>
 
             {isGoogleConnected && (
-                <View className="border border-white/20 p-4 mb-4">
-                    <Text className="text-white/70 font-mono uppercase mb-4 text-xs">
+                <View className="border border-foreground/20 p-4 mb-4">
+                    <Text className="text-foreground/70 font-mono uppercase mb-4 text-xs">
                         Google Calendar Linked
                     </Text>
                     <PrimaryButton
@@ -35,7 +35,7 @@ export function BusyBlocks({
             )}
 
             <View className="flex flex-col mb-4">
-                <Text className="text-white/50 font-mono text-[10px] uppercase mb-2">
+                <Text className="text-foreground/50 font-mono text-[10px] uppercase mb-2">
                     Inject Manual Block
                 </Text>
                 <View className="flex-row items-center gap-3">
@@ -63,24 +63,24 @@ export function BusyBlocks({
             </View>
 
             {calendar.length > 0 && (
-                <View className="flex flex-col gap-2 mt-2 border-t border-white/10 pt-4">
+                <View className="flex flex-col gap-2 mt-2 border-t border-foreground/10 pt-4">
                     {calendar.map((item: any) => (
                         <View key={item.id} className="flex flex-col">
                             {item.busy.length > 0 &&
                                 item.busy.map((slot: any, index: number) => (
                                     <View
                                         key={`${item.id}-${index}`}
-                                        className="flex-row items-center justify-between border-b border-white/10 py-2"
+                                        className="flex-row items-center justify-between border-b border-foreground/10 py-2"
                                     >
                                         <View className="flex-row items-center gap-2">
                                             <Text
-                                                className={`text-[10px] font-black uppercase tracking-widest ${item.id === "offline" ? "text-[#00f0ff]" : "text-primary"}`}
+                                                className={`text-[10px] font-black uppercase tracking-widest ${item.id === "offline" ? "text-accent" : "text-primary"}`}
                                             >
                                                 [{item.name}]
                                             </Text>
-                                            <Text className="text-white font-mono text-xs">
+                                            <Text className="text-foreground font-mono text-xs">
                                                 {formatTime(slot.start)}{" "}
-                                                <Text className="text-white/30">
+                                                <Text className="text-foreground/30">
                                                     {"->"}
                                                 </Text>{" "}
                                                 {formatTime(slot.end)}
@@ -92,9 +92,9 @@ export function BusyBlocks({
                                                 onPress={() =>
                                                     onRemoveEvent(index)
                                                 }
-                                                className="border border-white/20 px-2 py-1 active:bg-red-500/20"
+                                                className="border border-foreground/20 px-2 py-1 active:bg-destructive/20"
                                             >
-                                                <Text className="font-mono text-xs font-bold text-white/50">
+                                                <Text className="font-mono text-xs font-bold text-foreground/50">
                                                     X
                                                 </Text>
                                             </Pressable>

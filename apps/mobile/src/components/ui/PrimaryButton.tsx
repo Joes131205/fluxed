@@ -27,26 +27,33 @@ export function PrimaryButton({
                     ? "bg-transparent"
                     : pressed
                       ? "bg-primary"
-                      : "bg-white/10";
+                      : "bg-foreground/10";
 
                 const borderColor = disabled
-                    ? "border-white/10 border-dashed"
+                    ? "border-foreground/10 border-dashed"
                     : pressed
-                      ? "border-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
-                      : "border-white/20";
+                      ? "border-primary shadow-md shadow-primary/60"
+                      : "border-foreground/20";
 
                 const textColor = disabled
-                    ? "text-white/30"
+                    ? "text-foreground/30"
                     : pressed
-                      ? "text-black"
-                      : "text-white";
+                      ? "text-primary-foreground"
+                      : "text-foreground";
 
                 return (
                     <View
                         className={`border py-4 flex items-center justify-center transition-colors ${bgColor} ${borderColor}`}
                     >
                         {loading ? (
-                            <ActivityIndicator size="small" color="#ffffff" />
+                            <ActivityIndicator
+                                size="small"
+                                className={
+                                    pressed
+                                        ? "text-primary-foreground"
+                                        : "text-foreground"
+                                }
+                            />
                         ) : (
                             <Text
                                 className={`uppercase tracking-widest text-sm font-bold font-mono ${textColor}`}

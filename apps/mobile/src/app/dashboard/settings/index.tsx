@@ -10,6 +10,7 @@ import { SettingsPanel } from "../../../components/settings/SettingsPanel";
 import { SettingsTimeFields } from "../../../components/settings/SettingsTimeFields";
 import { GoogleIntegrationCard } from "../../../components/settings/GoogleIntegrationCard";
 import { PageHeader } from "../../../components/ui/PageHeader";
+import { Uniwind } from "uniwind";
 
 export default function Settings() {
     const { user, logout } = useAuth();
@@ -113,6 +114,11 @@ export default function Settings() {
             </SettingsPanel>
 
             <SettingsActionsCard
+                onToggleTheme={() =>
+                    Uniwind.setTheme(
+                        Uniwind.currentTheme === "dark" ? "light" : "dark",
+                    )
+                }
                 onEditAreas={() => router.navigate("/dashboard/settings/area")}
                 onEditSubareas={() =>
                     router.navigate("/dashboard/settings/subarea")

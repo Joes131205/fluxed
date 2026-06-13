@@ -47,7 +47,7 @@ export function OutputTimeline({
                                             {slot.area}
                                         </Text>
                                         <Text
-                                            className="text-sm font-bold text-white uppercase"
+                                            className="text-sm font-bold text-foreground uppercase"
                                             numberOfLines={2}
                                         >
                                             {slot.subarea}
@@ -87,18 +87,18 @@ export function OutputTimeline({
                     </View>
                 </View>
             ) : isGeneratedOnce ? (
-                <View className="border border-red-500/30 bg-red-500/5 p-5 mt-2">
-                    <Text className="text-lg font-bold text-red-400 mb-2 font-mono uppercase tracking-widest">
+                <View className="border border-destructive/30 bg-destructive/5 p-5 mt-2">
+                    <Text className="text-lg font-bold text-destructive mb-2 font-mono uppercase tracking-widest">
                         Generation Failed
                     </Text>
-                    <Text className="text-xs text-red-300/80 font-mono leading-5">
+                    <Text className="text-xs text-destructive/80 font-mono leading-5">
                         No valid slots available for the current timeframe.
                         Ensure minimum duration parameters and sleep windows do
                         not overlap with required task weightings.
                     </Text>
                 </View>
             ) : (
-                <View className="border border-white/10 bg-background p-6 items-center">
+                <View className="border border-foreground/10 bg-background p-6 items-center">
                     <Text className="text-sm font-bold text-muted-foreground font-mono uppercase tracking-widest">
                         Standing By
                     </Text>

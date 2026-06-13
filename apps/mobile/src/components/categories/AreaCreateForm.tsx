@@ -73,7 +73,7 @@ export function AreaCreateForm() {
                 />
 
                 <View className="mb-6">
-                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                    <Text className="mb-2 text-[10px] font-black uppercase tracking-widest text-foreground/50">
                         Color Hex
                     </Text>
                     <ColorField

@@ -50,7 +50,7 @@ export const PlanSection = () => {
             ? ((plansData as { data: PlanItem[] }).data ?? [])
             : [];
 
-    const DEFAULT_COLOR = "#00ff41";
+    const DEFAULT_COLOR = "#008c23";
     const length = planItems.length;
 
     const hexToRgba = (hex?: string, alpha = 1) => {
@@ -127,7 +127,7 @@ export const PlanSection = () => {
 
             <View className="mb-4">
                 <View className="flex-row justify-between items-end mb-2">
-                    <Text className="text-white/50 font-bold text-[10px] uppercase tracking-widest">
+                    <Text className="text-foreground/50 font-bold text-[10px] uppercase tracking-widest">
                         Timeline Progress
                     </Text>
                     <Text className="text-primary text-xs font-mono font-bold">
@@ -136,7 +136,7 @@ export const PlanSection = () => {
                 </View>
                 <View className="w-full h-4 bg-background border border-primary p-0.5">
                     <View
-                        className="h-full bg-primary transition-all duration-500 shadow-[0_0_8px_rgba(0,255,65,0.8)]"
+                        className="h-full bg-primary transition-all duration-500 shadow-md shadow-primary"
                         style={{
                             width: `${length > 0 ? (progress.length / length) * 100 : 0}%`,
                         }}
@@ -146,7 +146,7 @@ export const PlanSection = () => {
 
             {isPlansLoading && (
                 <View className="py-10 border border-primary/30 items-center justify-center">
-                    <ActivityIndicator size="small" color="#00ff41" />
+                    <ActivityIndicator size="small" className="text-primary" />
                     <Text className="mt-4 text-center text-xs text-primary uppercase tracking-widest font-mono">
                         Fetching Schedule...
                     </Text>
@@ -154,39 +154,55 @@ export const PlanSection = () => {
             )}
 
             {!isPlansLoading && !isAreasLoading && planItems.length === 0 && (
-                <View className="mt-4 border border-primary/30 bg-primary/5 p-5 shadow-[0_0_15px_rgba(0,255,65,0.15)] relative overflow-hidden">
+                <View className="mt-4 border border-primary/30 bg-primary/5 p-5 shadow-lg shadow-primary/10 relative overflow-hidden">
                     <View className="absolute -right-6 -top-6 opacity-5">
-                        <Ionicons name="flash" size={140} color="#00ff41" />
+                        <Ionicons
+                            name="flash"
+                            size={140}
+                            className="color-primary"
+                        />
                     </View>
-                    
+
                     <View className="flex-row items-center gap-3 mb-4">
                         <View className="w-10 h-10 rounded-full bg-primary/20 items-center justify-center border border-primary/40">
-                            <Ionicons name="rocket-outline" size={20} color="#00ff41" />
+                            <Ionicons
+                                name="rocket-outline"
+                                size={20}
+                                className="color-primary"
+                            />
                         </View>
                         <View>
-                            <Text className="text-primary font-bold tracking-widest text-lg uppercase font-mono shadow-[0_0_10px_rgba(0,255,65,0.8)]">
+                            <Text className="text-primary font-bold tracking-widest text-lg uppercase font-mono shadow-sm shadow-primary/50">
                                 Quick Start
                             </Text>
-                            <Text className="text-white/60 text-xs font-mono">
+                            <Text className="text-foreground/60 text-xs font-mono">
                                 Let's get you set up!
                             </Text>
                         </View>
                     </View>
 
                     <View className="mb-6">
-                        <Text className="text-white/80 text-sm leading-6">
-                            {areas.length === 0 
-                                ? "Your timeline is empty because you haven't defined any areas of focus yet. Start by creating your first category." 
+                        <Text className="text-foreground/80 text-sm leading-6">
+                            {areas.length === 0
+                                ? "Your timeline is empty because you haven't defined any areas of focus yet. Start by creating your first category."
                                 : "You have areas set up, but your timeline is empty. It's time to generate your first schedule and crush your goals."}
                         </Text>
                     </View>
 
-                    <Pressable 
-                        onPress={() => router.push(areas.length === 0 ? "/dashboard/categories" : "/dashboard/reschedule")}
-                        className="bg-primary py-3 px-4 border border-primary items-center justify-center shadow-[0_0_10px_rgba(0,255,65,0.4)] active:scale-95 transition-transform"
+                    <Pressable
+                        onPress={() =>
+                            router.push(
+                                areas.length === 0
+                                    ? "/dashboard/categories"
+                                    : "/dashboard/reschedule",
+                            )
+                        }
+                        className="bg-primary py-3 px-4 border border-primary items-center justify-center shadow-lg shadow-primary/40 active:scale-95 transition-transform"
                     >
-                        <Text className="text-black font-black uppercase tracking-widest text-xs">
-                            {areas.length === 0 ? "Create Category" : "Generate Schedule"}
+                        <Text className="text-background font-black uppercase tracking-widest text-xs">
+                            {areas.length === 0
+                                ? "Create Category"
+                                : "Generate Schedule"}
                         </Text>
                     </Pressable>
                 </View>
@@ -203,59 +219,58 @@ export const PlanSection = () => {
                         const hasNotStarted = !isNow && !isPassed;
 
                         let cardStyle = "p-4 border ";
-                        let textMainColor = "text-white";
-                        let textSubColor = "text-white/50";
+                        let textMainColor = "text-foreground";
+                        let textSubColor = "text-foreground/50";
                         let glowEffect = "";
 
                         if (isCompleted) {
-                            cardStyle += "border-white/10 bg-white/5";
-                            textMainColor = "text-white/30 line-through";
-                            textSubColor = "text-white/20 line-through";
+                            cardStyle += "border-foreground/10 bg-foreground/5";
+                            textMainColor = "text-foreground/30 line-through";
+                            textSubColor = "text-foreground/20 line-through";
                         } else if (isNow) {
                             cardStyle += "border-primary bg-primary/10";
-                            glowEffect = "shadow-[0_0_12px_rgba(0,255,65,0.2)]";
+                            glowEffect = "shadow-lg shadow-primary/20";
                             textMainColor = "text-primary";
                             textSubColor = "text-primary/80";
                         } else if (isPassed) {
                             cardStyle +=
-                                "bg-transparent border-dashed border-white/20";
-                            textMainColor = "text-white/40";
-                            textSubColor = "text-white/30";
+                                "bg-transparent border-dashed border-foreground/20";
+                            textMainColor = "text-foreground/40";
+                            textSubColor = "text-foreground/30";
                         } else {
-                            cardStyle += "bg-card border-white/20";
-                            textMainColor = "text-white/90";
-                            textSubColor = "text-white/50";
+                            cardStyle += "bg-card border-foreground/20";
+                            textMainColor = "text-foreground/90";
+                            textSubColor = "text-foreground/50";
                         }
 
                         let buttonText = "Check In";
-                        let btnStyle = "border-white/20 bg-transparent";
-                        let btnText = "text-white/60";
+                        let btnStyle = "border-foreground/20 bg-transparent";
+                        let btnText = "text-foreground/60";
                         const isDisabled =
                             !isCompleted && (hasNotStarted || isPassed);
 
                         if (isCompleted) {
                             buttonText = "Completed";
                             btnStyle = "border-transparent bg-transparent";
-                            btnText = "text-white/30";
+                            btnText = "text-foreground/30";
                         } else if (isPassed) {
                             buttonText = "Passed";
                             btnStyle = "border-transparent bg-transparent";
-                            btnText = "text-white/40";
+                            btnText = "text-foreground/40";
                         } else if (hasNotStarted) {
                             buttonText = "Standby";
                             btnStyle = "border-transparent bg-transparent";
-                            btnText = "text-white/40";
+                            btnText = "text-foreground/40";
                         } else if (isNow) {
-                            // Tombol eksekusi menyala hijau HANYA saat waktunya tiba
                             btnStyle = "border-primary bg-primary";
-                            btnText = "text-black font-black";
+                            btnText = "text-background font-black";
                         }
 
                         return (
                             <View key={item.id} className="flex-row">
                                 <View className="w-8 items-center justify-start mr-2 pt-4">
                                     <View
-                                        className={`w-3 h-3 rounded-full border ${isCompleted ? "bg-primary/40 border-primary/40" : isNow ? "bg-primary border-primary shadow-[0_0_8px_rgba(0,255,65,1)]" : "bg-transparent border-primary/50"}`}
+                                        className={`w-3 h-3 rounded-full border ${isCompleted ? "bg-primary/40 border-primary/40" : isNow ? "bg-primary border-primary shadow-md shadow-primary" : "bg-transparent border-primary/50"}`}
                                     />
                                     {idx !== planItems.length - 1 && (
                                         <View className="w-px flex-1 bg-primary/30 my-2" />
@@ -285,6 +300,7 @@ export const PlanSection = () => {
                                         <View
                                             className="items-end border-l-2 pl-3"
                                             style={{
+                                                // Warna border dinamis dari database dipertahankan
                                                 borderColor:
                                                     isPassed || isCompleted
                                                         ? hexToRgba(

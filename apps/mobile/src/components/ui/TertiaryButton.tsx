@@ -19,24 +19,24 @@ export const TertiaryButton = ({
     const variantStyles = {
         default: {
             bg: "bg-transparent",
-            pressedBg: "bg-white/5",
-            text: "text-white/50",
-            pressedText: "text-white",
-            indicator: "#ffffff",
+            pressedBg: "bg-foreground/5",
+            text: "text-foreground/50",
+            pressedText: "text-foreground",
+            indicatorClass: "text-foreground",
         },
         danger: {
             bg: "bg-transparent",
-            pressedBg: "bg-red-500/10",
-            text: "text-red-500/70",
-            pressedText: "text-red-400",
-            indicator: "#ef4444",
+            pressedBg: "bg-destructive/10",
+            text: "text-destructive/70",
+            pressedText: "text-destructive",
+            indicatorClass: "text-destructive",
         },
         success: {
             bg: "bg-transparent",
             pressedBg: "bg-primary/10",
             text: "text-primary/70",
             pressedText: "text-primary",
-            indicator: "#00ff41",
+            indicatorClass: "text-primary",
         },
     };
 
@@ -55,7 +55,7 @@ export const TertiaryButton = ({
                       ? style.pressedBg
                       : style.bg;
                 const currentText = disabled
-                    ? "text-white/20"
+                    ? "text-foreground/20"
                     : pressed
                       ? style.pressedText
                       : style.text;
@@ -67,7 +67,7 @@ export const TertiaryButton = ({
                         {loading ? (
                             <ActivityIndicator
                                 size="small"
-                                color={style.indicator}
+                                className={style.indicatorClass}
                             />
                         ) : (
                             <Text

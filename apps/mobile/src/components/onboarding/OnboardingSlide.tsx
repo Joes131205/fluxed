@@ -19,6 +19,7 @@ const slides = [
 type OnboardingSlideProps = {
     onFinish: () => void;
 };
+
 const OnboardingSlide = ({ onFinish }: OnboardingSlideProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -31,6 +32,7 @@ const OnboardingSlide = ({ onFinish }: OnboardingSlideProps) => {
     };
 
     const currentSlide = slides[currentIndex];
+
     return (
         <View className="flex flex-col border border-muted bg-card p-6 mt-6 mb-8 min-h-62.5 justify-between">
             <View>
@@ -44,20 +46,20 @@ const OnboardingSlide = ({ onFinish }: OnboardingSlideProps) => {
             </View>
 
             <View className="flex-col gap-10 items-center justify-between mt-8">
-                <View className="flex-row gap-2 h-1.5 w-full">
+                <View className="w-full h-1.5 bg-muted overflow-hidden">
                     <View
-                        className="h-full bg-primary"
+                        className="h-full bg-primary transition-all duration-300 ease-in-out"
                         style={{
                             width: `${((currentIndex + 1) / slides.length) * 100}%`,
                         }}
-                    ></View>
+                    />
                 </View>
 
                 <Pressable
                     onPress={handleNext}
-                    className="border border-primary px-4 py-2 bg-primary/10 active:bg-primary/20"
+                    className="w-full border border-primary px-4 py-3 bg-primary/10 active:bg-primary/20 items-center justify-center transition-colors"
                 >
-                    <Text className="text-primary font-mono font-bold text-xs">
+                    <Text className="text-primary font-mono font-bold text-sm uppercase tracking-widest">
                         {currentIndex === slides.length - 1
                             ? "Let's Go!"
                             : "Next"}

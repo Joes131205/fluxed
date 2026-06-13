@@ -16,7 +16,7 @@ export default function Dashboard() {
                         <Text className="text-primary text-2xl font-bold tracking-tight">
                             Hello, {user?.username ?? "Username"}!
                         </Text>
-                        <Text className="text-white text-xs font-medium font-mono">
+                        <Text className="text-primary text-xs font-medium font-mono">
                             You got this! :D
                         </Text>
                     </View>

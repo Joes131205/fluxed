@@ -83,7 +83,7 @@ export function CategoryEntityList<T extends BaseCategoryItem>({
                     <Ionicons
                         name="warning-outline"
                         size={32}
-                        color="#3a6b3a"
+                        className="color-primary/50"
                     />
                 }
                 title={emptyTitle}
@@ -154,10 +154,10 @@ export function CategoryEntityList<T extends BaseCategoryItem>({
                         <CategoryEntityRow>
                             <View className="flex-row items-center flex-1 gap-4">
                                 <View
-                                    className="w-10 h-10 border-2 border-white/20"
+                                    className="w-10 h-10 border-2 border-foreground/20"
                                     style={{
                                         backgroundColor:
-                                            item.color || "#3a6b3a",
+                                            item.color || "#008c23",
                                     }}
                                 />
                                 <View className="flex-1 pr-2">
@@ -190,9 +190,9 @@ export function CategoryEntityList<T extends BaseCategoryItem>({
 
                                 <Pressable
                                     onPress={() => onDelete(item)}
-                                    className="px-3 py-2 border border-red-500/50 bg-red-500/10"
+                                    className="px-3 py-2 border border-destructive/50 bg-destructive/10"
                                 >
-                                    <Text className="text-red-400 font-mono text-xs uppercase">
+                                    <Text className="text-destructive font-mono text-xs uppercase">
                                         Delete
                                     </Text>
                                 </Pressable>

@@ -17,7 +17,7 @@ export default function SubareaSetting() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [name, setName] = useState("");
     const [weight, setWeight] = useState("1");
-    const [color, setColor] = useState("#00ff41");
+    const [color, setColor] = useState("#008c23");
     const [description, setDescription] = useState("");
 
     const subareas = subareasData?.ok ? (subareasData.data as any[]) : [];
@@ -49,7 +49,7 @@ export default function SubareaSetting() {
                     setEditingId(subarea.id);
                     setName(subarea.name ?? "");
                     setWeight(String(subarea.weight ?? 1));
-                    setColor(subarea.color ?? "#00ff41");
+                    setColor(subarea.color ?? "#008c23");
                 }}
                 onCancelEdit={() => setEditingId(null)}
                 onNameChange={setName}

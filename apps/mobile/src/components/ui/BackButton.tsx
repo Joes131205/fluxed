@@ -15,12 +15,12 @@ export const BackButton = () => {
                         router.replace("/dashboard");
                     }
                 }}
-                className="flex-row items-center gap-2 px-3 py-2 border border-[#008c23] bg-background active:bg-[#008c23]/20"
+                className="flex-row items-center gap-2 px-3 py-2 border border-primary bg-background active:bg-primary/20 transition-colors"
             >
-                <Text className="text-[#008c23] font-mono font-bold text-lg leading-none">
+                <Text className="text-primary font-mono font-bold text-lg leading-none">
                     {"<"}
                 </Text>
-                <Text className="text-[#008c23] font-mono text-xs tracking-widest uppercase mt-0.5">
+                <Text className="text-primary font-mono text-xs tracking-widest uppercase mt-0.5">
                     Go Back
                 </Text>
             </Pressable>
