@@ -582,6 +582,25 @@ export function useCalendarEngine() {
         }
     };
 
+    const changeTime = async (idx: number, start: string, end: string) => {
+        const startIso = toTodayIso(start);
+        const endIso = toTodayIso(end);
+
+        if (!startIso || !endIso) {
+            Alert.alert(
+                "Invalid Format",
+                "Please use the correct HH:MM format (e.g. 09:30).",
+            );
+            return;
+        }
+
+        setFinalSchedule((prevSchedule) =>
+            prevSchedule.map((item, i) =>
+                i === idx ? { ...item, start: startIso, end: endIso } : item,
+            ),
+        );
+    };
+
     useEffect(() => {
         if (!areasData?.ok || !areasData.data) {
             setSchedule([]);
@@ -670,6 +689,7 @@ export function useCalendarEngine() {
             saveToGCal,
             getData,
             addTemporaryTask,
+            changeTime,
         },
     };
 }

@@ -132,6 +132,7 @@ export default function Reschedule() {
                 onSaveToDatabase={actions.saveToDatabase}
                 onSaveToGCal={actions.saveToGCal}
                 formatTime={formatTime}
+                onChangeTime={actions.changeTime}
             />
         </ScrollView>
     );
