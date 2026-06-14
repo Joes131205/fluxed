@@ -17,7 +17,7 @@ export function PageHeader({
                 {title}
             </Text>
             <View
-                className={`h-0.5 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)] ${dividerWidthClassName}`}
+                className={`h-0.5 bg-primary mb-3 shadow-md shadow-primary/60 ${dividerWidthClassName}`}
             />
             <Text className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-5">
                 {description}

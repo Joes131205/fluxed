@@ -26,7 +26,11 @@ export function SectionToggle({ section, onChange }: SectionToggleProps) {
                 <Ionicons
                     name="caret-forward"
                     size={16}
-                    color={section === "subareas" ? "#00ff41" : "#3a6b3a"}
+                    className={
+                        section === "subareas"
+                            ? "color-primary"
+                            : "color-muted-foreground"
+                    }
                 />
             </View>
 

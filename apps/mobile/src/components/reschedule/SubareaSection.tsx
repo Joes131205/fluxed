@@ -22,8 +22,8 @@ export const SubareaSection = ({
 }: SubareaSectionProps) => {
     if (!subareas.length) {
         return (
-            <View className="mt-4 pt-4 border-t-2 border-dashed border-white/10">
-                <Text className="text-xs font-mono text-white/40 uppercase">
+            <View className="mt-4 pt-4 border-t-2 border-dashed border-foreground/10">
+                <Text className="text-xs font-mono text-foreground/40 uppercase">
                     No Subareas!
                 </Text>
             </View>
@@ -31,22 +31,22 @@ export const SubareaSection = ({
     }
 
     return (
-        <View className="mt-4 pt-4 border-t-2 border-dashed border-white/10 flex flex-row flex-wrap gap-3">
+        <View className="mt-4 pt-4 border-t-2 border-dashed border-foreground/10 flex flex-row flex-wrap gap-3">
             {subareas.map((subarea) => {
-                const color = subarea.color ?? "rgba(255,255,255,0.5)";
+                const color = subarea.color ?? "#008c23";
 
                 return (
                     <View
                         key={subarea.subareaId}
-                        className="border border-white/20 px-3 py-2 min-w-30 flex"
+                        className="border border-foreground/20 px-3 py-2 min-w-30 flex"
                     >
                         <View className="flex flex-col gap-3 items-center justify-center">
-                            <Text className="text-xs font-mono text-white/80">
+                            <Text className="text-xs font-mono text-foreground/80">
                                 {subarea.subareaName}
                             </Text>
                             {subarea.description ? (
                                 <Text
-                                    className="text-gray-400 text-xs mt-1 ml-5"
+                                    className="text-muted-foreground text-xs mt-1 ml-5"
                                     numberOfLines={2}
                                 >
                                     {subarea.description}
@@ -58,7 +58,7 @@ export const SubareaSection = ({
                                     return (
                                         <View
                                             key={`${subarea.subareaId}-${i}`}
-                                            className={`h-2 w-2 border ${isActive ? "border-transparent" : "border-white/20"}`}
+                                            className={`h-2 w-2 border ${isActive ? "border-transparent" : "border-foreground/20"}`}
                                             style={{
                                                 backgroundColor: isActive
                                                     ? color
@@ -75,10 +75,10 @@ export const SubareaSection = ({
                                         subarea.subareaId,
                                     )
                                 }
-                                className="px-2 py-2 border border-white/20 active:bg-white/10 ml-2"
+                                className="px-2 py-2 border border-foreground/20 active:bg-foreground/10 ml-2"
                             >
                                 <Text
-                                    className={`font-mono text-xs ${subarea.isExcluded ? "text-red-500" : "text-[#00b32d]"}`}
+                                    className={`font-mono text-xs ${subarea.isExcluded ? "text-destructive" : "text-primary"}`}
                                 >
                                     {subarea.isExcluded
                                         ? "Excluded"

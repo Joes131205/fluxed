@@ -11,6 +11,7 @@ export default function AuthSuccess() {
         error?: string | string[];
     }>();
     const { getCurrentUser } = useAuth();
+
     useEffect(() => {
         const value = Array.isArray(token) ? token[0] : token;
         const errorValue = Array.isArray(error) ? error[0] : error;
@@ -51,9 +52,9 @@ export default function AuthSuccess() {
     }, [error, router, token]);
 
     return (
-        <View className="flex-1 items-center justify-center gap-4 px-6">
-            <ActivityIndicator />
-            <Text className="text-center text-base font-semibold">
+        <View className="flex-1 items-center justify-center gap-4 px-6 bg-background">
+            <ActivityIndicator size="large" className="color-primary" />
+            <Text className="text-center text-primary text-sm font-mono uppercase tracking-widest">
                 Signing you in...
             </Text>
         </View>

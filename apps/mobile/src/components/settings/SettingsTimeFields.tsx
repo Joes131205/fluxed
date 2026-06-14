@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { SettingsTextField } from "./SettingsTextField";
+import { TextPrimaryInput } from "../ui/TextPrimaryInput";
 
 type SettingsTimeFieldsProps = {
     startTime: string;
@@ -24,38 +24,46 @@ export function SettingsTimeFields({
 }: SettingsTimeFieldsProps) {
     return (
         <>
-            <View className="flex-row gap-3 mb-4">
-                <SettingsTextField
-                    label="Start (HH:MM)"
-                    value={startTime}
-                    onChangeText={onStartTimeChange}
-                    placeholder="09:00"
-                />
+            <View className="flex-row gap-3">
+                <View className="flex-1">
+                    <TextPrimaryInput
+                        label="Start (HH:MM)"
+                        value={startTime}
+                        onChangeText={onStartTimeChange}
+                        placeholder="09:00"
+                    />
+                </View>
 
-                <SettingsTextField
-                    label="End (HH:MM)"
-                    value={endTime}
-                    onChangeText={onEndTimeChange}
-                    placeholder="17:00"
-                />
+                <View className="flex-1">
+                    <TextPrimaryInput
+                        label="End (HH:MM)"
+                        value={endTime}
+                        onChangeText={onEndTimeChange}
+                        placeholder="17:00"
+                    />
+                </View>
             </View>
 
-            <View className="flex-row gap-3 mb-6">
-                <SettingsTextField
-                    label="Min Task (Min)"
-                    value={minDuration}
-                    onChangeText={onMinDurationChange}
-                    placeholder="30"
-                    keyboardType="number-pad"
-                />
+            <View className="flex-row gap-3">
+                <View className="flex-1">
+                    <TextPrimaryInput
+                        label="Min Task (Min)"
+                        value={minDuration}
+                        onChangeText={onMinDurationChange}
+                        placeholder="30"
+                        keyboardType="number-pad"
+                    />
+                </View>
 
-                <SettingsTextField
-                    label="Buffer (Min)"
-                    value={timeBuffer}
-                    onChangeText={onTimeBufferChange}
-                    placeholder="15"
-                    keyboardType="number-pad"
-                />
+                <View className="flex-1">
+                    <TextPrimaryInput
+                        label="Buffer (Min)"
+                        value={timeBuffer}
+                        onChangeText={onTimeBufferChange}
+                        placeholder="15"
+                        keyboardType="number-pad"
+                    />
+                </View>
             </View>
         </>
     );

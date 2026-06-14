@@ -31,27 +31,28 @@ export const AreaSection = ({
     onToggleSubareaExclude,
 }: AreaSectionProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const color = area.color ?? "rgba(255,255,255,0.5)";
+    // Fallback yang aman di mode terang dan gelap
+    const color = area.color ?? "#008c23";
 
     return (
-        <View className="border-2 border-white/30 bg-black p-4 w-full mb-1 flex flex-col gap-5">
+        <View className="border-2 border-foreground/30 bg-card p-4 w-full mb-1 flex flex-col gap-5">
             <Pressable
                 onPress={() => setIsExpanded((prev) => !prev)}
                 className="flex flex-row items-center justify-between w-full"
             >
                 <View className="flex flex-row items-center flex-1 pr-4">
-                    <Text className="text-white/50 font-mono text-sm mr-3">
+                    <Text className="text-foreground/50 font-mono text-sm mr-3">
                         {isExpanded ? "[-]" : "[+]"}
                     </Text>
                     <Text
-                        className={`text-sm font-black uppercase tracking-widest ${isExpanded ? "text-white" : "text-white/70"}`}
+                        className={`text-sm font-black uppercase tracking-widest ${isExpanded ? "text-foreground" : "text-foreground/70"}`}
                         numberOfLines={1}
                     >
                         {area.areaName}
                     </Text>
                     {area.description ? (
                         <Text
-                            className="text-gray-400 text-xs mt-1 ml-5"
+                            className="text-muted-foreground text-xs mt-1 ml-5"
                             numberOfLines={2}
                         >
                             {area.description}
@@ -66,7 +67,7 @@ export const AreaSection = ({
                             return (
                                 <View
                                     key={`${area.areaId}-${i}`}
-                                    className={`h-3 w-3 border ${isActive ? "border-transparent" : "border-white/20"}`}
+                                    className={`h-3 w-3 border ${isActive ? "border-transparent" : "border-foreground/20"}`}
                                     style={{
                                         backgroundColor: isActive
                                             ? color
@@ -83,10 +84,10 @@ export const AreaSection = ({
                     e.stopPropagation();
                     onToggleExclude(area.areaId);
                 }}
-                className="px-2 py-2 border border-white/20 active:bg-white/10"
+                className="px-2 py-2 border border-foreground/20 active:bg-foreground/10"
             >
                 <Text
-                    className={`font-mono text-xs ${area.isExcluded ? "text-red-500" : "text-[#00b32d]"}`}
+                    className={`font-mono text-xs ${area.isExcluded ? "text-destructive" : "text-primary"}`}
                 >
                     {area.isExcluded ? "Excluded" : "Included"}
                 </Text>

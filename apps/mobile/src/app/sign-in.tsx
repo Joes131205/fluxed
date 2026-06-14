@@ -44,6 +44,7 @@ export default function SignIn() {
                 token?: string;
                 error?: string;
             };
+            console.log(data.token);
 
             if (!response.ok || !data.token) {
                 Alert.alert(
@@ -52,7 +53,6 @@ export default function SignIn() {
                 );
                 return;
             }
-
             await AsyncStorage.setItem("token", data.token);
             await getCurrentUser();
             router.push("/dashboard");
