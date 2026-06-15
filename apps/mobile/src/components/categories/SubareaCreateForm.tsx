@@ -45,10 +45,12 @@ export function SubareaCreateForm() {
                 name,
                 weight,
                 color: subareaColor,
+                description: subareaDescription,
             });
             setSubareaName("");
             setSubareaWeight("1");
             setSubareaColor(DEFAULT_CATEGORY_COLOR);
+            setSubareaDescription("");
             Alert.alert("Success", "Subarea created successfully.");
         } catch {
             Alert.alert("System Error", "Initialization failed.");

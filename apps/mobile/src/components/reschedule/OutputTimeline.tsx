@@ -14,6 +14,7 @@ type OutputTimelineProps = {
     isGoogleLinked: boolean;
     isGeneratedOnce: boolean;
     isLoading: boolean;
+    isAreaLoading: boolean;
     onSaveToDatabase: () => void;
     onSaveToGCal: () => void;
     formatTime: (isoDate: string) => string;
@@ -24,6 +25,7 @@ export function OutputTimeline({
     finalSchedule,
     isGoogleLinked,
     isGeneratedOnce,
+    isAreaLoading,
     isLoading,
     onSaveToDatabase,
     onSaveToGCal,

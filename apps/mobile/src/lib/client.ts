@@ -9,3 +9,4 @@ export const areasClient = client.areas;
 export const subareasClient = client.subareas;
 export const calendarsClient = client.calendars;
 export const plansClient = client.plan;
+export const actionsClient = client.actions;

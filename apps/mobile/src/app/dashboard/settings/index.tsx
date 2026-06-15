@@ -123,6 +123,9 @@ export default function Settings() {
                 onEditSubareas={() =>
                     router.navigate("/dashboard/settings/subarea")
                 }
+                onSubareaActions={() =>
+                    router.navigate("/dashboard/settings/subarea-actions")
+                }
                 onLogout={logout}
             />
         </ScrollView>

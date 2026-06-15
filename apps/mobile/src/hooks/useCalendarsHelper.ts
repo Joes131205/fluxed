@@ -21,7 +21,11 @@ type CalendarItem = {
     name: string;
     busy: BusySlot[];
 };
-
+type TaskItem = {
+    id: string;
+    title: string;
+    isCompleted: boolean;
+};
 type ScheduleItem = {
     areaId: string;
     areaName: string;
@@ -35,6 +39,7 @@ type ScheduleItem = {
         isExcluded: boolean;
         weight: number;
     }[];
+    tasks?: TaskItem[];
 };
 
 type RescheduledItem = {

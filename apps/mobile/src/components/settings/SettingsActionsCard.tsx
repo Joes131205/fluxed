@@ -6,6 +6,7 @@ type SettingsActionsCardProps = {
     onToggleTheme: () => void;
     onEditAreas: () => void;
     onEditSubareas: () => void;
+    onSubareaActions: () => void;
     onLogout: () => void;
 };
 
@@ -13,6 +14,7 @@ export function SettingsActionsCard({
     onToggleTheme,
     onEditAreas,
     onEditSubareas,
+    onSubareaActions,
     onLogout,
 }: SettingsActionsCardProps) {
     return (
@@ -33,6 +35,10 @@ export function SettingsActionsCard({
                     />
                 </View>
             </View>
+            <SecondaryButton
+                label="Edit Subarea Actions"
+                onPress={onSubareaActions}
+            />
             <SecondaryButton label="Toggle Theme" onPress={onToggleTheme} />
             <View className="mt-4 border-t border-muted/50 pt-4">
                 <TertiaryButton

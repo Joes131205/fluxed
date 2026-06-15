@@ -34,12 +34,19 @@ export function AreaCreateForm() {
             Alert.alert("Error", "Invalid hex color format.");
             return;
         }
+        console.log(name, weight, color);
 
         try {
-            await createArea({ name, weight, color });
+            await createArea({
+                name,
+                description: areaDescription,
+                weight,
+                color,
+            });
             setAreaName("");
             setAreaWeight("1");
             setAreaColor(DEFAULT_CATEGORY_COLOR);
+            setAreaDescription("");
             Alert.alert("Success", "Area created successfully.");
         } catch {
             Alert.alert("System Error", "Initialization failed.");

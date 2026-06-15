@@ -8,6 +8,7 @@ import { OutputTimeline } from "../../components/reschedule/OutputTimeline";
 import { AreaSectionItem } from "../../components/reschedule/AreaSection";
 import { TextPrimaryInput } from "../../components/ui/TextPrimaryInput";
 import { SecondaryButton } from "../../components/ui/SecondaryButton";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export default function Reschedule() {
     const algorithmType = [
@@ -34,6 +35,8 @@ export default function Reschedule() {
         isGeneratedOnce,
         finalSchedule,
         isLoading,
+        isAreaLoading,
+        isPlanLoading,
         isScheduleLoading,
         user,
         schedule,
@@ -69,15 +72,10 @@ export default function Reschedule() {
             className="flex-1 bg-background"
             contentContainerClassName="flex flex-col gap-6 py-8 px-4"
         >
-            <View className="flex flex-col mb-2">
-                <Text className="text-2xl font-bold text-primary tracking-tight mb-1">
-                    Reschedule
-                </Text>
-                <View className="h-0.5 w-24 bg-primary mb-3 shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
-                <Text className="text-xs text-muted-foreground font-mono uppercase tracking-widest leading-5">
-                    Derailed? Don't worry. You can reschedule your day here.
-                </Text>
-            </View>
+            <PageHeader
+                title="Rescheduler"
+                description="Derailed? No problem, reschedule it here!"
+            />
 
             <BusyBlocks
                 isGoogleConnected={isGoogleConnected}
@@ -93,13 +91,6 @@ export default function Reschedule() {
                 formatTime={formatTime}
             />
 
-            <ReschedulingStylePicker
-                algorithmTypes={algorithmType}
-                onAlgorithmChange={setAlgorithmIdx}
-                onReschedule={() => actions.runReschedule(type, schedule)}
-                description={description}
-                currentAlgorithm={type}
-            />
             <View className="flex flex-col border border-muted bg-card p-4 mt-2">
                 <Text className="text-xs font-bold text-primary uppercase tracking-widest">
                     Add Temporary Task
@@ -123,12 +114,20 @@ export default function Reschedule() {
                 onToggleExclude={toggleAreaExclude}
                 onToggleSubareaExclude={toggleSubareaExclude}
             />
-
+            <ReschedulingStylePicker
+                algorithmTypes={algorithmType}
+                onAlgorithmChange={setAlgorithmIdx}
+                onReschedule={() => actions.runReschedule(type, schedule)}
+                isAreaLoading={isAreaLoading}
+                description={description}
+                currentAlgorithm={type}
+            />
             <OutputTimeline
                 finalSchedule={finalSchedule}
                 isGoogleLinked={isGoogleConnected}
                 isGeneratedOnce={isGeneratedOnce}
                 isLoading={isLoading}
+                isAreaLoading={isAreaLoading}
                 onSaveToDatabase={actions.saveToDatabase}
                 onSaveToGCal={actions.saveToGCal}
                 formatTime={formatTime}

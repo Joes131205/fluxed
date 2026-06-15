@@ -66,7 +66,6 @@ export const plannedSessionSchema = z.array(
         subarea_id: z.string(),
         area_name: z.string().optional(),
         subarea_name: z.string().optional(),
-        detail: z.string(),
         user_id: z.string(),
         start_time: z.coerce.date(),
         end_time: z.coerce.date(),
@@ -91,6 +90,20 @@ export const publicUserSchema = userSchema.omit({
     password: true,
 });
 
+export const actionSchema = z.object({
+    subarea_id: z.string().uuid(),
+    title: z.string().min(1, "Title cannot be empty"),
+    isCompleted: z.boolean().default(false),
+});
+
+export const createActionSchema = actionSchema.pick({
+    subarea_id: true,
+    title: true,
+});
+export const updateActionSchema = z.object({
+    title: z.string().min(1, "Title cannot be empty").optional(),
+    isCompleted: z.boolean().optional(),
+});
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LogInInput = z.infer<typeof logInSchema>;
 export type AreaInput = z.infer<typeof areaSchema>;
@@ -99,3 +112,6 @@ export type SubareaInput = z.infer<typeof subareaSchema>;
 export type PlannedSessionInput = z.infer<typeof plannedSessionSchema>;
 export type UserInput = z.infer<typeof userSchema>;
 export type PublicUserInput = z.infer<typeof publicUserSchema>;
+export type ActionInput = z.infer<typeof actionSchema>;
+export type CreateActionInput = z.infer<typeof createActionSchema>;
+export type UpdateActionInput = z.infer<typeof updateActionSchema>;

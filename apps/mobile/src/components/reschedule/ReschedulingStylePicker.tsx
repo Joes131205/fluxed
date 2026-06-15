@@ -5,6 +5,7 @@ export function ReschedulingStylePicker({
     algorithmTypes,
     onAlgorithmChange,
     onReschedule,
+    isAreaLoading,
     currentAlgorithm,
     description,
 }: any) {
@@ -53,7 +54,11 @@ export function ReschedulingStylePicker({
                 </Text>
             </View>
 
-            <PrimaryButton label="Reschedule" onPress={onReschedule} />
+            <PrimaryButton
+                label="Reschedule"
+                onPress={onReschedule}
+                disabled={isAreaLoading}
+            />
         </View>
     );
 }
