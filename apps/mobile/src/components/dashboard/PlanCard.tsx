@@ -95,7 +95,7 @@ export const PlanCard = ({
     let buttonText = "Check In";
     let btnStyle = "border-foreground/20 bg-transparent";
     let btnText = "text-foreground/60";
-    const isDisabled = !isCompleted && (hasNotStarted || isPassed);
+    const isDisabled = isPassed || hasNotStarted;
 
     if (isCompleted) {
         buttonText = "Completed";

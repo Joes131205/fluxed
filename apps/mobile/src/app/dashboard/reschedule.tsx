@@ -9,6 +9,7 @@ import { AreaSectionItem } from "../../components/reschedule/AreaSection";
 import { TextPrimaryInput } from "../../components/ui/TextPrimaryInput";
 import { SecondaryButton } from "../../components/ui/SecondaryButton";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { useSchedules } from "../../hooks/useSchedules";
 
 export default function Reschedule() {
     const algorithmType = [
@@ -29,6 +30,12 @@ export default function Reschedule() {
     const [end, setEnd] = useState("");
     const [temporaryTask, setTemporaryTask] = useState("");
     const [temporaryWeight, setTemporaryWeight] = useState("1");
+
+    const { data: schedulesData, isLoading: isSchedulesLoading } =
+        useSchedules();
+    const schedules = schedulesData?.ok ? (schedulesData.data as any[]) : [];
+
+    const [activeScheduleIds, setActiveScheduleIds] = useState<string[]>([]);
 
     const {
         calendar,
@@ -67,6 +74,49 @@ export default function Reschedule() {
         setTemporaryWeight("1");
     };
 
+    const toggleRoutine = (id: string) => {
+        const newActiveIds = activeScheduleIds.includes(id)
+            ? activeScheduleIds.filter((item) => item !== id)
+            : [...activeScheduleIds, id];
+
+        setActiveScheduleIds(newActiveIds);
+
+        const activeRoutines = schedules.filter((s) =>
+            newActiveIds.includes(s.id),
+        );
+        const routineSlots: { start: string; end: string }[] = [];
+        const now = new Date();
+
+        activeRoutines.forEach((routine) => {
+            routine.timeSlots.forEach((slot: any) => {
+                const [startH, startM] = slot.start.split(":").map(Number);
+                const [endH, endM] = slot.end.split(":").map(Number);
+
+                const startDate = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate(),
+                    startH,
+                    startM,
+                );
+                const endDate = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate(),
+                    endH,
+                    endM,
+                );
+
+                routineSlots.push({
+                    start: startDate.toISOString(),
+                    end: endDate.toISOString(),
+                });
+            });
+        });
+
+        actions.applyRoutines(routineSlots);
+    };
+
     return (
         <ScrollView
             className="flex-1 bg-background"
@@ -76,6 +126,44 @@ export default function Reschedule() {
                 title="Rescheduler"
                 description="Derailed? No problem, reschedule it here!"
             />
+
+            {!isSchedulesLoading && schedules.length > 0 && (
+                <View className="mb-2">
+                    <Text className="text-[10px] font-black uppercase tracking-widest text-primary/50 mb-3">
+                        Apply Fixed Routines
+                    </Text>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        className="flex-row gap-3"
+                    >
+                        {schedules.map((scheduleObj) => {
+                            const isActive = activeScheduleIds.includes(
+                                scheduleObj.id,
+                            );
+                            return (
+                                <Pressable
+                                    key={scheduleObj.id}
+                                    onPress={() =>
+                                        toggleRoutine(scheduleObj.id)
+                                    }
+                                    className={`px-4 py-2 border mr-2 transition-colors flex-row items-center gap-2 ${
+                                        isActive
+                                            ? "border-primary bg-primary/20 shadow-sm shadow-primary/30"
+                                            : "border-primary/30 bg-card opacity-60"
+                                    }`}
+                                >
+                                    <Text
+                                        className={`font-mono text-xs uppercase tracking-widest ${isActive ? "text-primary font-bold" : "text-foreground"}`}
+                                    >
+                                        {scheduleObj.name}
+                                    </Text>
+                                </Pressable>
+                            );
+                        })}
+                    </ScrollView>
+                </View>
+            )}
 
             <BusyBlocks
                 isGoogleConnected={isGoogleConnected}
@@ -108,12 +196,14 @@ export default function Reschedule() {
                 />
                 <SecondaryButton label={"Add"} onPress={handleInjectTask} />
             </View>
+
             <AreaDisplay
                 areasDataOverride={schedule as AreaSectionItem[]}
                 isLoadingOverride={isScheduleLoading}
                 onToggleExclude={toggleAreaExclude}
                 onToggleSubareaExclude={toggleSubareaExclude}
             />
+
             <ReschedulingStylePicker
                 algorithmTypes={algorithmType}
                 onAlgorithmChange={setAlgorithmIdx}
@@ -122,6 +212,7 @@ export default function Reschedule() {
                 description={description}
                 currentAlgorithm={type}
             />
+
             <OutputTimeline
                 finalSchedule={finalSchedule}
                 isGoogleLinked={isGoogleConnected}

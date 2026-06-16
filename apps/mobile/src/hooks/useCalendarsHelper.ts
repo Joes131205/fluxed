@@ -71,12 +71,6 @@ const getTodayIsoAt = (hour: number, minute: number) => {
     return date.toISOString();
 };
 
-const demoBusySlots: BusySlot[] = [
-    { start: getTodayIsoAt(9, 0), end: getTodayIsoAt(10, 0) },
-    { start: getTodayIsoAt(12, 0), end: getTodayIsoAt(13, 0) },
-    { start: getTodayIsoAt(15, 30), end: getTodayIsoAt(16, 15) },
-];
-
 export function useCalendarEngine() {
     const { user } = useAuth();
     const { data: areasData, isLoading: isAreaLoading } = useAreas();
@@ -198,6 +192,25 @@ export function useCalendarEngine() {
                 updateGaps(allBusy);
             }
             return updated;
+        });
+    };
+
+    const applyRoutines = (routineSlots: BusySlot[]) => {
+        setCalendar((prev) => {
+            const filtered = prev.filter((c) => c.id !== "routines");
+
+            if (routineSlots.length > 0) {
+                filtered.push({
+                    id: "routines",
+                    name: "Fixed Routines",
+                    busy: routineSlots,
+                });
+            }
+
+            const allBusy = filtered.flatMap((c) => c.busy);
+            updateGaps(allBusy);
+
+            return filtered;
         });
     };
 
@@ -395,7 +408,6 @@ export function useCalendarEngine() {
                 }
             }
         });
-        console.log(final);
         setFinalSchedule(final);
         setIsGeneratedOnce(true);
     };
@@ -695,6 +707,7 @@ export function useCalendarEngine() {
             getData,
             addTemporaryTask,
             changeTime,
+            applyRoutines,
         },
     };
 }

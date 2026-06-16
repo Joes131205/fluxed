@@ -7,6 +7,7 @@ type SettingsActionsCardProps = {
     onEditAreas: () => void;
     onEditSubareas: () => void;
     onSubareaActions: () => void;
+    onSchedules: () => void;
     onLogout: () => void;
 };
 
@@ -15,6 +16,7 @@ export function SettingsActionsCard({
     onEditAreas,
     onEditSubareas,
     onSubareaActions,
+    onSchedules,
     onLogout,
 }: SettingsActionsCardProps) {
     return (
@@ -22,7 +24,6 @@ export function SettingsActionsCard({
             <Text className="text-[10px] font-black uppercase tracking-widest text-primary/50 mb-4">
                 Others
             </Text>
-
             <View className="flex-row gap-3 mb-2">
                 <View className="flex-1">
                     <SecondaryButton label="Edit Areas" onPress={onEditAreas} />
@@ -35,6 +36,7 @@ export function SettingsActionsCard({
                     />
                 </View>
             </View>
+            <SecondaryButton label="Fixed Routines" onPress={onSchedules} />
             <SecondaryButton
                 label="Edit Subarea Actions"
                 onPress={onSubareaActions}

@@ -104,6 +104,24 @@ export const updateActionSchema = z.object({
     title: z.string().min(1, "Title cannot be empty").optional(),
     isCompleted: z.boolean().optional(),
 });
+
+export const timeSlotSchema = z
+    .object({
+        start: hhmmOrHhmmssSchema,
+        end: hhmmOrHhmmssSchema,
+    })
+    .refine((data) => toMinutes(data.end) > toMinutes(data.start), {
+        message: "End time must be after start time",
+        path: ["end"],
+    });
+
+export const scheduleSchema = z.object({
+    name: z.string().min(1, "Schedule name cannot be empty"),
+    timeSlots: z
+        .array(timeSlotSchema)
+        .min(1, "At least one time slot is required"),
+});
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LogInInput = z.infer<typeof logInSchema>;
 export type AreaInput = z.infer<typeof areaSchema>;
@@ -115,3 +133,4 @@ export type PublicUserInput = z.infer<typeof publicUserSchema>;
 export type ActionInput = z.infer<typeof actionSchema>;
 export type CreateActionInput = z.infer<typeof createActionSchema>;
 export type UpdateActionInput = z.infer<typeof updateActionSchema>;
+export type ScheduleInput = z.infer<typeof scheduleSchema>;
