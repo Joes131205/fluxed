@@ -73,7 +73,7 @@ export const TertiaryButton = ({
                             <Text
                                 className={`uppercase tracking-widest text-xs font-bold font-mono ${currentText}`}
                             >
-                                [{label}]
+                                {label}
                             </Text>
                         )}
                     </View>

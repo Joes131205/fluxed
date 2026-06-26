@@ -31,28 +31,29 @@ export const AreaSection = ({
     onToggleSubareaExclude,
 }: AreaSectionProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    // Fallback yang aman di mode terang dan gelap
     const color = area.color ?? "#008c23";
 
     return (
         <View className="border-2 border-foreground/30 bg-card p-4 w-full mb-1 flex flex-col gap-5">
             <Pressable
                 onPress={() => setIsExpanded((prev) => !prev)}
-                className="flex flex-row items-center justify-between w-full"
+                className="flex flex-row items-start justify-between w-full gap-4"
             >
-                <View className="flex flex-row items-center flex-1 pr-4">
-                    <Text className="text-foreground/50 font-mono text-sm mr-3">
-                        {isExpanded ? "[-]" : "[+]"}
-                    </Text>
-                    <Text
-                        className={`text-sm font-black uppercase tracking-widest ${isExpanded ? "text-foreground" : "text-foreground/70"}`}
-                        numberOfLines={1}
-                    >
-                        {area.areaName}
-                    </Text>
+                <View className="flex flex-col gap-1 flex-1">
+                    <View className="flex flex-row items-center">
+                        <Text className="text-foreground/50 font-mono text-sm mr-3 shrink-0">
+                            {isExpanded ? "[-]" : "[+]"}
+                        </Text>
+                        <Text
+                            className={`text-sm font-black uppercase tracking-widest flex-1 ${isExpanded ? "text-foreground" : "text-foreground/70"}`}
+                            numberOfLines={1}
+                        >
+                            {area.areaName}
+                        </Text>
+                    </View>
                     {area.description ? (
                         <Text
-                            className="text-muted-foreground text-xs mt-1 ml-5"
+                            className="text-muted-foreground text-xs mt-1 ml-7" // Adjusted margin to align neatly under the title
                             numberOfLines={2}
                         >
                             {area.description}
@@ -60,7 +61,7 @@ export const AreaSection = ({
                     ) : null}
                 </View>
 
-                <View className="flex flex-row items-center gap-3">
+                <View className="flex flex-row items-center gap-3 shrink-0 pt-0.5">
                     <View className="flex flex-row gap-1">
                         {[...new Array(5)].map((_, i) => {
                             const isActive = i < area.weight;
@@ -79,6 +80,7 @@ export const AreaSection = ({
                     </View>
                 </View>
             </Pressable>
+
             <Pressable
                 onPress={(e) => {
                     e.stopPropagation();
@@ -87,11 +89,12 @@ export const AreaSection = ({
                 className="px-2 py-2 border border-foreground/20 active:bg-foreground/10"
             >
                 <Text
-                    className={`font-mono text-xs ${area.isExcluded ? "text-destructive" : "text-primary"}`}
+                    className={`font-mono text-xs text-center ${area.isExcluded ? "text-destructive" : "text-primary"}`}
                 >
                     {area.isExcluded ? "Excluded" : "Included"}
                 </Text>
             </Pressable>
+
             {isExpanded ? (
                 <SubareaSection
                     areaId={area.areaId}

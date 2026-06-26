@@ -36,7 +36,7 @@ export function BusyBlocks({
 
             <View className="flex flex-col mb-4">
                 <Text className="text-foreground/50 font-mono text-[10px] uppercase mb-2">
-                    Inject Manual Block
+                    Manual Insert
                 </Text>
                 <View className="flex-row items-center gap-3">
                     <View className="flex-1">

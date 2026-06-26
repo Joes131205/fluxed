@@ -217,11 +217,11 @@ export default function Schedules() {
                         {timeSlots.map((slot, index) => (
                             <View
                                 key={index}
-                                className="flex-row items-center gap-2"
+                                className="flex-row items-center gap-2 w-full"
                             >
-                                <View className="flex-1 flex-row items-center border border-primary/30 px-2 bg-card">
+                                <View className="flex-1 flex-row items-center border border-primary/30 px-2 bg-card w-full">
                                     <TextInput
-                                        className="flex-1 text-foreground font-mono text-sm py-2 text-center outline-none"
+                                        className="flex-1 text-foreground font-mono text-sm py-2 text-center outline-none w-full"
                                         value={slot.start}
                                         onChangeText={(val) =>
                                             handleSlotChange(
@@ -239,7 +239,7 @@ export default function Schedules() {
                                         -
                                     </Text>
                                     <TextInput
-                                        className="flex-1 text-foreground font-mono text-sm py-2 text-center outline-none"
+                                        className="flex-1 text-foreground font-mono text-sm py-2 text-center outline-none w-full"
                                         value={slot.end}
                                         onChangeText={(val) =>
                                             handleSlotChange(index, "end", val)

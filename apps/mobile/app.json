@@ -22,6 +22,7 @@
                 "projectId": "6a9b29f1-965d-4108-a3b2-2c3ca25d78e7"
             }
         },
-        "plugins": ["expo-web-browser"]
+        "plugins": ["expo-web-browser"],
+        "icon": "./public/icon.png"
     }
 }
