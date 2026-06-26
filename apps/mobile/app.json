@@ -16,13 +16,13 @@
             "output": "static"
         },
         "name": "Fluxed",
-        "slug": "Fluxed",
+        "slug": "fluxed",
         "extra": {
             "eas": {
                 "projectId": "6a9b29f1-965d-4108-a3b2-2c3ca25d78e7"
             }
         },
-        "plugins": ["expo-web-browser"],
+        "plugins": ["expo-web-browser", "expo-font", "expo-router"],
         "icon": "./public/icon.png"
     }
 }
