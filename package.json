@@ -1,5 +1,5 @@
 {
-    "name": "boilerplate4",
+    "name": "fluxed",
     "devDependencies": {
         "@types/bun": "latest",
         "turbo": "^2.9.4",
